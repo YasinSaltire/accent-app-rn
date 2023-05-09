@@ -1,6 +1,7 @@
 import { View, StyleSheet, Text, Pressable } from "react-native";
-import { GameStates } from "../constants/constants";
+import { GameScreens } from "../constants/constants";
 import { SvgUri } from "react-native-svg";
+import { Accent } from "../../App";
 
 const CustomSvg = () => {
   return (
@@ -14,8 +15,8 @@ const CustomSvg = () => {
 };
 
 type GameResponseAreaProps = {
-  onSetUserResponse?: (id: number) => void;
-  responseData: {};
+  onSetUserResponse: (id: number) => void;
+  responseData: Accent;
 };
 
 const GameResponseArea = (props: GameResponseAreaProps) => {
@@ -23,8 +24,13 @@ const GameResponseArea = (props: GameResponseAreaProps) => {
   return (
     <Pressable>
       <CustomSvg />
-      <Pressable>
-        <Text>Answer 1</Text>
+      <Pressable
+        onPress={() => {
+          onSetUserResponse(responseData.id);
+        }}
+      >
+        {/* on press update question answers, correct responses, what to do next in-app, etc. */}
+        <Text>{responseData.displayString}</Text>
       </Pressable>
     </Pressable>
   );

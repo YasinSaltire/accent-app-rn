@@ -1,7 +1,7 @@
 import { View, StyleSheet, Pressable, Text } from "react-native";
 import GameTitle from "../GameTitle";
 import PlayButton from "../PlayButton";
-import stringConstants, { GameStates, css } from "../../constants/constants";
+import stringConstants, { GameScreens, css } from "../../constants/constants";
 
 const homeScreenStyles = (color: string) => {
   const style = StyleSheet.create({
@@ -17,7 +17,7 @@ const homeScreenStyles = (color: string) => {
 };
 
 type HomeScreenProps = {
-  onSetGameState: React.Dispatch<React.SetStateAction<GameStates>>;
+  onSetGameState: React.Dispatch<React.SetStateAction<GameScreens>>;
 };
 
 const Home = (props: HomeScreenProps) => {
@@ -29,7 +29,7 @@ const Home = (props: HomeScreenProps) => {
       <PlayButton
         buttonLabel={stringConstants.startGame}
         onTouchHandler={() => {
-          onSetGameState(GameStates.GAME_START);
+          onSetGameState(GameScreens.GAME_START);
         }}
       />
     </View>

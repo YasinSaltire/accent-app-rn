@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { css } from "../constants/constants";
+import stringConstants, { GameScreens, css } from "../constants/constants";
+import { GameScreenStateSetter } from "../../App";
 
 const playButtonStyles = () => {
   const style = StyleSheet.create({
@@ -22,18 +23,19 @@ const textStyles = () => {
 };
 
 type PlayButtonProps = {
-  buttonLabel: string;
-  onTouchHandler: () => void;
+  buttonLabel: stringConstants;
+  doOnPress: any;
+  gameScreen: GameScreens;
 };
 
 const PlayButton: FC<PlayButtonProps> = (props) => {
-  const { buttonLabel, onTouchHandler } = props;
+  const { buttonLabel, doOnPress, gameScreen } = props;
   return (
     <View style={playButtonStyles()}>
       <Text
         style={textStyles()}
         onPress={() => {
-          onTouchHandler();
+          doOnPress(gameScreen);
         }}
       >
         {buttonLabel}
