@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, Pressable } from "react-native";
+import { View, StyleSheet, Text, Pressable, Button } from "react-native";
 import stringConstants, { GameScreens } from "../../constants/constants";
 import { SvgUri } from "react-native-svg";
 import * as React from "react";
@@ -27,12 +27,38 @@ const playScreenStyles = (color: string) => {
   return style.default;
 };
 
-const answerButtonStyles = () => {
+const buttonStyle = (color: string) => {
   const style = StyleSheet.create({
     default: {
-      borderWidth: 1,
-      borderColor: "black",
-      backgroundColor: "tomato",
+      backgroundColor: color,
+      //padding: 15,
+      borderRadius: 8,
+      width: "45%",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  });
+  return style.default;
+};
+
+const buttonContainerStyle = () => {
+  const style = StyleSheet.create({
+    default: {
+      flexDirection: "row",
+      margin: 50, //adjust margin when map is added
+      width: "90%",
+      height: "12%",
+      justifyContent: "space-between",
+    },
+  });
+  return style.default;
+};
+
+const textContainerStyle = () => {
+  const style = StyleSheet.create({
+    default: {
+      color: "white",
+      textAlign: "center",
     },
   });
   return style.default;
@@ -101,10 +127,33 @@ const ProtoGameScreen = (props: ProtoGameScreenProps) => {
       >
         <Text>{`Select ${question.value}`}</Text>
       </Pressable>
+
       <Pressable onPress={async () => await stopClip()}>
         <Text>Stop audio</Text>
       </Pressable>
-      <Pressable></Pressable>
+
+      <View style={buttonContainerStyle()}>
+        <Pressable style={buttonStyle("#36BAF3")}>
+          <Text style={textContainerStyle()}>Button 1</Text>
+        </Pressable>
+
+        <Pressable style={buttonStyle("#e8bd12")}>
+          <Text style={textContainerStyle()}>Button 2</Text>
+        </Pressable>
+      </View>
+
+      <View style={buttonContainerStyle()}>
+        <Pressable style={buttonStyle("#82DB5B")}>
+          <Text style={textContainerStyle()}>Button 3</Text>
+        </Pressable>
+
+        <Pressable style={buttonStyle("#e8791e")}>
+          <Text style={textContainerStyle()}>
+            Button
+            4adsfaffasdfasdfasdfasdfhajsdfhsdaklfhaslkdfjhasdlkfhjsadlfhlkasdjfhadsklfjasd
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 };

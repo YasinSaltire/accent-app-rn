@@ -17,6 +17,7 @@ const textStyles = () => {
   const style = StyleSheet.create({
     default: {
       color: css.playButtonTextColor,
+
     },
   });
   return style.default;

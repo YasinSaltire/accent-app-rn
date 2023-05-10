@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Text } from "react-native";
+import { View, StyleSheet, Pressable, Text, Button } from "react-native";
 import GameTitle from "../GameTitle";
 import PlayButton from "../PlayButton";
 import stringConstants, { GameScreens, css } from "../../constants/constants";
@@ -28,9 +28,10 @@ const Home = (props: HomeScreenProps) => {
       <GameTitle title={stringConstants.gameTitle} />
       <PlayButton
         buttonLabel={stringConstants.startGame}
-        onTouchHandler={() => {
+        doOnPress={() => {
           onSetGameState(GameScreens.GAME_START);
         }}
+        gameScreen = {GameScreens.GAME_START}
       />
     </View>
   );

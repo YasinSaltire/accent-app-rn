@@ -17,6 +17,8 @@ export default function App() {
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
   let [gameScreen, setScreen] = useState<GameScreens>(GameScreens.PROTOHOME);
   let [currentQuestionIndex, setCurrentQuestionIndex] = useState();
+
+  //randomly chooose 10 correct answer choices from database and populate qnalist. 
   let [qnaList, setQnAList] = useState<QuestionStruct[]>([
     { id: 0, value: "a", answer: {} as QuestionStruct },
     { id: 1, value: "b", answer: {} as QuestionStruct },

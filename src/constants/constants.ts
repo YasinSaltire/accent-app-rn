@@ -1,7 +1,7 @@
 // This file should be renamed to something more specific as the codebase grows.
 
 enum stringConstants {
-  startGame = "Start Game",
+  startGame = "Play",
   gameTitle = "Game Title",
   settings = "Settings",
   GO_HOME = "Go Home",
