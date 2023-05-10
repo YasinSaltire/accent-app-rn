@@ -11,9 +11,14 @@ import ProtoGameScreen, {
 } from "./src/components/screens/ProtoGameScreen";
 import ProtoHome from "./src/components/screens/ProtoHome";
 
+import data from "./assets/audio/clip_db.json";
+import generateRandomQuestionChoices from "./src/util/generateRandomQuestionChoices";
+
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
 export default function App() {
+
+  console.log("10 choices", generateRandomQuestionChoices(data, 10))
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
   let [gameScreen, setScreen] = useState<GameScreens>(GameScreens.PROTOHOME);
   let [currentQuestionIndex, setCurrentQuestionIndex] = useState();

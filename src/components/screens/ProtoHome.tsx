@@ -1,10 +1,14 @@
-import { View, StyleSheet, Pressable, Text, Button } from "react-native";
+import { View, StyleSheet, Pressable, Text } from "react-native";
 import stringConstants, { GameScreens } from "../../constants/constants";
 import PlayButton from "../PlayButton";
 import GameTitle from "../GameTitle";
 import { GameScreenStateSetter } from "../../../App";
+import generateRandomQuestionChoices from "../../util/generateRandomQuestionChoices"
+import data from "../../../assets/audio/clip_db.json"
 
 const homeScreenStyles = (color: string = "white") => {
+
+
   const style = StyleSheet.create({
     default: {
       backgroundColor: color,
@@ -55,6 +59,10 @@ type ProtoHomeProps = {
 
 const ProtoHome = (props: ProtoHomeProps) => {
   console.log("home");
+  //console.log("data 1st entry " + data[1])
+  //console.log("question choices " + generateRandomQuestionChoices(data, 10))
+
+
   const { doOnStartGameRound } = props;
   return (
     <View style={homeScreenStyles()}>
