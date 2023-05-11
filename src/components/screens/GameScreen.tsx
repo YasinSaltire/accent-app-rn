@@ -104,6 +104,9 @@ const GameScreen = (props: GameScreenProps) => {
   let [isAudioPlaying, setIsAudioPlaying] = useState(false);
   let [soundHandle, setSoundHandle] = useState<Audio.Sound>();
 
+  
+
+
   const handleAudioPress = () => {};
 
   async function playClip() {
@@ -132,6 +135,9 @@ const GameScreen = (props: GameScreenProps) => {
     stopClip();
     handleAnswerSelection(response);
   };
+
+
+
 
   return (
     <View style={playScreenStyles("grey")}>

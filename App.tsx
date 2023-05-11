@@ -64,11 +64,23 @@ export default function App() {
     );
     console.log("correct choices: ", correctChoices.length);
     console.log("incorrect choices: ", incorrectChoicesForEntireRound.length);
+    
+    
     setCorrectChoicesArray(correctChoices);
     setIncorrectChoicesArray(incorrectChoicesForEntireRound);
     setIncorrectChoicesSubArrayForButtons(
       threeIncorrectChoicesForCurrentQuestion
     );
+    
+
+    const correctIDsTest: any = [];
+    correctChoices.map((accent: any) => correctIDsTest.push(accent.fileID)).join(", ");
+    console.log("5 choices", correctIDsTest);
+    console.log("----------------");
+
+    const incorrectIDsTest: any = [];
+    incorrectChoicesForEntireRound.map((accent: any) => incorrectIDsTest.push(accent.fileID)) .join(", ");
+    console.log("30 incorrect choices test", incorrectIDsTest);
     setCurrentGameIndex(0);
     setScreen(GameScreens.GAMESCREEN);
     //console.log('incorrect choices array', generateIncorrectChoices(correctChoicesArray, data, 15))
@@ -106,10 +118,11 @@ export default function App() {
       newIndex = -1;
       //generate new set of questions
     } else {
-      screen = GameScreens.HOMESCREEN;
+      screen = GameScreens.GAMESCREEN;
       newIndex = currentGameIndex + 1;
+      const threeIncorrectChoices = getSubArrayOfChoices(incorrectChoicesArray, 3)
       setIncorrectChoicesSubArrayForButtons(
-        getSubArrayOfChoices(incorrectChoicesArray, 3)
+        threeIncorrectChoices
       );
     }
 
