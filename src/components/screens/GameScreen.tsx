@@ -78,10 +78,14 @@ type QuestionStruct = {
 type ProtoGameScreenProps = {
   handleAnswerSelection: any;
   question: QuestionStruct;
+  correctChoiceObj: any;
+  incorrectChoicesArr: any;
 };
 
 const ProtoGameScreen = (props: ProtoGameScreenProps) => {
-  const { handleAnswerSelection, question } = props;
+  const { handleAnswerSelection, question, correctChoiceObj, incorrectChoicesArr} = props;
+  console.log("proto screen confirming correct choice ", correctChoiceObj.fileID)
+  console.log('protoscreen confirming 3 wrong choices ', incorrectChoicesArr[2].fileID)
   // generate 3 (incorrect ) choices + 1 correct choice which is = question
   let questionsToBeShownThisRound: AccentList = [{} as Accent];
   let [userResponses, setUserResponses] = useState([]); // this will need to be updated

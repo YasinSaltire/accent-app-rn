@@ -13,8 +13,7 @@ const generateIncorrectChoices = <T>(
       */
   if (numberOfIncorrectChoices > data.length) throw "too many questions";
 
-  let arrayOfIncorrectIndices: number[] = [];
-  let arrayOfIncorrectChoices: any = [];
+  let arrayOfIncorrectChoices: T[] = [];
 
   while (arrayOfIncorrectChoices.length !== numberOfIncorrectChoices) {
     let idx = pickRandomIndexFromArray(data);
