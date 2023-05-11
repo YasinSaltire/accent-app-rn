@@ -8,8 +8,8 @@ import { IAudioPlayer } from "./src/services/AudioPlayer";
 import TestScreen from "./src/components/screens/TestScreen";
 import ProtoGameScreen, {
   QuestionStruct,
-} from "./src/components/screens/ProtoGameScreen";
-import ProtoHome from "./src/components/screens/ProtoHome";
+} from "./src/components/screens/GameScreen";
+import ProtoHome from "./src/components/screens/HomeScreen";
 
 import data from "./assets/audio/clip_db.json";
 import generateRandomQuestionChoices from "./src/util/generateRandomQuestionChoices";
