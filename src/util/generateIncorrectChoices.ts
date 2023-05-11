@@ -19,15 +19,16 @@ const generateIncorrectChoices = <T>(
   while (arrayOfIncorrectChoices.length !== numberOfIncorrectChoices) {
     let idx = pickRandomIndexFromArray(data);
 
-    while (checkIfRegionExistsInArray(arrayOfChoicesToAvoid, data, idx) || checkIfRegionExistsInArray(arrayOfIncorrectChoices, data, idx)) {
+    while (
+      checkIfRegionExistsInArray(arrayOfChoicesToAvoid, data, idx) ||
+      checkIfRegionExistsInArray(arrayOfIncorrectChoices, data, idx)
+    ) {
       idx = pickRandomIndexFromArray(data);
-      
     }
-    arrayOfIncorrectChoices.push(data[idx])
+    arrayOfIncorrectChoices.push(data[idx]);
   }
 
-
-  return arrayOfIncorrectChoices
+  return arrayOfIncorrectChoices;
 };
 
 export default generateIncorrectChoices;

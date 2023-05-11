@@ -89,6 +89,9 @@ const ProtoGameScreen = (props: ProtoGameScreenProps) => {
   let [isAudioPlaying, setIsAudioPlaying] = useState(false);
   let [soundHandle, setSoundHandle] = useState<Audio.Sound>();
 
+
+  
+
   const handleAudioPress = () => {};
 
   async function playClip() {
