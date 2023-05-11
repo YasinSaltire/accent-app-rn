@@ -75,26 +75,34 @@ type QuestionStruct = {
   answer: QuestionStruct;
 };
 
-type ProtoGameScreenProps = {
+type GameScreenProps = {
   handleAnswerSelection: any;
   question: QuestionStruct;
   correctChoiceObj: any;
   incorrectChoicesArr: any;
 };
 
-const ProtoGameScreen = (props: ProtoGameScreenProps) => {
-  const { handleAnswerSelection, question, correctChoiceObj, incorrectChoicesArr} = props;
-  console.log("proto screen confirming correct choice ", correctChoiceObj.fileID)
-  console.log('protoscreen confirming 3 wrong choices ', incorrectChoicesArr[2].fileID)
+const GameScreen = (props: GameScreenProps) => {
+  const {
+    handleAnswerSelection,
+    question,
+    correctChoiceObj,
+    incorrectChoicesArr,
+  } = props;
+  console.log(
+    "proto screen confirming correct choice ",
+    correctChoiceObj.fileID
+  );
+  console.log(
+    "protoscreen confirming 3 wrong choices ",
+    incorrectChoicesArr[2].fileID
+  );
   // generate 3 (incorrect ) choices + 1 correct choice which is = question
   let questionsToBeShownThisRound: AccentList = [{} as Accent];
   let [userResponses, setUserResponses] = useState([]); // this will need to be updated
   let [userResponse, setUserResponse] = useState(0);
   let [isAudioPlaying, setIsAudioPlaying] = useState(false);
   let [soundHandle, setSoundHandle] = useState<Audio.Sound>();
-
-
-  
 
   const handleAudioPress = () => {};
 
@@ -165,6 +173,6 @@ const ProtoGameScreen = (props: ProtoGameScreenProps) => {
   );
 };
 
-export default ProtoGameScreen;
+export default GameScreen;
 
 export { QuestionStruct };

@@ -33,9 +33,8 @@ enum GameScreens {
   GAME_CONTINUE = "game-continue",
   SHOW_NEXT_QUESTION = "next-question",
   TESTSCREEN = "test-screen",
-  PROTOGAME = "proto-game-round",
-  PROTOHOME = "proto-home",
-  PROTO_END_OF_ROUND = "proto-end-of-round",
+  GAMESCREEN = "game-screen",
+  END_OF_ROUND = "end-of-round",
 }
 
 enum Errors {

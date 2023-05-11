@@ -3,12 +3,10 @@ import stringConstants, { GameScreens } from "../../constants/constants";
 import PlayButton from "../PlayButton";
 import GameTitle from "../GameTitle";
 import { GameScreenStateSetter } from "../../../App";
-import generateRandomQuestionChoices from "../../util/generateRandomQuestionChoices"
-import data from "../../../assets/audio/clip_db.json"
+import generateRandomQuestionChoices from "../../util/generateRandomQuestionChoices";
+import data from "../../../assets/audio/clip_db.json";
 
 const homeScreenStyles = (color: string = "white") => {
-
-
   const style = StyleSheet.create({
     default: {
       backgroundColor: color,
@@ -53,15 +51,14 @@ const buttonContainer = (color: string = "white") => {
   return style.default;
 };
 
-type ProtoHomeProps = {
+type HomeScreenProps = {
   doOnStartGameRound: any;
 };
 
-const ProtoHome = (props: ProtoHomeProps) => {
+const HomeScreen = (props: HomeScreenProps) => {
   console.log("home");
   //console.log("data 1st entry " + data[1])
   //console.log("question choices " + generateRandomQuestionChoices(data, 10))
-
 
   const { doOnStartGameRound } = props;
   return (
@@ -83,4 +80,4 @@ const ProtoHome = (props: ProtoHomeProps) => {
   );
 };
 
-export default ProtoHome;
+export default HomeScreen;
