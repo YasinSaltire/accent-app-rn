@@ -13,12 +13,25 @@ import ProtoHome from "./src/components/screens/ProtoHome";
 
 import data from "./assets/audio/clip_db.json";
 import generateRandomQuestionChoices from "./src/util/generateRandomQuestionChoices";
+import generateIncorrectChoices from "./src/util/generateIncorrectChoices";
+
+
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
 export default function App() {
+  const correctChoicesTest: any = generateRandomQuestionChoices(data, 10);
+  const incorrectChoicesTest: any = generateIncorrectChoices(correctChoicesTest, data, 5)
 
-  console.log("10 choices", generateRandomQuestionChoices(data, 10))
+  const correctIDsTest: any = []
+  correctChoicesTest.map((accent: any) => correctIDsTest.push(accent.fileID)).join(", ")
+  const incorrectIDsTest: any = []
+  incorrectChoicesTest.map((accent: any) => incorrectIDsTest.push(accent.fileID)).join(", ")
+
+  console.log("10 choices", correctIDsTest)
+  console.log('----------------')
+  console.log("5 incorrect choices test", incorrectIDsTest)
+
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
   let [gameScreen, setScreen] = useState<GameScreens>(GameScreens.PROTOHOME);
   let [currentQuestionIndex, setCurrentQuestionIndex] = useState();
@@ -32,6 +45,8 @@ export default function App() {
     { id: 4, value: "e", answer: {} as QuestionStruct },
   ]);
   let [audioPlayer, setAudioPlayer] = useState({} as IAudioPlayer);
+
+  let [questionList, setQuestionList] = useState(generateRandomQuestionChoices(data,10))
 
   const handleStartGameRound = () => {
     setCurrentGameIndex(0);
