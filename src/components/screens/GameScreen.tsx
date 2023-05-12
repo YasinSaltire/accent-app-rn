@@ -3,7 +3,7 @@ import stringConstants, { GameScreens } from "../../constants/constants";
 import { SvgUri } from "react-native-svg";
 import * as React from "react";
 import GameResponseArea from "../GameResponseArea";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect} from "react";
 import AudioPlayer, { IAudioPlayer } from "../../services/AudioPlayer";
 import { Accent, AccentList, GameScreenStateSetter } from "../../../App";
 import uris from "../../temp/audioUris";
@@ -13,6 +13,7 @@ import getCherryPickedSubArrayFromParent from "../../util/getCherryPickedSubArra
 import PlayButton from "../PlayButton";
 import { Sound } from "expo-av/build/Audio";
 import Question from "../../model/Question";
+import generateAccentString from "../../util/generateAccentString";
 
 const playScreenStyles = (color: string) => {
   const style = StyleSheet.create({
@@ -104,9 +105,12 @@ const GameScreen = (props: GameScreenProps) => {
   let [isAudioPlaying, setIsAudioPlaying] = useState(false);
   let [soundHandle, setSoundHandle] = useState<Audio.Sound>();
 
-  
+  var correctButtonIndex: number = Math.floor(Math.random() * 4);
+  var arrayOfChoicesInOrderOfButtonPopulation: any = [...incorrectChoicesArr];
+  arrayOfChoicesInOrderOfButtonPopulation.splice(correctButtonIndex,0,correctChoiceObj)
+ 
 
-
+  console.log(arrayOfChoicesInOrderOfButtonPopulation.length)
   const handleAudioPress = () => {};
 
   async function playClip() {
@@ -136,9 +140,6 @@ const GameScreen = (props: GameScreenProps) => {
     handleAnswerSelection(response);
   };
 
-
-
-
   return (
     <View style={playScreenStyles("grey")}>
       <Pressable
@@ -155,23 +156,28 @@ const GameScreen = (props: GameScreenProps) => {
 
       <View style={buttonContainerStyle()}>
         <Pressable style={buttonStyle("#36BAF3")}>
-          <Text style={textContainerStyle()}>Button 1</Text>
+          <Text style={textContainerStyle()}>
+            {generateAccentString(arrayOfChoicesInOrderOfButtonPopulation[0])}
+          </Text>
         </Pressable>
 
         <Pressable style={buttonStyle("#e8bd12")}>
-          <Text style={textContainerStyle()}>Button 2</Text>
+          <Text style={textContainerStyle()}>
+            {generateAccentString(arrayOfChoicesInOrderOfButtonPopulation[1])}
+          </Text>
         </Pressable>
       </View>
 
       <View style={buttonContainerStyle()}>
         <Pressable style={buttonStyle("#82DB5B")}>
-          <Text style={textContainerStyle()}>Button 3</Text>
+          <Text style={textContainerStyle()}>
+            {generateAccentString(arrayOfChoicesInOrderOfButtonPopulation[2])}
+          </Text>
         </Pressable>
 
         <Pressable style={buttonStyle("#e8791e")}>
           <Text style={textContainerStyle()}>
-            Button
-            4adsfaffasdfasdfasdfasdfhajsdfhsdaklfhaslkdfjhasdlkfhjsadlfhlkasdjfhadsklfjasd
+            {generateAccentString(arrayOfChoicesInOrderOfButtonPopulation[3])}
           </Text>
         </Pressable>
       </View>
