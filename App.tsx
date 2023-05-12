@@ -10,6 +10,7 @@ import data from "./assets/audio/clip_db.json";
 import generateRandomQuestionChoices from "./src/util/generateRandomQuestionChoices";
 import generateIncorrectChoices from "./src/util/generateIncorrectChoices";
 import getSubArrayOfChoices from "./src/util/getSubArrayOfChoices";
+import scoreRound from "./src/util/scoreRound";
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
@@ -23,6 +24,12 @@ export default function App() {
   ] = useState<any>([]);
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
   let [gameScreen, setScreen] = useState<GameScreens>(GameScreens.HOMESCREEN);
+  let [userSelectedChoicesRecord, setUserSelectedChoicesRecord] = useState<
+    number[]
+  >([]);
+  let [correctChoiceButtonIndex, setCorrectChoiceButtonIndex] = useState<number>(0)
+  let [score, setScore] = useState<number>(0)
+  // state variable that stores number of correctly answered questions
 
   // const correctChoices = generateRandomQuestionChoices(data, 5);
 
@@ -58,61 +65,45 @@ export default function App() {
       data,
       15
     );
+    /*
     const threeIncorrectChoicesForCurrentQuestion = getSubArrayOfChoices(
       incorrectChoicesForEntireRound,
       3
     );
-    console.log("correct choices: ", correctChoices.length);
-    console.log("incorrect choices: ", incorrectChoicesForEntireRound.length);
-    
-    
-    setCorrectChoicesArray(correctChoices);
-    setIncorrectChoicesArray(incorrectChoicesForEntireRound);
     setIncorrectChoicesSubArrayForButtons(
       threeIncorrectChoicesForCurrentQuestion
-    );
-    
+      );
+      */
 
-    const correctIDsTest: any = [];
-    correctChoices.map((accent: any) => correctIDsTest.push(accent.fileID)).join(", ");
-    console.log("5 choices", correctIDsTest);
-    console.log("----------------");
-
-    const incorrectIDsTest: any = [];
-    incorrectChoicesForEntireRound.map((accent: any) => incorrectIDsTest.push(accent.fileID)) .join(", ");
-    console.log("30 incorrect choices test", incorrectIDsTest);
+    setCorrectChoicesArray(correctChoices);
+    setIncorrectChoicesArray(incorrectChoicesForEntireRound);
+    setUserSelectedChoicesRecord([])
+    //console.log("length test ", correctChoicesArray.length);
     setCurrentGameIndex(0);
+    setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4))
+    console.log("screen", gameScreen)
+
     setScreen(GameScreens.GAMESCREEN);
-    //console.log('incorrect choices array', generateIncorrectChoices(correctChoicesArray, data, 15))
-
-    // var incorrectIDsTest: any = [];
-    // incorrectChoicesArray
-    //   .map((accent: any) => incorrectIDsTest.push(accent.fileID))
-    //   .join(", ");
-
-    //console.log("15 incorrect choices test", incorrectIDsTest);
-
-    // initialize choices array
-    // A = [...]
-    // save that array to state in this component
-    // setIncorrectChoicesArray(A)
-    // const correctIDsTest: any = [];
-    // correctChoicesArray
-    //   .map((accent: any) => correctIDsTest.push(accent.fileID))
-    //   .join(", ");
-    //console.log("5 choices", correctIDsTest);
-    //console.log("----------------");
-
-    //console.log("cur game index ", currentGameIndex);
   };
 
-  const handleAnswerSelection = (userSelection: QuestionStruct) => {
-    qnaList[currentGameIndex].answer = userSelection;
-    const newQnAList = [...qnaList];
+  useEffect(() => {
+    //console.log("print correct choices: ", correctChoicesArray);
+  }, [correctChoicesArray]);
+
+  const handleAnswerSelection = (id: number) => {
     let screen: GameScreens;
     let newIndex: number;
+    let curScore: number;
+    let userRecord: number[] = [...userSelectedChoicesRecord];
+    userRecord.push(id);
 
-    if (currentGameIndex === qnaList.length - 1) {
+    setUserSelectedChoicesRecord(userRecord);
+    // update score
+    curScore = scoreRound(userRecord, correctChoicesArray)
+    setScore(curScore)
+    
+
+    if (currentGameIndex === correctChoicesArray.length - 1) {
       //invoke if round finished.
       screen = GameScreens.HOMESCREEN;
       newIndex = -1;
@@ -120,24 +111,24 @@ export default function App() {
     } else {
       screen = GameScreens.GAMESCREEN;
       newIndex = currentGameIndex + 1;
-      const threeIncorrectChoices = getSubArrayOfChoices(incorrectChoicesArray, 3)
-      setIncorrectChoicesSubArrayForButtons(
-        threeIncorrectChoices
-      );
     }
-
-    setQnAList(newQnAList);
+    console.log('choicse log', userSelectedChoicesRecord)
     setCurrentGameIndex(newIndex);
+    setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4))
     setScreen(screen);
   };
+
 
   return (
     <>
       {gameScreen === GameScreens.HOMESCREEN && (
         <HomeScreen doOnStartGameRound={handleStartGameRound} />
       )}
-      {gameScreen === GameScreens.GAMESCREEN && (
+      {gameScreen === GameScreens.GAMESCREEN  && correctChoicesArray.length > 0 && (
         <GameScreen
+          correctlyAnswered={score} // state variable that you'll define above in this component
+          allIncorrect={incorrectChoicesArray}
+          currentQuestionIndex={currentGameIndex}
           question={
             currentGameIndex >= 0
               ? qnaList[currentGameIndex]
@@ -145,7 +136,8 @@ export default function App() {
           }
           handleAnswerSelection={handleAnswerSelection}
           correctChoiceObj={correctChoicesArray[currentGameIndex]}
-          incorrectChoicesArr={incorrectChoicesSubArrayForButtons}
+          correctButtonIndex={correctChoiceButtonIndex}
+       
         />
       )}
     </>

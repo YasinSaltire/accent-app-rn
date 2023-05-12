@@ -56,7 +56,6 @@ type HomeScreenProps = {
 };
 
 const HomeScreen = (props: HomeScreenProps) => {
-  console.log("home");
   //console.log("data 1st entry " + data[1])
   //console.log("question choices " + generateRandomQuestionChoices(data, 10))
 
