@@ -14,6 +14,7 @@ import PlayButton from "../PlayButton";
 import { Sound } from "expo-av/build/Audio";
 import Question from "../../model/Question";
 import generateAccentString from "../../util/generateAccentString";
+import generateAudioLink from "../../util/generateAudioLink";
 
 const playScreenStyles = (color: string) => {
   const style = StyleSheet.create({
@@ -89,13 +90,13 @@ const GameScreen = (props: GameScreenProps) => {
     correctChoiceObj,
     currentQuestionIndex,
     correctButtonIndex,
-    correctlyAnswered
+    correctlyAnswered,
   } = props;
   console.log(currentQuestionIndex);
   console.log(`There are ${allIncorrect.length} incorrect choices`);
   console.log("correct id", correctChoiceObj.fileID);
   console.log("incorrect 1st id ", allIncorrect[0]);
-  console.log('correctly answered ', correctlyAnswered)
+  console.log("correctly answered ", correctlyAnswered);
   /* 
   console.log(
     "proto screen confirming correct choice ",
@@ -111,7 +112,6 @@ const GameScreen = (props: GameScreenProps) => {
   let [userResponses, setUserResponses] = useState([]); // this will need to be updated
   let [userResponse, setUserResponse] = useState(0);
   let [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  let [soundHandle, setSoundHandle] = useState<Audio.Sound>();
 
   console.log("button index", correctButtonIndex);
   console.log("correct country", correctChoiceObj.country);
@@ -121,16 +121,60 @@ const GameScreen = (props: GameScreenProps) => {
   buttonChoiceArray.push(allIncorrect[indexOfFirstIncorrectChoice + 1]);
   buttonChoiceArray.push(allIncorrect[indexOfFirstIncorrectChoice + 2]);
   buttonChoiceArray.splice(correctButtonIndex, 0, correctChoiceObj);
-  /*
-  var correctButtonIndex: number = Math.floor(Math.random() * 4);
-  var arrayOfChoicesInOrderOfButtonPopulation: any = [...incorrectChoicesArr];
-  arrayOfChoicesInOrderOfButtonPopulation.splice(correctButtonIndex,0,correctChoiceObj)
- 
 
-  console.log(arrayOfChoicesInOrderOfButtonPopulation.length)
-  */
-      
-  
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    // const audioUri = ...
+    const audioUri = generateAudioLink(correctChoiceObj.fileName)
+    const loadSound = async () => {
+      try {
+        const sound = new Audio.Sound();
+        await sound.loadAsync({
+        uri: audioUri, // audioUri
+      });
+        sound.playAsync();
+        setSound(sound);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadSound();
+
+    // clean up the audio when the component unmounts
+    return () => {
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
+  }, [correctChoiceObj]);
+
+  const handlePlaySound = async () => {
+    console.log("play sound using ", sound);
+    if (sound) {
+      try {
+        await sound.playAsync();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const handleStopSound = async () => {
+    if (sound) {
+      try {
+        await sound.stopAsync();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  /*
+  let [soundHandle, setSoundHandle] = useState<Audio.Sound>();
+
   const handleAudioPress = () => {};
 
   async function playClip() {
@@ -164,27 +208,30 @@ const GameScreen = (props: GameScreenProps) => {
   function someFunc(param: any) {
     return () => {};
   }
-  
+  */
 
   return (
-    
-     <View style={playScreenStyles("grey")}>
+    <View style={playScreenStyles("grey")}>
       <Pressable>
         <Text>{`Select ${
           question && question.value ? question.value : "some text"
         }`}</Text>
       </Pressable>
 
-      <Pressable onPress={async () => await stopClip()}>
+      <Pressable onPress={() => handlePlaySound()}>
+        <Text>Play audio</Text>
+      </Pressable>
+
+      <Pressable onPress={() => handleStopSound()}>
         <Text>Stop audio</Text>
       </Pressable>
-    
+
       <View style={buttonContainerStyle()}>
         <Pressable
           style={buttonStyle("#36BAF3")}
           onPress={() => {
             handleAnswerSelection(buttonChoiceArray[0].fileID);
-            stopClip();
+            handleStopSound();
           }}
         >
           <Text style={textContainerStyle()}>
@@ -194,7 +241,10 @@ const GameScreen = (props: GameScreenProps) => {
 
         <Pressable
           style={buttonStyle("#e8bd12")}
-          onPress={() => handleAnswerSelection(buttonChoiceArray[1].fileID)}
+          onPress={() => {
+            handleAnswerSelection(buttonChoiceArray[1].fileID);
+            handleStopSound();
+          }}
         >
           <Text style={textContainerStyle()}>
             {generateAccentString(buttonChoiceArray[1])}
@@ -205,7 +255,10 @@ const GameScreen = (props: GameScreenProps) => {
       <View style={buttonContainerStyle()}>
         <Pressable
           style={buttonStyle("#82DB5B")}
-          onPress={() => handleAnswerSelection(buttonChoiceArray[2].fileID)}
+          onPress={() => {
+            handleAnswerSelection(buttonChoiceArray[2].fileID);
+            handleStopSound();
+          }}
         >
           <Text style={textContainerStyle()}>
             {generateAccentString(buttonChoiceArray[2])}
@@ -214,7 +267,10 @@ const GameScreen = (props: GameScreenProps) => {
 
         <Pressable
           style={buttonStyle("#e8791e")}
-          onPress={() => handleAnswerSelection(buttonChoiceArray[3].fileID)}
+          onPress={() => {
+            handleAnswerSelection(buttonChoiceArray[3].fileID);
+            handleStopSound();
+          }}
         >
           <Text style={textContainerStyle()}>
             {generateAccentString(buttonChoiceArray[3])}
