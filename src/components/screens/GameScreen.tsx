@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, Pressable, Button } from "react-native";
+import { View, StyleSheet, Text, Pressable, Modal } from "react-native";
 import stringConstants, { GameScreens } from "../../constants/constants";
 import { SvgUri } from "react-native-svg";
 import * as React from "react";
@@ -74,7 +74,6 @@ type QuestionStruct = {
 
 type GameScreenProps = {
   handleAnswerSelection: any;
-  question: QuestionStruct;
   correctChoiceObj: any;
   allIncorrect?: any;
   currentQuestionIndex?: any;
@@ -85,7 +84,6 @@ type GameScreenProps = {
 const GameScreen = (props: GameScreenProps) => {
   const {
     handleAnswerSelection,
-    question,
     allIncorrect,
     correctChoiceObj,
     currentQuestionIndex,
@@ -97,21 +95,8 @@ const GameScreen = (props: GameScreenProps) => {
   console.log("correct id", correctChoiceObj.fileID);
   console.log("incorrect 1st id ", allIncorrect[0]);
   console.log("correctly answered ", correctlyAnswered);
-  /* 
-  console.log(
-    "proto screen confirming correct choice ",
-    correctChoiceObj.fileID
-    );
-    console.log(
-      "protoscreen confirming 3 wrong choices ",
-      incorrectChoicesArr[2].fileID
-      );
-      */
-  // generate 3 (incorrect ) choices + 1 correct choice which is = question
-  let questionsToBeShownThisRound: AccentList = [{} as Accent];
-  let [userResponses, setUserResponses] = useState([]); // this will need to be updated
-  let [userResponse, setUserResponse] = useState(0);
-  let [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  
+ 
 
   console.log("button index", correctButtonIndex);
   console.log("correct country", correctChoiceObj.country);
@@ -123,10 +108,26 @@ const GameScreen = (props: GameScreenProps) => {
   buttonChoiceArray.splice(correctButtonIndex, 0, correctChoiceObj);
 
   const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [disabledButtonsArray, setDisabledButtonsArray] = useState<boolean[]>([false,false,false,false])
+
+  const displayModalIfWrongChoiceSelected = (id: number) =>{
+    if(id !== correctChoiceObj.fileID){
+      setShowModal(true)
+    }
+  }
+
+  const disableButton = (buttonIndex: number) =>{
+    if (buttonIndex !== correctButtonIndex){
+      let newDisabledButtonsArray: boolean[] = [...disabledButtonsArray]
+      newDisabledButtonsArray[buttonIndex] = true
+      setDisabledButtonsArray(newDisabledButtonsArray)
+    }
+  }
 
   useEffect(() => {
     // const audioUri = ...
+    setDisabledButtonsArray([false,false,false,false])
     const audioUri = generateAudioLink(correctChoiceObj.fileName)
     const loadSound = async () => {
       try {
@@ -172,51 +173,16 @@ const GameScreen = (props: GameScreenProps) => {
     }
   };
 
-  /*
-  let [soundHandle, setSoundHandle] = useState<Audio.Sound>();
-
-  const handleAudioPress = () => {};
-
-  async function playClip() {
-    const sound = new Audio.Sound();
-    await sound.loadAsync({
-      uri: "https://saltire.com/speech/server/upload/Us_California.mp3",
-    });
-    await sound.playAsync();
-    setSoundHandle(sound);
-  }
-
-  async function stopClip() {
-    await soundHandle?.stopAsync();
-    setSoundHandle({} as Audio.Sound);
-  }
-
-  useEffect(() => {
-    playClip();
-    console.log("play clip");
-    return function () {
-      stopClip();
-      //setSoundHandle({} as Audio.Sound);
-    };
-  }, [soundHandle]);
-
-  const stopClipAndSetScreen = (response: QuestionStruct) => {
-    stopClip();
-    handleAnswerSelection(response);
-  };
-
-  function someFunc(param: any) {
-    return () => {};
-  }
-  */
-
   return (
     <View style={playScreenStyles("grey")}>
-      <Pressable>
-        <Text>{`Select ${
-          question && question.value ? question.value : "some text"
-        }`}</Text>
-      </Pressable>
+
+      <Modal transparent = {true} visible = {showModal}>
+        <Pressable onPress = {() => setShowModal(false)}>
+          <Text>
+            Try Again
+          </Text>
+        </Pressable>
+      </Modal>
 
       <Pressable onPress={() => handlePlaySound()}>
         <Text>Play audio</Text>
@@ -228,11 +194,14 @@ const GameScreen = (props: GameScreenProps) => {
 
       <View style={buttonContainerStyle()}>
         <Pressable
-          style={buttonStyle("#36BAF3")}
+          style={disabledButtonsArray[0]? buttonStyle("grey"): buttonStyle("#36BAF3")}
           onPress={() => {
             handleAnswerSelection(buttonChoiceArray[0].fileID);
-            handleStopSound();
+            handleStopSound()
+            displayModalIfWrongChoiceSelected(buttonChoiceArray[0].fileID);
+            disableButton(0)
           }}
+          disabled = {disabledButtonsArray[0]}
         >
           <Text style={textContainerStyle()}>
             {generateAccentString(buttonChoiceArray[0])}
@@ -240,10 +209,12 @@ const GameScreen = (props: GameScreenProps) => {
         </Pressable>
 
         <Pressable
-          style={buttonStyle("#e8bd12")}
+          style={disabledButtonsArray[1]? buttonStyle("grey"): buttonStyle("#e8bd12")}
           onPress={() => {
             handleAnswerSelection(buttonChoiceArray[1].fileID);
-            handleStopSound();
+            handleStopSound()
+            displayModalIfWrongChoiceSelected(buttonChoiceArray[1].fileID);
+            disableButton(1)
           }}
         >
           <Text style={textContainerStyle()}>
@@ -254,10 +225,12 @@ const GameScreen = (props: GameScreenProps) => {
 
       <View style={buttonContainerStyle()}>
         <Pressable
-          style={buttonStyle("#82DB5B")}
+          style={disabledButtonsArray[2]? buttonStyle("grey"): buttonStyle("#82DB5B")}
           onPress={() => {
             handleAnswerSelection(buttonChoiceArray[2].fileID);
-            handleStopSound();
+            handleStopSound()
+            displayModalIfWrongChoiceSelected(buttonChoiceArray[2].fileID);
+            disableButton(2)
           }}
         >
           <Text style={textContainerStyle()}>
@@ -266,10 +239,12 @@ const GameScreen = (props: GameScreenProps) => {
         </Pressable>
 
         <Pressable
-          style={buttonStyle("#e8791e")}
+          style={disabledButtonsArray[3]? buttonStyle("grey"): buttonStyle("#e8791e")}
           onPress={() => {
             handleAnswerSelection(buttonChoiceArray[3].fileID);
-            handleStopSound();
+            handleStopSound()
+            displayModalIfWrongChoiceSelected(buttonChoiceArray[3].fileID);
+            disableButton(3)
           }}
         >
           <Text style={textContainerStyle()}>

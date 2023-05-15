@@ -35,6 +35,9 @@ enum GameScreens {
   TESTSCREEN = "test-screen",
   GAMESCREEN = "game-screen",
   END_OF_ROUND = "end-of-round",
+  LEARN_MORE = 'learn-more',
+  
+
 }
 
 enum Errors {
