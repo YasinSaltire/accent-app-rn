@@ -10,6 +10,8 @@ import data from "./assets/audio/clip_db.json";
 import generateRandomQuestionChoices from "./src/util/generateRandomQuestionChoices";
 import generateIncorrectChoices from "./src/util/generateIncorrectChoices";
 import scoreRound from "./src/util/scoreRound";
+import LearnMoreScreen from "./src/components/screens/LearnMoreScreen";
+import CorrectScreen from "./src/components/screens/CorrectScreen";
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
@@ -46,27 +48,37 @@ export default function App() {
   // let [currentQuestionIndex, setCurrentQuestionIndex] = useState();
 
   //randomly chooose 10 correct answer choices from database and populate qnalist.
- 
 
   const handleNextQuestion = () => {
+    let newIndex: number;
+    let screen: GameScreens;
 
-  }
+    if (currentGameIndex === correctChoicesArray.length - 1) {
+      screen = GameScreens.HOMESCREEN;
+      newIndex = -1;
+      setScreen(screen);
+      setCurrentGameIndex(newIndex);
+    } else {
+      newIndex = currentGameIndex + 1;
+      screen = GameScreens.GAMESCREEN
+    }
+    
+    setCurrentGameIndex(newIndex);
+    setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
+    setScreen(screen);
+  };
+
+  const handleLearnMore = () => {
+    setScreen(GameScreens.LEARN_MORE);
+  };
+
   const handleStartGameRound = () => {
-    const correctChoices = generateRandomQuestionChoices(data, 5);
+    const correctChoices = generateRandomQuestionChoices(data, 10);
     const incorrectChoicesForEntireRound = generateIncorrectChoices(
       correctChoices,
       data,
-      15
+      30
     );
-    /*
-    const threeIncorrectChoicesForCurrentQuestion = getSubArrayOfChoices(
-      incorrectChoicesForEntireRound,
-      3
-    );
-    setIncorrectChoicesSubArrayForButtons(
-      threeIncorrectChoicesForCurrentQuestion
-      );
-      */
 
     setCorrectChoicesArray(correctChoices);
     setIncorrectChoicesArray(incorrectChoicesForEntireRound);
@@ -97,19 +109,14 @@ export default function App() {
 
     if (id === correctChoicesArray[currentGameIndex].fileID) {
       //if correct choice is chosen
-
-      if (currentGameIndex === correctChoicesArray.length - 1) {
-        screen = GameScreens.HOMESCREEN;
-        newIndex = -1;
+        screen = GameScreens.CORRECT;
         setScreen(screen);
-        setCurrentGameIndex(newIndex);
-      } else {
-        screen = GameScreens.GAMESCREEN;
-        newIndex = currentGameIndex + 1;
-        setScreen(screen);
+        /*newIndex = currentGameIndex + 1;
+        
         setCurrentGameIndex(newIndex);
         setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
-      }
+        */
+      
     } else {
       //if wrong choice selected
     }
@@ -131,6 +138,19 @@ export default function App() {
             correctButtonIndex={correctChoiceButtonIndex}
           />
         )}
+      {gameScreen === GameScreens.LEARN_MORE && (
+        <LearnMoreScreen
+          correctChoiceObj={correctChoicesArray[currentGameIndex]}
+          handleButtonPress={handleNextQuestion}
+        />
+      )}
+      {gameScreen === GameScreens.CORRECT && (
+        <CorrectScreen
+          correctChoiceObj={correctChoicesArray[currentGameIndex]}
+          handleNextButtonPress={handleNextQuestion}
+          handleLearnMoreButtonPress={handleLearnMore}
+        />
+      )}
     </>
   );
 }
