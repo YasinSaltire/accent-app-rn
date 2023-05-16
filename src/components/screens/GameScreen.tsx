@@ -1,4 +1,14 @@
-import { View, StyleSheet, Text, Pressable, Modal } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  Modal,
+  ImageBackground,
+  Image,
+  LayoutChangeEvent,
+  Dimensions,
+} from "react-native";
 import stringConstants, { GameScreens } from "../../constants/constants";
 import { SvgUri } from "react-native-svg";
 import * as React from "react";
@@ -15,6 +25,8 @@ import { Sound } from "expo-av/build/Audio";
 import Question from "../../model/Question";
 import generateAccentString from "../../util/generateAccentString";
 import generateAudioLink from "../../util/generateAudioLink";
+import geoToMercator from "../../util/geoToMercator";
+import { enableExpoCliLogging } from "expo/build/logs/Logs";
 
 const playScreenStyles = (color: string) => {
   const style = StyleSheet.create({
@@ -47,7 +59,9 @@ const buttonContainerStyle = () => {
   const style = StyleSheet.create({
     default: {
       flexDirection: "row",
-      margin: 50, //adjust margin when map is added
+      borderWidth: 0,
+      marginBottom: 15,
+      marginTop: 15,
       width: "90%",
       height: "12%",
       justifyContent: "space-between",
@@ -95,8 +109,6 @@ const GameScreen = (props: GameScreenProps) => {
   console.log("correct id", correctChoiceObj.fileID);
   console.log("incorrect 1st id ", allIncorrect[0]);
   console.log("correctly answered ", correctlyAnswered);
-  
- 
 
   console.log("button index", correctButtonIndex);
   console.log("correct country", correctChoiceObj.country);
@@ -109,32 +121,37 @@ const GameScreen = (props: GameScreenProps) => {
 
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [disabledButtonsArray, setDisabledButtonsArray] = useState<boolean[]>([false,false,false,false])
+  const [disabledButtonsArray, setDisabledButtonsArray] = useState<boolean[]>([
+    false,
+    false,
+    false,
+    false,
+  ]);
 
-  const displayModalIfWrongChoiceSelected = (id: number) =>{
-    if(id !== correctChoiceObj.fileID){
-      setShowModal(true)
+  const displayModalIfWrongChoiceSelected = (id: number) => {
+    if (id !== correctChoiceObj.fileID) {
+      setShowModal(true);
     }
-  }
+  };
 
-  const disableButton = (buttonIndex: number) =>{
-    if (buttonIndex !== correctButtonIndex){
-      let newDisabledButtonsArray: boolean[] = [...disabledButtonsArray]
-      newDisabledButtonsArray[buttonIndex] = true
-      setDisabledButtonsArray(newDisabledButtonsArray)
+  const disableButton = (buttonIndex: number) => {
+    if (buttonIndex !== correctButtonIndex) {
+      let newDisabledButtonsArray: boolean[] = [...disabledButtonsArray];
+      newDisabledButtonsArray[buttonIndex] = true;
+      setDisabledButtonsArray(newDisabledButtonsArray);
     }
-  }
+  };
 
   useEffect(() => {
     // const audioUri = ...
-    setDisabledButtonsArray([false,false,false,false])
-    const audioUri = generateAudioLink(correctChoiceObj.fileName)
+    setDisabledButtonsArray([false, false, false, false]);
+    const audioUri = generateAudioLink(correctChoiceObj.fileName);
     const loadSound = async () => {
       try {
         const sound = new Audio.Sound();
         await sound.loadAsync({
-        uri: audioUri, // audioUri
-      });
+          uri: audioUri, // audioUri
+        });
         sound.playAsync();
         setSound(sound);
       } catch (error) {
@@ -173,14 +190,23 @@ const GameScreen = (props: GameScreenProps) => {
     }
   };
 
+  //testing map projections. Messy, but will clean up and add to separate function files later
+  const windowWidth = Dimensions.get("window").width * 0.97;
+  const choicesCoordinatesArray = buttonChoiceArray.map((accent: any) =>
+    geoToMercator(accent.latitude, accent.longitude)
+  );
+  console.log("width ", windowWidth);
+  const ratio = windowWidth / 2917.0;
+  const projectedCoordinates = choicesCoordinatesArray.map(
+    (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
+  );
+  console.log(projectedCoordinates);
+
   return (
     <View style={playScreenStyles("grey")}>
-
-      <Modal transparent = {true} visible = {showModal}>
-        <Pressable onPress = {() => setShowModal(false)}>
-          <Text>
-            Try Again
-          </Text>
+      <Modal transparent={true} visible={showModal}>
+        <Pressable onPress={() => setShowModal(false)}>
+          <Text>Try Again</Text>
         </Pressable>
       </Modal>
 
@@ -194,14 +220,18 @@ const GameScreen = (props: GameScreenProps) => {
 
       <View style={buttonContainerStyle()}>
         <Pressable
-          style={disabledButtonsArray[0]? buttonStyle("grey"): buttonStyle("#36BAF3")}
+          style={
+            disabledButtonsArray[0]
+              ? buttonStyle("grey")
+              : buttonStyle("#36BAF3")
+          }
           onPress={() => {
             handleAnswerSelection(buttonChoiceArray[0].fileID);
-            handleStopSound()
+            handleStopSound();
             displayModalIfWrongChoiceSelected(buttonChoiceArray[0].fileID);
-            disableButton(0)
+            disableButton(0);
           }}
-          disabled = {disabledButtonsArray[0]}
+          disabled={disabledButtonsArray[0]}
         >
           <Text style={textContainerStyle()}>
             {generateAccentString(buttonChoiceArray[0])}
@@ -209,12 +239,16 @@ const GameScreen = (props: GameScreenProps) => {
         </Pressable>
 
         <Pressable
-          style={disabledButtonsArray[1]? buttonStyle("grey"): buttonStyle("#e8bd12")}
+          style={
+            disabledButtonsArray[1]
+              ? buttonStyle("grey")
+              : buttonStyle("#e8bd12")
+          }
           onPress={() => {
             handleAnswerSelection(buttonChoiceArray[1].fileID);
-            handleStopSound()
+            handleStopSound();
             displayModalIfWrongChoiceSelected(buttonChoiceArray[1].fileID);
-            disableButton(1)
+            disableButton(1);
           }}
         >
           <Text style={textContainerStyle()}>
@@ -223,14 +257,65 @@ const GameScreen = (props: GameScreenProps) => {
         </Pressable>
       </View>
 
+      <View
+        style={{
+          borderWidth: 0,
+          width: "97%",
+          aspectRatio: 1.81,
+          justifyContent: "center",
+        }}
+      >
+        <Image
+          style={{ resizeMode: "contain", width: "100%" }}
+          source={require("../../../assets/map.png")}
+        />
+        
+          <Image
+            style={{
+              position: "absolute",
+              left: projectedCoordinates[0][0],
+              bottom: projectedCoordinates[0][1],
+            }}
+            source={require("../../../assets/blue_sliderDown.png")}
+          />
+        <Image
+          style={{
+            position: "absolute",
+            left: projectedCoordinates[1][0],
+            bottom: projectedCoordinates[1][1],
+          }}
+          source={require("../../../assets/yellow_sliderDown.png")}
+        />
+        <Image
+          style={{
+            position: "absolute",
+            left: projectedCoordinates[2][0],
+            bottom: projectedCoordinates[2][1],
+          }}
+          source={require("../../../assets/green_sliderDown.png")}
+        />
+        <Image
+          style={{
+            position: "absolute",
+            left: projectedCoordinates[3][0],
+            bottom: projectedCoordinates[3][1],
+          }}
+          source={require("../../../assets/red_sliderDown.png")}
+        />
+      </View>
+
       <View style={buttonContainerStyle()}>
         <Pressable
-          style={disabledButtonsArray[2]? buttonStyle("grey"): buttonStyle("#82DB5B")}
+          style={
+            disabledButtonsArray[2]
+              ? buttonStyle("grey")
+              : buttonStyle("#82DB5B")
+          }
           onPress={() => {
             handleAnswerSelection(buttonChoiceArray[2].fileID);
-            handleStopSound()
+            handleStopSound();
             displayModalIfWrongChoiceSelected(buttonChoiceArray[2].fileID);
-            disableButton(2)
+            disableButton(2);
           }}
         >
           <Text style={textContainerStyle()}>
@@ -239,12 +324,16 @@ const GameScreen = (props: GameScreenProps) => {
         </Pressable>
 
         <Pressable
-          style={disabledButtonsArray[3]? buttonStyle("grey"): buttonStyle("#e8791e")}
+          style={
+            disabledButtonsArray[3]
+              ? buttonStyle("grey")
+              : buttonStyle("#e8791e")
+          }
           onPress={() => {
             handleAnswerSelection(buttonChoiceArray[3].fileID);
-            handleStopSound()
+            handleStopSound();
             displayModalIfWrongChoiceSelected(buttonChoiceArray[3].fileID);
-            disableButton(3)
+            disableButton(3);
           }}
         >
           <Text style={textContainerStyle()}>
