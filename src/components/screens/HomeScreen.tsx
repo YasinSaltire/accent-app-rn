@@ -61,7 +61,7 @@ const HomeScreen = (props: HomeScreenProps) => {
 
   const { doOnStartGameRound } = props;
   return (
-    <View style={homeScreenStyles()}>
+    <View style={homeScreenStyles('black')}>
       <GameTitle title={stringConstants.gameTitle} />
 
       <View style={buttonContainer()}>

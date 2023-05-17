@@ -201,21 +201,31 @@ const GameScreen = (props: GameScreenProps) => {
     (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
   );
   console.log(projectedCoordinates);
-
+    
   return (
-    <View style={playScreenStyles("grey")}>
+    <View style={playScreenStyles("black")}>
       <Modal transparent={true} visible={showModal}>
-        <Pressable onPress={() => setShowModal(false)}>
-          <Text>Try Again</Text>
-        </Pressable>
+        <View style = {{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <View style = {{width: '60%', height: '20%', backgroundColor: 'black', justifyContent: 'center'}}>
+            
+              <Text style = {{color: 'white', alignSelf: 'center', marginBottom: '10%', fontSize: 20}}> Incorrect! </Text>
+            
+            <Pressable style = {{width: '50%', height: '30%', backgroundColor: '#e8791e', alignSelf: 'center', justifyContent: 'center'}} onPress={() => setShowModal(false)}>
+              <Text style = {{color: "white", alignSelf: 'center'}}>Try Again</Text>
+            </Pressable>
+          </View>
+          
+
+        </View>
+        
       </Modal>
 
       <Pressable onPress={() => handlePlaySound()}>
-        <Text>Play audio</Text>
+        <Text style = {{color: 'white'}}>Play audio</Text>
       </Pressable>
 
       <Pressable onPress={() => handleStopSound()}>
-        <Text>Stop audio</Text>
+        <Text style = {{color: 'white'}} >Stop audio</Text>
       </Pressable>
 
       <View style={buttonContainerStyle()}>
