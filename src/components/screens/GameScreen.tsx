@@ -276,7 +276,7 @@ const GameScreen = (props: GameScreenProps) => {
         }}
       >
         <Image
-          style={{ resizeMode: "contain", width: "100%" }}
+          style={{ resizeMode: "contain", width: "100%", height: '100%'}}
           source={require("../../../assets/map.png")}
         />
         
