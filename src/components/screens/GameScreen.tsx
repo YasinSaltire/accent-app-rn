@@ -107,6 +107,10 @@ const GameScreen = (props: GameScreenProps) => {
     correctlyAnswered,
   } = props;
   console.log(currentQuestionIndex);
+  console.log("button index", correctButtonIndex);
+  console.log('correct id ', correctChoiceObj.fileID)
+
+  /*
   console.log(`There are ${allIncorrect.length} incorrect choices`);
   console.log("correct id", correctChoiceObj.fileID);
   console.log("incorrect 1st id ", allIncorrect[0]);
@@ -114,6 +118,8 @@ const GameScreen = (props: GameScreenProps) => {
 
   console.log("button index", correctButtonIndex);
   console.log("correct country", correctChoiceObj.country);
+  */
+
   const indexOfFirstIncorrectChoice = currentQuestionIndex * 3;
   let buttonChoiceArray: any = [];
   buttonChoiceArray.push(allIncorrect[indexOfFirstIncorrectChoice]);
@@ -199,12 +205,12 @@ const GameScreen = (props: GameScreenProps) => {
   const choicesCoordinatesArray = buttonChoiceArray.map((accent: any) =>
     geoToMercator(accent.latitude, accent.longitude)
   );
-  console.log("width ", windowWidth);
+  //console.log("width ", windowWidth);
   const ratio = windowWidth / 2917.0;
   const projectedCoordinates = choicesCoordinatesArray.map(
     (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
   );
-  console.log(projectedCoordinates);
+  //console.log(projectedCoordinates);
     
   return (
     <View style={playScreenStyles("black")}>
