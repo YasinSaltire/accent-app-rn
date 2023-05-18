@@ -15,14 +15,17 @@ const EndScreen = (props: EndScreenProps) => {
   return (
     <View style = {playScreenStyles('black')}>  
 
-        <Text style = {{color: 'white'}}>
-            Great Job! You Completed a Round
+        <Text style = {{marginBottom: 50, fontSize: 20, color: 'white'}}>
+            Great Job! You Completed a Round.
         </Text>
-        <Text style = {{color: 'white'}}>
+        <View style = {{width: '80%'}}>
+          <Text style = {{fontSize: 20, color: 'white'}}>
             You answered {score} quesions correct on the first try
-        </Text>
-        <Pressable style = {{alignItems: 'center', alignSelf: 'center', justifyContent: 'center', backgroundColor: '#82DB5B', width: '100%', height:'10%'}} onPress = {() => props.handleButtonPress()}>
-            <Text numberOfLines = {1} adjustsFontSizeToFit style = {{fontSize: 36, color: 'white'}}> Return to Main Menu </Text>
+          </Text>
+        </View>
+        
+        <Pressable style = {{marginTop: '30%', alignItems: 'center', alignSelf: 'center', justifyContent: 'center', backgroundColor: '#82DB5B', width: '80%', height:'10%'}} onPress = {() => props.handleButtonPress()}>
+            <Text numberOfLines = {1} adjustsFontSizeToFit style = {{fontSize: 30, color: 'white'}}> Return to Main Menu </Text>
         </Pressable>
     </View>
     
@@ -36,9 +39,8 @@ const playScreenStyles = (color: string) => {
       alignItems: "center",
       flexDirection: 'column',
       flex: 1,
-      justifyContent: 'space-between',
-      paddingTop: '30%',
-      paddingBottom: '30%',
+      justifyContent: 'center',
+      
 
 
     },
