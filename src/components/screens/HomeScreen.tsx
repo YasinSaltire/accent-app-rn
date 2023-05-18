@@ -62,7 +62,9 @@ const HomeScreen = (props: HomeScreenProps) => {
   const { doOnStartGameRound } = props;
   return (
     <View style={homeScreenStyles('black')}>
-      <GameTitle title={stringConstants.gameTitle} />
+      <View style = {{width: '50%'}}>
+        <Text numberOfLines = {3} style = {{textAlign: 'center', fontSize: 50, color: 'white'}}>THE ACCENT GAME</Text>
+      </View>
 
       <View style={buttonContainer()}>
         <Pressable onPress={doOnStartGameRound} style={buttonColor("#82DB5B")}>
