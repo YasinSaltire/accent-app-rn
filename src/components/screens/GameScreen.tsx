@@ -28,7 +28,7 @@ import generateAudioLink from "../../util/generateAudioLink";
 import geoToMercator from "../../util/geoToMercator";
 import { enableExpoCliLogging } from "expo/build/logs/Logs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
 
 const playScreenStyles = (color: string) => {
   const style = StyleSheet.create({
@@ -106,6 +106,7 @@ const GameScreen = (props: GameScreenProps) => {
     correctButtonIndex,
     correctlyAnswered,
   } = props;
+  /*
   console.log(currentQuestionIndex);
   console.log(`There are ${allIncorrect.length} incorrect choices`);
   console.log("correct id", correctChoiceObj.fileID);
@@ -114,6 +115,7 @@ const GameScreen = (props: GameScreenProps) => {
 
   console.log("button index", correctButtonIndex);
   console.log("correct country", correctChoiceObj.country);
+  */
   const indexOfFirstIncorrectChoice = currentQuestionIndex * 3;
   let buttonChoiceArray: any = [];
   buttonChoiceArray.push(allIncorrect[indexOfFirstIncorrectChoice]);
@@ -129,6 +131,8 @@ const GameScreen = (props: GameScreenProps) => {
     false,
     false,
   ]);
+  const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false)
+
 
   const displayModalIfWrongChoiceSelected = (id: number) => {
     if (id !== correctChoiceObj.fileID) {
@@ -143,6 +147,33 @@ const GameScreen = (props: GameScreenProps) => {
       setDisabledButtonsArray(newDisabledButtonsArray);
     }
   };
+  const getIsAudioPlaying = async(soundHandle: Audio.Sound) =>{
+    const status = await soundHandle?.getStatusAsync();
+    console.log(status)
+    return status.isLoaded && status.isPlaying;
+  }
+  const handleAudioButtonPress = () =>{
+    if(isAudioPlaying){
+      handleStopSound();
+    }else{
+      handlePlaySound();
+    }
+  }
+
+  // useeffect -> depend on whether audio is playing [isPlaying]
+  // if playing ... while isplaying keep checking the status and if status changes update isplaying; render relevent icon 
+  // if not playing ... render play icon
+
+  useEffect( () =>{
+      while(sound && isAudioPlaying){
+          const status = getIsAudioPlaying(sound);
+          status.then(result=>console.log("status",result))
+        
+      }
+   
+    
+  }, [isAudioPlaying, sound])
+
 
   useEffect(() => {
     // const audioUri = ...
@@ -154,8 +185,11 @@ const GameScreen = (props: GameScreenProps) => {
         await sound.loadAsync({
           uri: audioUri, // audioUri
         });
-        sound.playAsync();
         setSound(sound);
+        sound.playAsync();
+        setIsAudioPlaying(true)
+        // let status = getIsAudioPlaying(sound);
+        // console.log('audio status ', status)
       } catch (error) {
         console.error(error);
       }
@@ -197,12 +231,12 @@ const GameScreen = (props: GameScreenProps) => {
   const choicesCoordinatesArray = buttonChoiceArray.map((accent: any) =>
     geoToMercator(accent.latitude, accent.longitude)
   );
-  console.log("width ", windowWidth);
+  //console.log("width ", windowWidth);
   const ratio = windowWidth / 2917.0;
   const projectedCoordinates = choicesCoordinatesArray.map(
     (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
   );
-  console.log(projectedCoordinates);
+  //console.log(projectedCoordinates);
     
   return (
     <View style={playScreenStyles("black")}>
@@ -221,8 +255,8 @@ const GameScreen = (props: GameScreenProps) => {
         </View>
         
       </Modal>
-      <Pressable>
-        <FontAwesomeIcon size = {33} icon = {faPlay} style = {{color: '#ffffff'}} />
+      <Pressable onPress = {true ? ()=>{} : null}>
+        <FontAwesomeIcon size = {33} icon = {isAudioPlaying? faStop: faPlay} style = {{color: '#ffffff'}} />
       </Pressable>
 
       <Pressable onPress={() => handlePlaySound()}>
