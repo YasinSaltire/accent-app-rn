@@ -28,7 +28,7 @@ import generateAudioLink from "../../util/generateAudioLink";
 import geoToMercator from "../../util/geoToMercator";
 import { enableExpoCliLogging } from "expo/build/logs/Logs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faStop} from "@fortawesome/free-solid-svg-icons";
 
 const playScreenStyles = (color: string) => {
   const style = StyleSheet.create({
@@ -130,6 +130,7 @@ const GameScreen = (props: GameScreenProps) => {
     false,
   ]);
 
+  const [playButton, setPlayButton] = useState<boolean>(false)
   const displayModalIfWrongChoiceSelected = (id: number) => {
     if (id !== correctChoiceObj.fileID) {
       setShowModal(true);
@@ -147,6 +148,7 @@ const GameScreen = (props: GameScreenProps) => {
   useEffect(() => {
     // const audioUri = ...
     setDisabledButtonsArray([false, false, false, false]);
+    setPlayButton(false)
     const audioUri = generateAudioLink(correctChoiceObj.fileName);
     const loadSound = async () => {
       try {
@@ -221,8 +223,8 @@ const GameScreen = (props: GameScreenProps) => {
         </View>
         
       </Modal>
-      <Pressable>
-        <FontAwesomeIcon size = {33} icon = {faPlay} style = {{color: '#ffffff'}} />
+      <Pressable onPress = {playButton? () => handlePlaySound(): () => handleStopSound()}>
+        <FontAwesomeIcon size = {40} icon = {playButton? faPlay: faStop} style = {{color: '#ffffff'}} />
       </Pressable>
 
       <Pressable onPress={() => handlePlaySound()}>
