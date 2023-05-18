@@ -27,6 +27,8 @@ import generateAccentString from "../../util/generateAccentString";
 import generateAudioLink from "../../util/generateAudioLink";
 import geoToMercator from "../../util/geoToMercator";
 import { enableExpoCliLogging } from "expo/build/logs/Logs";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
 
 const playScreenStyles = (color: string) => {
   const style = StyleSheet.create({
@@ -219,6 +221,9 @@ const GameScreen = (props: GameScreenProps) => {
         </View>
         
       </Modal>
+      <Pressable>
+        <FontAwesomeIcon size = {33} icon = {faPlay} style = {{color: '#ffffff'}} />
+      </Pressable>
 
       <Pressable onPress={() => handlePlaySound()}>
         <Text style = {{color: 'white'}}>Play audio</Text>
