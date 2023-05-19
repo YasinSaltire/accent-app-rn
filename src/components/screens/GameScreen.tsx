@@ -171,6 +171,8 @@ const GameScreen = (props: GameScreenProps) => {
           if (status.isLoaded && status.isPlaying) {
             setIsAudioPlaying(true);
           } else if (status.isLoaded && status.didJustFinish) {
+            console.log('audio finished ,' )
+
             setIsAudioPlaying(false);
           }
         });
@@ -192,10 +194,11 @@ const GameScreen = (props: GameScreenProps) => {
   }, [correctChoiceObj]);
 
   const handlePlaySound = async () => {
-    console.log("play sound using ", sound);
+    handleStopSound()
     if (typeof sound !== "boolean") {
       try {
         await sound.playAsync();
+        console.log("play sound using ", sound);
         setIsAudioPlaying(true);
       } catch (error) {
         console.error(error);
@@ -275,20 +278,13 @@ const GameScreen = (props: GameScreenProps) => {
         }
       >
         <FontAwesomeIcon
-          size={33}
+          size={75}
           icon={isAudioPlaying ? faStop : faPlay}
           style={{ color: "#ffffff" }}
         />
       </Pressable>
 
-      <Pressable onPress={() => handlePlaySound()}>
-        <Text style={{ color: "white" }}>Play audio</Text>
-      </Pressable>
-
-      <Pressable onPress={() => handleStopSound()}>
-        <Text style={{ color: "white" }}>Stop audio</Text>
-      </Pressable>
-
+  
       <View style={buttonContainerStyle()}>
         <Pressable
           style={
