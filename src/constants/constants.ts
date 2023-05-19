@@ -36,7 +36,8 @@ enum GameScreens {
   GAMESCREEN = "game-screen",
   END_OF_ROUND = "end-of-round",
   LEARN_MORE = 'learn-more',
-  CORRECT = 'correct'
+  CORRECT = 'correct',
+  ENDSCREEN = 'end-screen'
 
 
 }

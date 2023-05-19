@@ -1,12 +1,13 @@
 
 const scoreRound = <T>(
-    selections: any,
+    selections: number[][],
     correctChoices: any,
 
     ) => {
         let score: number = 0;
+
         for(let i = 0; i <selections.length; i++){
-            if(correctChoices.find((choice: any) => choice.fileID === selections[i])){
+            if (selections[i][0] == correctChoices[i].fileID){
                 score+=1;
             }
         }
