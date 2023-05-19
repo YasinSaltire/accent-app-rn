@@ -28,7 +28,7 @@ import generateAudioLink from "../../util/generateAudioLink";
 import geoToMercator from "../../util/geoToMercator";
 import { enableExpoCliLogging } from "expo/build/logs/Logs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faPlay, faStop} from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
 
 const playScreenStyles = (color: string) => {
   const style = StyleSheet.create({
@@ -106,6 +106,7 @@ const GameScreen = (props: GameScreenProps) => {
     correctButtonIndex,
     correctlyAnswered,
   } = props;
+  /*
   console.log(currentQuestionIndex);
   console.log("button index", correctButtonIndex);
   console.log('correct id ', correctChoiceObj.fileID)
@@ -119,7 +120,6 @@ const GameScreen = (props: GameScreenProps) => {
   console.log("button index", correctButtonIndex);
   console.log("correct country", correctChoiceObj.country);
   */
-
   const indexOfFirstIncorrectChoice = currentQuestionIndex * 3;
   let buttonChoiceArray: any = [];
   buttonChoiceArray.push(allIncorrect[indexOfFirstIncorrectChoice]);
@@ -127,7 +127,7 @@ const GameScreen = (props: GameScreenProps) => {
   buttonChoiceArray.push(allIncorrect[indexOfFirstIncorrectChoice + 2]);
   buttonChoiceArray.splice(correctButtonIndex, 0, correctChoiceObj);
 
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [sound, setSound] = useState<Audio.Sound | boolean>(false);
   const [showModal, setShowModal] = useState(false);
   const [disabledButtonsArray, setDisabledButtonsArray] = useState<boolean[]>([
     false,
@@ -135,6 +135,7 @@ const GameScreen = (props: GameScreenProps) => {
     false,
     false,
   ]);
+  const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
 
   const [playButton, setPlayButton] = useState<boolean>(false)
   const displayModalIfWrongChoiceSelected = (id: number) => {
@@ -151,6 +152,14 @@ const GameScreen = (props: GameScreenProps) => {
     }
   };
 
+  const handleAudioButtonPress = () => {
+    if (isAudioPlaying) {
+      handleStopSound();
+    } else {
+      handlePlaySound();
+    }
+  };
+
   useEffect(() => {
     // const audioUri = ...
     setDisabledButtonsArray([false, false, false, false]);
@@ -162,28 +171,41 @@ const GameScreen = (props: GameScreenProps) => {
         await sound.loadAsync({
           uri: audioUri, // audioUri
         });
-        sound.playAsync();
         setSound(sound);
+        await sound.playAsync();
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (status.isLoaded && status.isPlaying) {
+            setIsAudioPlaying(true);
+          } else if (status.isLoaded && status.didJustFinish) {
+            console.log('audio finished ,' )
+
+            setIsAudioPlaying(false);
+          }
+        });
+        // let status = getIsAudioPlaying(sound);
+        // console.log('audio status ', status)
       } catch (error) {
         console.error(error);
       }
     };
-
+    console.log("about to load audio");
     loadSound();
 
     // clean up the audio when the component unmounts
     return () => {
-      if (sound) {
+      if (typeof sound !== "boolean") {
         sound.unloadAsync();
       }
     };
   }, [correctChoiceObj]);
 
   const handlePlaySound = async () => {
-    console.log("play sound using ", sound);
-    if (sound) {
+    handleStopSound()
+    if (typeof sound !== "boolean") {
       try {
         await sound.playAsync();
+        console.log("play sound using ", sound);
+        setIsAudioPlaying(true);
       } catch (error) {
         console.error(error);
       }
@@ -191,9 +213,10 @@ const GameScreen = (props: GameScreenProps) => {
   };
 
   const handleStopSound = async () => {
-    if (sound) {
+    if (typeof sound !== "boolean") {
       try {
         await sound.stopAsync();
+        setIsAudioPlaying(false);
       } catch (error) {
         console.error(error);
       }
@@ -211,36 +234,63 @@ const GameScreen = (props: GameScreenProps) => {
     (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
   );
   //console.log(projectedCoordinates);
-    
+
   return (
     <View style={playScreenStyles("black")}>
       <Modal transparent={true} visible={showModal}>
-        <View style = {{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <View style = {{width: '60%', height: '20%', backgroundColor: 'black', justifyContent: 'center'}}>
-            
-              <Text style = {{color: 'white', alignSelf: 'center', marginBottom: '10%', fontSize: 20}}> Incorrect! </Text>
-            
-            <Pressable style = {{width: '50%', height: '30%', backgroundColor: '#e8791e', alignSelf: 'center', justifyContent: 'center'}} onPress={() => setShowModal(false)}>
-              <Text style = {{color: "white", alignSelf: 'center'}}>Try Again</Text>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <View
+            style={{
+              width: "60%",
+              height: "20%",
+              backgroundColor: "black",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                color: "white",
+                alignSelf: "center",
+                marginBottom: "10%",
+                fontSize: 20,
+              }}
+            >
+              {" "}
+              Incorrect!{" "}
+            </Text>
+
+            <Pressable
+              style={{
+                width: "50%",
+                height: "30%",
+                backgroundColor: "#e8791e",
+                alignSelf: "center",
+                justifyContent: "center",
+              }}
+              onPress={() => setShowModal(false)}
+            >
+              <Text style={{ color: "white", alignSelf: "center" }}>
+                Try Again
+              </Text>
             </Pressable>
           </View>
-          
-
         </View>
-        
       </Modal>
-      <Pressable onPress = {playButton? () => handlePlaySound(): () => handleStopSound()}>
-        <FontAwesomeIcon size = {40} icon = {playButton? faPlay: faStop} style = {{color: '#ffffff'}} />
+      <Pressable
+        onPress={
+          isAudioPlaying ? () => handleStopSound() : () => handlePlaySound()
+        }
+      >
+        <FontAwesomeIcon
+          size={75}
+          icon={isAudioPlaying ? faStop : faPlay}
+          style={{ color: "#ffffff" }}
+        />
       </Pressable>
 
-      <Pressable onPress={() => handlePlaySound()}>
-        <Text style = {{color: 'white'}}>Play audio</Text>
-      </Pressable>
-
-      <Pressable onPress={() => handleStopSound()}>
-        <Text style = {{color: 'white'}} >Stop audio</Text>
-      </Pressable>
-
+  
       <View style={buttonContainerStyle()}>
         <Pressable
           style={
@@ -289,18 +339,18 @@ const GameScreen = (props: GameScreenProps) => {
         }}
       >
         <Image
-          style={{ resizeMode: "contain", width: "100%", height: '100%'}}
+          style={{ resizeMode: "contain", width: "100%", height: "100%" }}
           source={require("../../../assets/map.png")}
         />
-        
-          <Image
-            style={{
-              position: "absolute",
-              left: projectedCoordinates[0][0],
-              bottom: projectedCoordinates[0][1],
-            }}
-            source={require("../../../assets/blue_sliderDown.png")}
-          />
+
+        <Image
+          style={{
+            position: "absolute",
+            left: projectedCoordinates[0][0],
+            bottom: projectedCoordinates[0][1],
+          }}
+          source={require("../../../assets/blue_sliderDown.png")}
+        />
         <Image
           style={{
             position: "absolute",
