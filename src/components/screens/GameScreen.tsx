@@ -123,7 +123,7 @@ const GameScreen = (props: GameScreenProps) => {
   buttonChoiceArray.push(allIncorrect[indexOfFirstIncorrectChoice + 2]);
   buttonChoiceArray.splice(correctButtonIndex, 0, correctChoiceObj);
 
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [sound, setSound] = useState<Audio.Sound | boolean>(false);
   const [showModal, setShowModal] = useState(false);
   const [disabledButtonsArray, setDisabledButtonsArray] = useState<boolean[]>([
     false,
@@ -131,8 +131,7 @@ const GameScreen = (props: GameScreenProps) => {
     false,
     false,
   ]);
-  const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false)
-
+  const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
 
   const displayModalIfWrongChoiceSelected = (id: number) => {
     if (id !== correctChoiceObj.fileID) {
@@ -147,33 +146,14 @@ const GameScreen = (props: GameScreenProps) => {
       setDisabledButtonsArray(newDisabledButtonsArray);
     }
   };
-  const getIsAudioPlaying = async(soundHandle: Audio.Sound) =>{
-    const status = await soundHandle?.getStatusAsync();
-    console.log(status)
-    return status.isLoaded && status.isPlaying;
-  }
-  const handleAudioButtonPress = () =>{
-    if(isAudioPlaying){
+
+  const handleAudioButtonPress = () => {
+    if (isAudioPlaying) {
       handleStopSound();
-    }else{
+    } else {
       handlePlaySound();
     }
-  }
-
-  // useeffect -> depend on whether audio is playing [isPlaying]
-  // if playing ... while isplaying keep checking the status and if status changes update isplaying; render relevent icon 
-  // if not playing ... render play icon
-
-  useEffect( () =>{
-      while(sound && isAudioPlaying){
-          const status = getIsAudioPlaying(sound);
-          status.then(result=>console.log("status",result))
-        
-      }
-   
-    
-  }, [isAudioPlaying, sound])
-
+  };
 
   useEffect(() => {
     // const audioUri = ...
@@ -186,20 +166,26 @@ const GameScreen = (props: GameScreenProps) => {
           uri: audioUri, // audioUri
         });
         setSound(sound);
-        sound.playAsync();
-        setIsAudioPlaying(true)
+        await sound.playAsync();
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (status.isLoaded && status.isPlaying) {
+            setIsAudioPlaying(true);
+          } else if (status.isLoaded && status.didJustFinish) {
+            setIsAudioPlaying(false);
+          }
+        });
         // let status = getIsAudioPlaying(sound);
         // console.log('audio status ', status)
       } catch (error) {
         console.error(error);
       }
     };
-
+    console.log("about to load audio");
     loadSound();
 
     // clean up the audio when the component unmounts
     return () => {
-      if (sound) {
+      if (typeof sound !== "boolean") {
         sound.unloadAsync();
       }
     };
@@ -207,9 +193,10 @@ const GameScreen = (props: GameScreenProps) => {
 
   const handlePlaySound = async () => {
     console.log("play sound using ", sound);
-    if (sound) {
+    if (typeof sound !== "boolean") {
       try {
         await sound.playAsync();
+        setIsAudioPlaying(true);
       } catch (error) {
         console.error(error);
       }
@@ -217,9 +204,10 @@ const GameScreen = (props: GameScreenProps) => {
   };
 
   const handleStopSound = async () => {
-    if (sound) {
+    if (typeof sound !== "boolean") {
       try {
         await sound.stopAsync();
+        setIsAudioPlaying(false);
       } catch (error) {
         console.error(error);
       }
@@ -237,34 +225,68 @@ const GameScreen = (props: GameScreenProps) => {
     (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
   );
   //console.log(projectedCoordinates);
-    
+
   return (
     <View style={playScreenStyles("black")}>
       <Modal transparent={true} visible={showModal}>
-        <View style = {{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <View style = {{width: '60%', height: '20%', backgroundColor: 'black', justifyContent: 'center'}}>
-            
-              <Text style = {{color: 'white', alignSelf: 'center', marginBottom: '10%', fontSize: 20}}> Incorrect! </Text>
-            
-            <Pressable style = {{width: '50%', height: '30%', backgroundColor: '#e8791e', alignSelf: 'center', justifyContent: 'center'}} onPress={() => setShowModal(false)}>
-              <Text style = {{color: "white", alignSelf: 'center'}}>Try Again</Text>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <View
+            style={{
+              width: "60%",
+              height: "20%",
+              backgroundColor: "black",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                color: "white",
+                alignSelf: "center",
+                marginBottom: "10%",
+                fontSize: 20,
+              }}
+            >
+              {" "}
+              Incorrect!{" "}
+            </Text>
+
+            <Pressable
+              style={{
+                width: "50%",
+                height: "30%",
+                backgroundColor: "#e8791e",
+                alignSelf: "center",
+                justifyContent: "center",
+              }}
+              onPress={() => setShowModal(false)}
+            >
+              <Text style={{ color: "white", alignSelf: "center" }}>
+                Try Again
+              </Text>
             </Pressable>
           </View>
-          
-
         </View>
-        
       </Modal>
-      <Pressable onPress = {true ? ()=>{} : null}>
-        <FontAwesomeIcon size = {33} icon = {isAudioPlaying? faStop: faPlay} style = {{color: '#ffffff'}} />
+      <Pressable
+        onPress={
+          isAudioPlaying ? () => handleStopSound() : () => handlePlaySound()
+        }
+      >
+        <FontAwesomeIcon
+          size={33}
+          icon={isAudioPlaying ? faStop : faPlay}
+          style={{ color: "#ffffff" }}
+        />
       </Pressable>
 
       <Pressable onPress={() => handlePlaySound()}>
-        <Text style = {{color: 'white'}}>Play audio</Text>
+        <Text style={{ color: "white" }}>Play audio</Text>
       </Pressable>
 
       <Pressable onPress={() => handleStopSound()}>
-        <Text style = {{color: 'white'}} >Stop audio</Text>
+        <Text style={{ color: "white" }}>Stop audio</Text>
       </Pressable>
 
       <View style={buttonContainerStyle()}>
@@ -315,18 +337,18 @@ const GameScreen = (props: GameScreenProps) => {
         }}
       >
         <Image
-          style={{ resizeMode: "contain", width: "100%", height: '100%'}}
+          style={{ resizeMode: "contain", width: "100%", height: "100%" }}
           source={require("../../../assets/map.png")}
         />
-        
-          <Image
-            style={{
-              position: "absolute",
-              left: projectedCoordinates[0][0],
-              bottom: projectedCoordinates[0][1],
-            }}
-            source={require("../../../assets/blue_sliderDown.png")}
-          />
+
+        <Image
+          style={{
+            position: "absolute",
+            left: projectedCoordinates[0][0],
+            bottom: projectedCoordinates[0][1],
+          }}
+          source={require("../../../assets/blue_sliderDown.png")}
+        />
         <Image
           style={{
             position: "absolute",
