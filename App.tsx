@@ -13,47 +13,30 @@ import scoreRound from "./src/util/scoreRound";
 import LearnMoreScreen from "./src/components/screens/LearnMoreScreen";
 import CorrectScreen from "./src/components/screens/CorrectScreen";
 import EndScreen from "./src/components/screens/EndScreen";
+import { View, Text } from "react-native";
+import AccentCaptureScreen from "./src/components/screens/AccentCaptureScreen";
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
 
 export default function App() {
+  const defaultScreen = GameScreens.ACCENT_ACQ;
   let [correctChoicesArray, setCorrectChoicesArray] = useState<any>([]);
   let [incorrectChoicesArray, setIncorrectChoicesArray] = useState<any>([]);
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
-  let [gameScreen, setScreen] = useState<GameScreens>(GameScreens.HOMESCREEN);
-  let [userSelectedChoicesRecord, setUserSelectedChoicesRecord] = useState<number[][]>([[]]);
-
+  let [gameScreen, setScreen] = useState<GameScreens>(defaultScreen);
+  let [userSelectedChoicesRecord, setUserSelectedChoicesRecord] = useState<
+    number[][]
+  >([[]]);
 
   let [correctChoiceButtonIndex, setCorrectChoiceButtonIndex] =
     useState<number>(0);
   let [score, setScore] = useState<number>(0);
-  // state variable that stores number of correctly answered questions
 
-  // const correctChoices = generateRandomQuestionChoices(data, 5);
-
-  // const correctIDsTest: any = [];
-  // correctChoicesArray
-  //   .map((accent: any) => correctIDsTest.push(accent.fileID))
-  //   .join(", ");
-  //console.log("10 choices", correctIDsTest);
-  //console.log("----------------");
-
-  // const incorrectIDsTest: any = [];
-  // incorrectChoicesArray
-  //   .map((accent: any) => incorrectIDsTest.push(accent.fileID))
-  //   .join(", ");
-
-  //console.log("30 incorrect choices test", incorrectIDsTest);
-
-  // let [currentQuestionIndex, setCurrentQuestionIndex] = useState();
-
-  //randomly chooose 10 correct answer choices from database and populate qnalist.
-
-  const handleGoToHome = () =>{
-    const screen = GameScreens.HOMESCREEN
-    setScreen(screen)
-  }
+  const handleGoToHome = () => {
+    const screen = GameScreens.HOMESCREEN;
+    setScreen(screen);
+  };
 
   const handleNextQuestion = () => {
     let newIndex: number;
@@ -65,13 +48,13 @@ export default function App() {
       setScreen(screen);
       setCurrentGameIndex(newIndex);
     } else {
-      let record = [...userSelectedChoicesRecord]
-      record.push([])
-      setUserSelectedChoicesRecord(record)
+      let record = [...userSelectedChoicesRecord];
+      record.push([]);
+      setUserSelectedChoicesRecord(record);
       newIndex = currentGameIndex + 1;
-      screen = GameScreens.GAMESCREEN
+      screen = GameScreens.GAMESCREEN;
     }
-    
+
     setCurrentGameIndex(newIndex);
     setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
     setScreen(screen);
@@ -91,9 +74,9 @@ export default function App() {
 
     setCorrectChoicesArray(correctChoices);
     setIncorrectChoicesArray(incorrectChoicesForEntireRound);
-   
-    setUserSelectedChoicesRecord([[]])
-    console.log('log', userSelectedChoicesRecord)
+
+    setUserSelectedChoicesRecord([[]]);
+    console.log("log", userSelectedChoicesRecord);
     //console.log("length test ", correctChoicesArray.length);
     setCurrentGameIndex(0);
     setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
@@ -110,20 +93,18 @@ export default function App() {
     let screen: GameScreens;
     let newIndex: number;
     let curScore: number;
-    console.log('cur game index ', currentGameIndex)
-    let record = [...userSelectedChoicesRecord]
-    record[currentGameIndex].push(id)
-    console.log('after click log ', userSelectedChoicesRecord)
+    console.log("cur game index ", currentGameIndex);
+    let record = [...userSelectedChoicesRecord];
+    record[currentGameIndex].push(id);
+    console.log("after click log ", userSelectedChoicesRecord);
     // update score
     //curScore = scoreRound(userRecord, correctChoicesArray);
     //setScore(curScore);
 
     if (id === correctChoicesArray[currentGameIndex].fileID) {
       //if correct choice is chosen
-        screen = GameScreens.CORRECT;
-        setScreen(screen);
-        
-      
+      screen = GameScreens.CORRECT;
+      setScreen(screen);
     } else {
       //if wrong choice selected
     }
@@ -161,10 +142,11 @@ export default function App() {
       {gameScreen === GameScreens.ENDSCREEN && (
         <EndScreen
           handleButtonPress={handleGoToHome}
-          selections = {userSelectedChoicesRecord}
-          correctChoices = {correctChoicesArray}
+          selections={userSelectedChoicesRecord}
+          correctChoices={correctChoicesArray}
         />
       )}
+      {gameScreen === GameScreens.ACCENT_ACQ && <AccentCaptureScreen />}
     </>
   );
 }
