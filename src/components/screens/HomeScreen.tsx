@@ -5,6 +5,7 @@ import GameTitle from "../GameTitle";
 import { GameScreenStateSetter } from "../../../App";
 import generateRandomQuestionChoices from "../../util/generateRandomQuestionChoices";
 import data from "../../../assets/audio/clip_db.json";
+import * as WebBrowser from 'expo-web-browser'
 
 const homeScreenStyles = (color: string = "white") => {
   const style = StyleSheet.create({
@@ -60,6 +61,12 @@ const HomeScreen = (props: HomeScreenProps) => {
   //console.log("question choices " + generateRandomQuestionChoices(data, 10))
 
   const { doOnStartGameRound } = props;
+
+  const handleButtonPress = async () =>{
+    const url: string = 'https://saltire.com/speech/'
+
+  }
+
   return (
     <View style={homeScreenStyles('black')}>
       <View style = {{width: '50%'}}>
@@ -70,7 +77,7 @@ const HomeScreen = (props: HomeScreenProps) => {
         <Pressable onPress={doOnStartGameRound} style={buttonColor("#82DB5B")}>
           <Text style={textStyles()}>PLAY</Text>
         </Pressable>
-        <Pressable onPress={doOnStartGameRound} style={buttonColor("#36BAF3")}>
+        <Pressable onPress={() => WebBrowser.openBrowserAsync('https://saltire.com/speech/')} style={buttonColor("#36BAF3")}>
           <Text style={textStyles()}>ADD ACCENT</Text>
         </Pressable>
         <Pressable onPress={doOnStartGameRound} style={buttonColor("#e8bd12")}>

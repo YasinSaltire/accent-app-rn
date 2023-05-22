@@ -7,8 +7,8 @@ const accentCaptureScreenStyles = (color: string = "white") => {
       backgroundColor: color,
       height: "100%",
       width: "100%",
-      justifyContent: "center",
       alignItems: "center",
+      padding: 20
     },
   });
   return style.default;
@@ -17,8 +17,9 @@ const accentCaptureScreenStyles = (color: string = "white") => {
 const AccentCaptureScreen = () => {
   return (
     <View style={accentCaptureScreenStyles()}>
-      <Text>Speech Capture</Text>
+      <Text style = {{fontSize: 20, marginTop: '20%', marginBottom: '8%'}}>Speech Capture</Text>
       <Text>Placeholder for dropdowns</Text>
+      <Text>Anwser this question in your recording:</Text>
       <Text>Placeholder for randomly generated question</Text>
       <Text>Placeholder mic icon</Text>
       <Text>Age:</Text>

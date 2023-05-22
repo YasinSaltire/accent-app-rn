@@ -15,6 +15,8 @@ import CorrectScreen from "./src/components/screens/CorrectScreen";
 import EndScreen from "./src/components/screens/EndScreen";
 import { View, Text } from "react-native";
 import AccentCaptureScreen from "./src/components/screens/AccentCaptureScreen";
+import * as WebBrowser from 'expo-web-browser';
+
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
@@ -24,7 +26,7 @@ export default function App() {
   let [correctChoicesArray, setCorrectChoicesArray] = useState<any>([]);
   let [incorrectChoicesArray, setIncorrectChoicesArray] = useState<any>([]);
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
-  let [gameScreen, setScreen] = useState<GameScreens>(defaultScreen);
+  let [gameScreen, setScreen] = useState<GameScreens>(GameScreens.HOMESCREEN);
   let [userSelectedChoicesRecord, setUserSelectedChoicesRecord] = useState<
     number[][]
   >([[]]);
