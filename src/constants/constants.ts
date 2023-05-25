@@ -7,6 +7,10 @@ enum stringConstants {
   GO_HOME = "Go Home",
 }
 
+enum storageKeyStrings {
+  correctChoicesKey = 'Correct Choices'
+}
+
 const screenNames = {
   HOMESCREEN: "homescreen",
 };
@@ -53,4 +57,5 @@ export {
   GameScreens,
   AudioPlaybackStates,
   Errors,
+  storageKeyStrings
 };

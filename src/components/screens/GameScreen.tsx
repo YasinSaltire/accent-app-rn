@@ -105,10 +105,12 @@ const GameScreen = (props: GameScreenProps) => {
     currentQuestionIndex,
     correctButtonIndex,
     correctlyAnswered,
-  } = props;
+  } = 
+  props;
+  console.log("button index", correctButtonIndex);
   /*
   console.log(currentQuestionIndex);
-  console.log("button index", correctButtonIndex);
+  
   console.log('correct id ', correctChoiceObj.fileID)
 
   /*

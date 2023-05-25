@@ -16,13 +16,15 @@ import EndScreen from "./src/components/screens/EndScreen";
 import { View, Text } from "react-native";
 import AccentCaptureScreen from "./src/components/screens/AccentCaptureScreen";
 import * as WebBrowser from 'expo-web-browser';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {storeData, readData, deleteData, addValueToArrayInStorage, addIdsOfChoiceArrayToStorage} from  "./src/util/AsyncStorage/storeChoice";
+import { storageKeyStrings } from "./src/constants/constants";
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
 
 export default function App() {
-  const defaultScreen = GameScreens.ACCENT_ACQ;
+
   let [correctChoicesArray, setCorrectChoicesArray] = useState<any>([]);
   let [incorrectChoicesArray, setIncorrectChoicesArray] = useState<any>([]);
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
@@ -67,11 +69,23 @@ export default function App() {
   };
 
   const handleStartGameRound = () => {
-    const correctChoices = generateRandomQuestionChoices(data, 10);
+    const correctChoices = generateRandomQuestionChoices(data, 2);
+    
+    
+    //append all correct choice id's to end of storage array
+    addIdsOfChoiceArrayToStorage('test', correctChoices)
+    console.log('test data', readData('test'))
+   
+    //addValueToArrayInStorage('test', '5')
+    //console.log('test ', readData('test'))
+   
+    //addIdsOfChoiceArrayToStorage(storageKeyStrings.correctChoicesKey, correctChoices)
+    
+    //console.log('test', readData(storageKeyStrings.correctChoicesKey))
     const incorrectChoicesForEntireRound = generateIncorrectChoices(
       correctChoices,
       data,
-      30
+      6
     );
 
     setCorrectChoicesArray(correctChoices);
@@ -99,6 +113,7 @@ export default function App() {
     let record = [...userSelectedChoicesRecord];
     record[currentGameIndex].push(id);
     console.log("after click log ", userSelectedChoicesRecord);
+
     // update score
     //curScore = scoreRound(userRecord, correctChoicesArray);
     //setScore(curScore);
