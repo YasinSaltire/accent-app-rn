@@ -8,7 +8,9 @@ enum stringConstants {
 }
 
 enum storageKeyStrings {
-  correctChoicesKey = 'Correct Choices'
+  correctChoicesKey = 'Correct Choices',
+  firstChoiceCorrectScoreKey = 'First Score'
+
 }
 
 const screenNames = {

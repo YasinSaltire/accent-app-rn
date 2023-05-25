@@ -6,6 +6,7 @@ import { GameScreenStateSetter } from "../../../App";
 import generateRandomQuestionChoices from "../../util/generateRandomQuestionChoices";
 import data from "../../../assets/audio/clip_db.json";
 import * as WebBrowser from 'expo-web-browser'
+import { deleteData } from "../../util/AsyncStorage/storeChoice";
 
 const homeScreenStyles = (color: string = "white") => {
   const style = StyleSheet.create({
@@ -59,9 +60,8 @@ type HomeScreenProps = {
 const HomeScreen = (props: HomeScreenProps) => {
   //console.log("data 1st entry " + data[1])
   //console.log("question choices " + generateRandomQuestionChoices(data, 10))
-
   const { doOnStartGameRound } = props;
-
+  //deleteData('First Score')
   const handleButtonPress = async () =>{
     const url: string = 'https://saltire.com/speech/'
 

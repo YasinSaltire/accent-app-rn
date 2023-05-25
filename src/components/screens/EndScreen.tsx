@@ -1,6 +1,8 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import generateAccentString from "../../util/generateAccentString";
 import scoreRound from "../../util/scoreRound";
+import { addDataToCurrentValue, readData, deleteData} from "../../util/AsyncStorage/storeChoice";
+import { storageKeyStrings } from "../../constants/constants";
 
 type EndScreenProps = {
   selections: number[][],
@@ -11,7 +13,9 @@ type EndScreenProps = {
 const EndScreen = (props: EndScreenProps) => {
 
   const score = scoreRound(props.selections, props.correctChoices);
-
+  addDataToCurrentValue(storageKeyStrings.firstChoiceCorrectScoreKey, score)
+  console.log(readData(storageKeyStrings.firstChoiceCorrectScoreKey))
+  //deleteData("First")
   return (
     <View style = {playScreenStyles('black')}>  
 

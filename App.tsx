@@ -73,8 +73,9 @@ export default function App() {
     
     
     //append all correct choice id's to end of storage array
-    addIdsOfChoiceArrayToStorage('test', correctChoices)
-    console.log('test data', readData('test'))
+    //addIdsOfChoiceArrayToStorage('test', correctChoices)
+    //console.log('test data', readData('test'))
+    deleteData('test')
    
     //addValueToArrayInStorage('test', '5')
     //console.log('test ', readData('test'))
