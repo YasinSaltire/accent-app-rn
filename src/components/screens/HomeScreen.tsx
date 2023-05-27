@@ -80,9 +80,9 @@ const HomeScreen = (props: HomeScreenProps) => {
         <Pressable onPress={() => WebBrowser.openBrowserAsync('https://saltire.com/speech/')} style={buttonColor("#36BAF3")}>
           <Text style={textStyles()}>ADD ACCENT</Text>
         </Pressable>
-        <Pressable onPress={doOnStartGameRound} style={buttonColor("#e8bd12")}>
-          <Text style={textStyles()}>SETTINGS</Text>
-        </Pressable>
+        
+        
+
       </View>
     </View>
   );

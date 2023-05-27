@@ -9,7 +9,8 @@ enum stringConstants {
 
 enum storageKeyStrings {
   correctChoicesKey = 'Correct Choices',
-  firstChoiceCorrectScoreKey = 'First Score'
+  firstChoiceCorrectScoreKey = 'First Score',
+  questionsPlayedKey = 'Rounds Played'
 
 }
 

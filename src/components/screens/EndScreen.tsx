@@ -13,8 +13,8 @@ type EndScreenProps = {
 const EndScreen = (props: EndScreenProps) => {
 
   const score = scoreRound(props.selections, props.correctChoices);
-  addDataToCurrentValue(storageKeyStrings.firstChoiceCorrectScoreKey, score)
-  console.log(readData(storageKeyStrings.firstChoiceCorrectScoreKey))
+  //addDataToCurrentValue(storageKeyStrings.firstChoiceCorrectScoreKey, score)
+  //console.log(readData(storageKeyStrings.firstChoiceCorrectScoreKey))
   //deleteData("First")
   return (
     <View style = {playScreenStyles('black')}>  

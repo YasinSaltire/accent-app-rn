@@ -15,16 +15,22 @@ import CorrectScreen from "./src/components/screens/CorrectScreen";
 import EndScreen from "./src/components/screens/EndScreen";
 import { View, Text } from "react-native";
 import AccentCaptureScreen from "./src/components/screens/AccentCaptureScreen";
-import * as WebBrowser from 'expo-web-browser';
+import * as WebBrowser from "expo-web-browser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {storeData, readData, deleteData, addValueToArrayInStorage, addIdsOfChoiceArrayToStorage} from  "./src/util/AsyncStorage/storeChoice";
+import {
+  storeData,
+  readData,
+  deleteData,
+  addValueToArrayInStorage,
+  addIdsOfChoiceArrayToStorage,
+  addDataToCurrentValue,
+} from "./src/util/AsyncStorage/storeChoice";
 import { storageKeyStrings } from "./src/constants/constants";
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
 
 export default function App() {
-
   let [correctChoicesArray, setCorrectChoicesArray] = useState<any>([]);
   let [incorrectChoicesArray, setIncorrectChoicesArray] = useState<any>([]);
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
@@ -36,6 +42,7 @@ export default function App() {
   let [correctChoiceButtonIndex, setCorrectChoiceButtonIndex] =
     useState<number>(0);
   let [score, setScore] = useState<number>(0);
+  let [currentRoundScore, setCurrentRoundScore] = useState<number>(0);
 
   const handleGoToHome = () => {
     const screen = GameScreens.HOMESCREEN;
@@ -51,16 +58,17 @@ export default function App() {
       newIndex = -1;
       setScreen(screen);
       setCurrentGameIndex(newIndex);
+      //increment rounds played
     } else {
       let record = [...userSelectedChoicesRecord];
       record.push([]);
       setUserSelectedChoicesRecord(record);
       newIndex = currentGameIndex + 1;
+      setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
       screen = GameScreens.GAMESCREEN;
     }
 
     setCurrentGameIndex(newIndex);
-    setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
     setScreen(screen);
   };
 
@@ -69,26 +77,25 @@ export default function App() {
   };
 
   const handleStartGameRound = () => {
-    const correctChoices = generateRandomQuestionChoices(data, 2);
-    
-    
+    const correctChoices = generateRandomQuestionChoices(data, 10);
+
     //append all correct choice id's to end of storage array
     //addIdsOfChoiceArrayToStorage('test', correctChoices)
     //console.log('test data', readData('test'))
-    deleteData('test')
-   
+    //deleteData('test')
+
     //addValueToArrayInStorage('test', '5')
     //console.log('test ', readData('test'))
-   
+
     //addIdsOfChoiceArrayToStorage(storageKeyStrings.correctChoicesKey, correctChoices)
-    
+
     //console.log('test', readData(storageKeyStrings.correctChoicesKey))
     const incorrectChoicesForEntireRound = generateIncorrectChoices(
       correctChoices,
       data,
-      6
+      30
     );
-
+    setCurrentRoundScore(0);
     setCorrectChoicesArray(correctChoices);
     setIncorrectChoicesArray(incorrectChoicesForEntireRound);
 
@@ -108,19 +115,28 @@ export default function App() {
 
   const handleAnswerSelection = (id: number) => {
     let screen: GameScreens;
-    let newIndex: number;
-    let curScore: number;
+    //deleteData(storageKeyStrings.firstChoiceCorrectScoreKey);
+    //deleteData(storageKeyStrings.questionsPlayedKey);
+
     console.log("cur game index ", currentGameIndex);
     let record = [...userSelectedChoicesRecord];
     record[currentGameIndex].push(id);
     console.log("after click log ", userSelectedChoicesRecord);
-
+    setUserSelectedChoicesRecord(record);
     // update score
     //curScore = scoreRound(userRecord, correctChoicesArray);
     //setScore(curScore);
 
     if (id === correctChoicesArray[currentGameIndex].fileID) {
-      //if correct choice is chosen
+      //if correct choice is chosen is chosen on first try
+
+      if (record[currentGameIndex].length == 1) {
+        const newCurrentScore: number = currentRoundScore + 1;
+        setCurrentRoundScore(newCurrentScore);
+        console.log("correct choice first try ");
+        addDataToCurrentValue(storageKeyStrings.firstChoiceCorrectScoreKey, 1)
+      }
+      addDataToCurrentValue(storageKeyStrings.questionsPlayedKey, 1)
       screen = GameScreens.CORRECT;
       setScreen(screen);
     } else {
@@ -142,6 +158,7 @@ export default function App() {
             handleAnswerSelection={handleAnswerSelection}
             correctChoiceObj={correctChoicesArray[currentGameIndex]}
             correctButtonIndex={correctChoiceButtonIndex}
+            currentRoundScore={currentRoundScore}
           />
         )}
       {gameScreen === GameScreens.LEARN_MORE && (

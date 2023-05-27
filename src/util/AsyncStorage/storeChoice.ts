@@ -36,22 +36,33 @@ const storeData = async (key: string, value: any) => {
 
 const readData = async (key: string) => {
   try {
-    const data = await AsyncStorage.getItem(key);
-    return data != null ? JSON.parse(data) : null;
-  } catch (e) {}
+    let data = await AsyncStorage.getItem(key);
+    data = data? data: ""
+
+    console.log('inside readData: ', data)
+    
+    return data !== "" ? JSON.parse(data) : "";
+  } catch (e) {
+    console.log('wtf')
+  }
 };
 
 const deleteData = async (key: string) => {
   try {
     await AsyncStorage.removeItem(key);
-  } catch (e) {}
+  } catch (e) {
+    
+  }
 };
 
 const addDataToCurrentValue = async (key: string, value: number) => {
   try {
     console.log('value being added', value)
     const data = await AsyncStorage.getItem(key);
-    console.log('current value', data)
+    const asyncData = await readData(key)
+    console.log('async data', asyncData)
+    console.log('read data: ', await readData(key))
+    console.log(typeof(data))
     // stores sum of current and new value if current exists
     //else creates new mapping
     if (data) {

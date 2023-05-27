@@ -9,7 +9,7 @@ import {
   LayoutChangeEvent,
   Dimensions,
 } from "react-native";
-import stringConstants, { GameScreens } from "../../constants/constants";
+import stringConstants, { GameScreens, storageKeyStrings } from "../../constants/constants";
 import { SvgUri } from "react-native-svg";
 import * as React from "react";
 import GameResponseArea from "../GameResponseArea";
@@ -29,6 +29,8 @@ import geoToMercator from "../../util/geoToMercator";
 import { enableExpoCliLogging } from "expo/build/logs/Logs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
+import { readData } from "../../util/AsyncStorage/storeChoice";
+import { parse } from "@fortawesome/fontawesome-svg-core";
 
 const playScreenStyles = (color: string) => {
   const style = StyleSheet.create({
@@ -95,6 +97,7 @@ type GameScreenProps = {
   currentQuestionIndex?: any;
   correctlyAnswered?: number;
   correctButtonIndex: number;
+  currentRoundScore: number;
 };
 
 const GameScreen = (props: GameScreenProps) => {
@@ -105,6 +108,7 @@ const GameScreen = (props: GameScreenProps) => {
     currentQuestionIndex,
     correctButtonIndex,
     correctlyAnswered,
+    currentRoundScore,
   } = 
   props;
   console.log("button index", correctButtonIndex);
@@ -140,6 +144,35 @@ const GameScreen = (props: GameScreenProps) => {
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
 
   const [playButton, setPlayButton] = useState<boolean>(false)
+
+  let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] = useState("")
+  let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] = useState("")
+  let [correctPercentage, setCorrectPercentage] = useState(0)
+  useEffect(() =>{
+    const getTotalQuestions = async(key: string) =>{
+      const data = await readData(key)
+      setNumberOfQuestionsPlayed(data)
+      return await readData(key)
+    }
+    const getTotalCorrectFirstAttempt = async(key:string) =>{
+      const data = await readData(key)
+      setNumberCorrectFirstChoice(data)
+      return await readData(key)
+    }
+    const calculateCorrectPercentage = async() =>{
+      const total = await getTotalQuestions(storageKeyStrings.questionsPlayedKey)
+      const correct = await getTotalCorrectFirstAttempt(storageKeyStrings.firstChoiceCorrectScoreKey)
+      const correctRate = Math.floor(parseFloat(correct) / parseFloat(total) * 100)
+      setCorrectPercentage(correctRate)
+    }
+    calculateCorrectPercentage()
+
+    
+    
+
+  }, [])
+
+
   const displayModalIfWrongChoiceSelected = (id: number) => {
     if (id !== correctChoiceObj.fileID) {
       setShowModal(true);
@@ -236,6 +269,7 @@ const GameScreen = (props: GameScreenProps) => {
     (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
   );
   //console.log(projectedCoordinates);
+  const text = readData(storageKeyStrings.questionsPlayedKey)
 
   return (
     <View style={playScreenStyles("black")}>
@@ -416,6 +450,12 @@ const GameScreen = (props: GameScreenProps) => {
           </Text>
         </Pressable>
       </View>
+      <Text style  = {{color: 'white'}}> Correctly Answered Questions on First Try: {currentQuestionIndex == 0 ? '-': currentRoundScore + '/' + currentQuestionIndex }</Text>
+      <Text style  = {{color: 'white'}}>Total correct: {numberOfQuestionsPlayed} </Text>
+      <Text style  = {{color: 'white'}}>Correct first attempts: {numberCorrectFirstChoice} </Text>
+
+      <Text style  = {{color: 'white'}}>total correct rate: {correctPercentage}% </Text>
+
     </View>
   );
 };
