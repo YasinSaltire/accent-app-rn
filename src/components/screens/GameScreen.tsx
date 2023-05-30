@@ -143,7 +143,6 @@ const GameScreen = (props: GameScreenProps) => {
   ]);
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
 
-  const [playButton, setPlayButton] = useState<boolean>(false)
 
   let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] = useState("")
   let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] = useState("")
@@ -198,7 +197,6 @@ const GameScreen = (props: GameScreenProps) => {
   useEffect(() => {
     // const audioUri = ...
     setDisabledButtonsArray([false, false, false, false]);
-    setPlayButton(false)
     const audioUri = generateAudioLink(correctChoiceObj.fileName);
     const loadSound = async () => {
       try {
@@ -450,11 +448,15 @@ const GameScreen = (props: GameScreenProps) => {
           </Text>
         </Pressable>
       </View>
+
+    
       <Text style  = {{color: 'white'}}> Correctly Answered Questions on First Try: {currentQuestionIndex == 0 ? '-': currentRoundScore + '/' + currentQuestionIndex }</Text>
       <Text style  = {{color: 'white'}}>Total correct: {numberOfQuestionsPlayed} </Text>
       <Text style  = {{color: 'white'}}>Correct first attempts: {numberCorrectFirstChoice} </Text>
 
       <Text style  = {{color: 'white'}}>total correct rate: {correctPercentage}% </Text>
+       
+      
 
     </View>
   );

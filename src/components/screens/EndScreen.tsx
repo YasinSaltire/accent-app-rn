@@ -23,7 +23,7 @@ const EndScreen = (props: EndScreenProps) => {
             Great Job! You Completed a Round.
         </Text>
         <View style = {{width: '80%'}}>
-          <Text style = {{fontSize: 20, color: 'white'}}>
+          <Text style = {{alignSelf: 'center', fontSize: 20, color: 'white'}}>
             You answered {score} quesions correct on the first try
           </Text>
         </View>

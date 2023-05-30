@@ -6,8 +6,8 @@ const geoToMercator = <T>(lat: number, long: number) => {
   const latpos = +lat;
   const longpos = +long
   const MAP_WIDTH: number = 2917 ; //need to change
-  const EQUATOR_FROM_BOTTOM: number = 545;
-  const LONG_OFFSET: number = 157;
+  const EQUATOR_FROM_BOTTOM: number = 545; //original: 545
+  const LONG_OFFSET: number = 162; // original" 157
 
   let x: number = (longpos + LONG_OFFSET) * (MAP_WIDTH / 360);
   let y: number =
