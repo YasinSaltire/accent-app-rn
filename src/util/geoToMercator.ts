@@ -1,13 +1,31 @@
-import Question from "../model/Question";
-import pickNRandomIndicesFromArray from "./pickNRandomIndicesFromArray";
+import * as Device from 'expo-device';
 
-const geoToMercator = <T>(lat: number, long: number) => {
-  
+const geoToMercator =  async <T>(lat: number, long: number) => {
+  const deviceType = await Device.getDeviceTypeAsync()
+
   const latpos = +lat;
   const longpos = +long
   const MAP_WIDTH: number = 2917 ; //need to change
-  const EQUATOR_FROM_BOTTOM: number = 545; //original: 545
-  const LONG_OFFSET: number = 162; // original" 157
+  let EQUATOR_FROM_BOTTOM = 0; //phine: 545, tablet 558
+  let LONG_OFFSET = 0; // tablet" 157, tablet 163
+  
+  //conditionals to check device type and set offsets accordingly. Don't know what original offsets are calculated from (pulled from cocos codebase)
+  
+  //if device is phone
+  if (deviceType == 1) {
+    EQUATOR_FROM_BOTTOM = 545
+    LONG_OFFSET = 157
+  //if device is tablet
+  }else if (deviceType == 2){
+    EQUATOR_FROM_BOTTOM = 556
+    LONG_OFFSET = 163
+  //if on web
+  }else{
+    //placeholder values. need to update
+    EQUATOR_FROM_BOTTOM = 545
+    LONG_OFFSET = 157
+  }
+  
 
   let x: number = (longpos + LONG_OFFSET) * (MAP_WIDTH / 360);
   let y: number =

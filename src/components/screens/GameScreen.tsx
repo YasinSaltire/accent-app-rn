@@ -40,6 +40,7 @@ const playScreenStyles = (color: string) => {
       width: "100%",
       justifyContent: "center",
       alignItems: "center",
+      alignSelf: 'center'
     },
   });
   return style.default;
@@ -147,6 +148,17 @@ const GameScreen = (props: GameScreenProps) => {
   let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] = useState("")
   let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] = useState("")
   let [correctPercentage, setCorrectPercentage] = useState(0)
+
+  //map variables
+  const windowWidth = Dimensions.get("window").width * 0.97;
+  const ratio = windowWidth / 2917.0; //og map png is 2917 pixels wide. Ratio finds scale
+  let [projectionCoordinates, setProjectionCoordinates] = useState<number[][]>(Array(4).fill([0,0]))
+  
+  //use effect handles all async func calls that may be needed to render screen but can't be called before render
+  //current: 
+  //   handles fetching and displaying game stats
+  //   calculating map coordinates (fetching devicetype for calculations is async)     
+
   useEffect(() =>{
     const getTotalQuestions = async(key: string) =>{
       const data = await readData(key)
@@ -164,12 +176,23 @@ const GameScreen = (props: GameScreenProps) => {
       const correctRate = Math.floor(parseFloat(correct) / parseFloat(total) * 100)
       setCorrectPercentage(correctRate)
     }
+    const projectCoordinates = async() =>{
+      //calculates geotomercator coordinates
+      const choicesCoordinatesArray = await Promise.all(buttonChoiceArray.map(async (accent: any) =>
+          geoToMercator(accent.latitude, accent.longitude)))
+      //scales coordinates according to window size
+      const scaledChoicesCoordinatesArray = choicesCoordinatesArray.map(
+          (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]);
+      //set state so that projected and scaled coords render on screen
+      setProjectionCoordinates(scaledChoicesCoordinatesArray)
+    }
+    //set map coordiantes
+    projectCoordinates() 
+
+    //calc and set gamestats
     calculateCorrectPercentage()
 
-    
-    
-
-  }, [])
+  }, [correctChoiceObj])
 
 
   const displayModalIfWrongChoiceSelected = (id: number) => {
@@ -256,20 +279,23 @@ const GameScreen = (props: GameScreenProps) => {
     }
   };
 
-  //testing map projections. Messy, but will clean up and add to separate function files later
-  const windowWidth = Dimensions.get("window").width * 0.97;
+
+  
+  /*
+  console.log('window width: ', windowWidth)
   const choicesCoordinatesArray = buttonChoiceArray.map((accent: any) =>
     geoToMercator(accent.latitude, accent.longitude)
   );
   //console.log("width ", windowWidth);
-  const ratio = windowWidth / 2917.0;
+  
   const projectedCoordinates = choicesCoordinatesArray.map(
     (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
   );
-  //console.log(projectedCoordinates);
-  const text = readData(storageKeyStrings.questionsPlayedKey)
+  console.log(projectedCoordinates);
+*/
 
   return (
+
     <View style={playScreenStyles("black")}>
       <Modal transparent={true} visible={showModal}>
         <View
@@ -370,6 +396,8 @@ const GameScreen = (props: GameScreenProps) => {
           width: "97%",
           aspectRatio: 1.81,
           justifyContent: "center",
+          borderColor: 'white',
+
         }}
       >
         <Image
@@ -380,32 +408,32 @@ const GameScreen = (props: GameScreenProps) => {
         <Image
           style={{
             position: "absolute",
-            left: projectedCoordinates[0][0],
-            bottom: projectedCoordinates[0][1],
+            left: projectionCoordinates[0][0],
+            bottom: projectionCoordinates[0][1],
           }}
           source={require("../../../assets/blue_sliderDown.png")}
         />
         <Image
           style={{
             position: "absolute",
-            left: projectedCoordinates[1][0],
-            bottom: projectedCoordinates[1][1],
+            left: projectionCoordinates[1][0],
+            bottom: projectionCoordinates[1][1],
           }}
           source={require("../../../assets/yellow_sliderDown.png")}
         />
         <Image
           style={{
             position: "absolute",
-            left: projectedCoordinates[2][0],
-            bottom: projectedCoordinates[2][1],
+            left: projectionCoordinates[2][0],
+            bottom: projectionCoordinates[2][1],
           }}
           source={require("../../../assets/green_sliderDown.png")}
         />
         <Image
           style={{
             position: "absolute",
-            left: projectedCoordinates[3][0],
-            bottom: projectedCoordinates[3][1],
+            left: projectionCoordinates[3][0],
+            bottom: projectionCoordinates[3][1],
           }}
           source={require("../../../assets/red_sliderDown.png")}
         />
