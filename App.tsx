@@ -8,7 +8,7 @@ import HomeScreen from "./src/components/screens/HomeScreen";
 
 import data from "./assets/audio/clip_db.json";
 import generateRandomQuestionChoices from "./src/util/generateRandomQuestionChoices";
-import generateIncorrectChoices from "./src/util/generateIncorrectChoices";
+import generateTotalIncorrectChoices from "./src/util/generateTotalIncorrectChoices";
 import scoreRound from "./src/util/scoreRound";
 import LearnMoreScreen from "./src/components/screens/LearnMoreScreen";
 import CorrectScreen from "./src/components/screens/CorrectScreen";
@@ -26,11 +26,27 @@ import {
   addDataToCurrentValue,
 } from "./src/util/AsyncStorage/storeChoice";
 import { storageKeyStrings } from "./src/constants/constants";
+import * as Updates from 'expo-updates'
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
 
 export default function App() {
+  async function onFetchUpdateAsync() {
+    try {
+      const update = await Updates.checkForUpdateAsync();
+
+      if (update.isAvailable) {
+        await Updates.fetchUpdateAsync();
+        await Updates.reloadAsync();
+      }
+    } catch (error) {
+      // You can also add an alert() to see the error message in case of an error when fetching updates.
+      alert(`Error fetching latest Expo update: ${error}`);
+    }
+  }
+
+
   let [correctChoicesArray, setCorrectChoicesArray] = useState<any>([]);
   let [incorrectChoicesArray, setIncorrectChoicesArray] = useState<any>([]);
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
@@ -90,11 +106,10 @@ export default function App() {
     //addIdsOfChoiceArrayToStorage(storageKeyStrings.correctChoicesKey, correctChoices)
 
     //console.log('test', readData(storageKeyStrings.correctChoicesKey))
-    const incorrectChoicesForEntireRound = generateIncorrectChoices(
+    const incorrectChoicesForEntireRound = generateTotalIncorrectChoices(
       correctChoices,
       data,
-      30
-    );
+      3    );
     setCurrentRoundScore(0);
     setCorrectChoicesArray(correctChoices);
     setIncorrectChoicesArray(incorrectChoicesForEntireRound);
@@ -147,7 +162,9 @@ export default function App() {
   return (
     <>
       {gameScreen === GameScreens.HOMESCREEN && (
-        <HomeScreen doOnStartGameRound={handleStartGameRound} />
+        <HomeScreen 
+          doOnStartGameRound={handleStartGameRound}
+          checkUpdates = {onFetchUpdateAsync} />
       )}
       {gameScreen === GameScreens.GAMESCREEN &&
         correctChoicesArray.length > 0 && (

@@ -482,7 +482,7 @@ const GameScreen = (props: GameScreenProps) => {
       <Text style  = {{color: 'white'}}>Total correct: {numberOfQuestionsPlayed} </Text>
       <Text style  = {{color: 'white'}}>Correct first attempts: {numberCorrectFirstChoice} </Text>
 
-      <Text style  = {{color: 'white'}}>total correct rate: {correctPercentage}% </Text>
+      <Text style  = {{color: 'white'}}>total correct rate: {correctPercentage? correctPercentage: '-'}% </Text>
        
       
 

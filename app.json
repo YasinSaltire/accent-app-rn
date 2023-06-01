@@ -1,6 +1,14 @@
 {
   "expo": {
     "name": "guess-the-accent",
+    "plugins": [
+      [
+        "expo-updates",
+        {
+          "username": "dangu"
+        }
+      ]
+    ],
     "slug": "guess-the-accent",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -37,6 +45,12 @@
       "eas": {
         "projectId": "366a7344-392c-4924-884f-c42a36a88fe5"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/366a7344-392c-4924-884f-c42a36a88fe5"
     }
   }
 }

@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Text } from "react-native";
+import { View, StyleSheet, Pressable, Text, Button} from "react-native";
 import stringConstants, { GameScreens } from "../../constants/constants";
 import PlayButton from "../PlayButton";
 import GameTitle from "../GameTitle";
@@ -55,12 +55,13 @@ const buttonContainer = (color: string = "white") => {
 
 type HomeScreenProps = {
   doOnStartGameRound: any;
+  checkUpdates: any
 };
 
 const HomeScreen = (props: HomeScreenProps) => {
   //console.log("data 1st entry " + data[1])
   //console.log("question choices " + generateRandomQuestionChoices(data, 10))
-  const { doOnStartGameRound } = props;
+  const { doOnStartGameRound, checkUpdates} = props;
   //deleteData('First Score')
   const handleButtonPress = async () =>{
     const url: string = 'https://saltire.com/speech/'
@@ -69,8 +70,8 @@ const HomeScreen = (props: HomeScreenProps) => {
 
   return (
     <View style={homeScreenStyles('black')}>
-      <View style = {{width: '50%'}}>
-        <Text numberOfLines = {3} style = {{textAlign: 'center', fontSize: 50, color: 'white'}}>THE ACCENT GAME</Text>
+      <View style = {{width: '60%'}}>
+        <Text numberOfLines = {3} style = {{textAlign: 'center', fontSize: 50, color: 'white'}}>THE ACCENT GAME!!</Text>
       </View>
 
       <View style={buttonContainer()}>
@@ -81,7 +82,9 @@ const HomeScreen = (props: HomeScreenProps) => {
           <Text style={textStyles()}>ADD ACCENT</Text>
         </Pressable>
         
-        
+        <View>
+          <Button title="Fetch update" onPress={checkUpdates} />
+        </View>
 
       </View>
     </View>
