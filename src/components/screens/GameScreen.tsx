@@ -9,7 +9,10 @@ import {
   LayoutChangeEvent,
   Dimensions,
 } from "react-native";
-import stringConstants, { GameScreens, storageKeyStrings } from "../../constants/constants";
+import stringConstants, {
+  GameScreens,
+  storageKeyStrings,
+} from "../../constants/constants";
 import { SvgUri } from "react-native-svg";
 import * as React from "react";
 import GameResponseArea from "../GameResponseArea";
@@ -31,19 +34,69 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
 import { readData } from "../../util/AsyncStorage/storeChoice";
 import { parse } from "@fortawesome/fontawesome-svg-core";
+import * as Device from "expo-device";
 
-const playScreenStyles = (color: string) => {
+const playScreenWrapperStyles = (deviceType: Device.DeviceType) => {
   const style = StyleSheet.create({
     default: {
-      backgroundColor: color,
+      backgroundColor: "black",
       height: "100%",
       width: "100%",
       justifyContent: "center",
       alignItems: "center",
-      alignSelf: 'center'
+      alignSelf: "center",
+    },
+    web: {
+      backgroundColor: "black",
+      height: "100%",
+      width: "100%",
+      justifyContent: "center",
+      alignItems: "center",
     },
   });
-  return style.default;
+  return deviceType == Device.DeviceType.DESKTOP ? style.web : style.default;
+};
+
+const modalStyles = (deviceType: Device.DeviceType) => {
+  const style = StyleSheet.create({
+    default: {
+      alignSelf: "center",
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+    },
+    web: {
+      alignSelf: "center",
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      width: "35%",
+    },
+  });
+  return deviceType != Device.DeviceType.DESKTOP? style.default: style.web;
+};
+
+const playScreenStyles = (deviceType: Device.DeviceType) => {
+  const style = StyleSheet.create({
+    default: {
+      backgroundColor: "black",
+      height: "100%",
+      width: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+      alignSelf: "center",
+    },
+    web: {
+      backgroundColor: "black",
+      height: "100%",
+      width: "35%",
+      justifyContent: "center",
+      alignItems: "center",
+      alignSelf: "center",
+    },
+  });
+  return deviceType == Device.DeviceType.DESKTOP ? style.web : style.default;
 };
 
 const buttonStyle = (color: string) => {
@@ -110,8 +163,7 @@ const GameScreen = (props: GameScreenProps) => {
     correctButtonIndex,
     correctlyAnswered,
     currentRoundScore,
-  } = 
-  props;
+  } = props;
   console.log("button index", correctButtonIndex);
   /*
   console.log(currentQuestionIndex);
@@ -144,56 +196,78 @@ const GameScreen = (props: GameScreenProps) => {
   ]);
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
 
-
-  let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] = useState("")
-  let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] = useState("")
-  let [correctPercentage, setCorrectPercentage] = useState(0)
+  let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] = useState("");
+  let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] = useState("");
+  let [correctPercentage, setCorrectPercentage] = useState(0);
+  const [deviceType, setDeviceType] = useState<Device.DeviceType>(
+    Device.DeviceType.UNKNOWN
+  );
 
   //map variables
   const windowWidth = Dimensions.get("window").width * 0.97;
   const ratio = windowWidth / 2917.0; //og map png is 2917 pixels wide. Ratio finds scale
-  let [projectionCoordinates, setProjectionCoordinates] = useState<number[][]>(Array(4).fill([0,0]))
-  
-  //use effect handles all async func calls that may be needed to render screen but can't be called before render
-  //current: 
-  //   handles fetching and displaying game stats
-  //   calculating map coordinates (fetching devicetype for calculations is async)     
+  let [projectionCoordinates, setProjectionCoordinates] = useState<number[][]>(
+    Array(4).fill([0, 0])
+  );
 
-  useEffect(() =>{
-    const getTotalQuestions = async(key: string) =>{
-      const data = await readData(key)
-      setNumberOfQuestionsPlayed(data)
-      return await readData(key)
-    }
-    const getTotalCorrectFirstAttempt = async(key:string) =>{
-      const data = await readData(key)
-      setNumberCorrectFirstChoice(data)
-      return await readData(key)
-    }
-    const calculateCorrectPercentage = async() =>{
-      const total = await getTotalQuestions(storageKeyStrings.questionsPlayedKey)
-      const correct = await getTotalCorrectFirstAttempt(storageKeyStrings.firstChoiceCorrectScoreKey)
-      const correctRate = Math.floor(parseFloat(correct) / parseFloat(total) * 100)
-      setCorrectPercentage(correctRate)
-    }
-    const projectCoordinates = async() =>{
+  //use effect handles all async func calls that may be needed to render screen but can't be called before render
+  //current:
+  //   handles fetching and displaying game stats
+  //   calculating map coordinates (fetching devicetype for calculations is async)
+
+  useEffect(() => {
+    const getTotalQuestions = async (key: string) => {
+      const data = await readData(key);
+      setNumberOfQuestionsPlayed(data);
+      return await readData(key);
+    };
+    const getTotalCorrectFirstAttempt = async (key: string) => {
+      const data = await readData(key);
+      setNumberCorrectFirstChoice(data);
+      return await readData(key);
+    };
+    const calculateCorrectPercentage = async () => {
+      const total = await getTotalQuestions(
+        storageKeyStrings.questionsPlayedKey
+      );
+      const correct = await getTotalCorrectFirstAttempt(
+        storageKeyStrings.firstChoiceCorrectScoreKey
+      );
+      const correctRate = Math.floor(
+        (parseFloat(correct) / parseFloat(total)) * 100
+      );
+      setCorrectPercentage(correctRate);
+    };
+    const projectCoordinates = async () => {
       //calculates geotomercator coordinates
-      const choicesCoordinatesArray = await Promise.all(buttonChoiceArray.map(async (accent: any) =>
-          geoToMercator(accent.latitude, accent.longitude)))
+      const choicesCoordinatesArray = await Promise.all(
+        buttonChoiceArray.map(async (accent: any) =>
+          geoToMercator(accent.latitude, accent.longitude)
+        )
+      );
       //scales coordinates according to window size
       const scaledChoicesCoordinatesArray = choicesCoordinatesArray.map(
-          (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]);
+        (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
+      );
       //set state so that projected and scaled coords render on screen
-      setProjectionCoordinates(scaledChoicesCoordinatesArray)
-    }
+      setProjectionCoordinates(scaledChoicesCoordinatesArray);
+    };
+
+    const getDeviceType = async () => {
+      const type = await Device.getDeviceTypeAsync();
+      setDeviceType(type);
+    };
+    getDeviceType();
+
     //set map coordiantes
-    projectCoordinates() 
+    projectCoordinates();
 
     //calc and set gamestats
-    calculateCorrectPercentage()
+    calculateCorrectPercentage();
 
-  }, [correctChoiceObj])
-
+    //get device type and set state
+    getDeviceType();
+  }, [correctChoiceObj]);
 
   const displayModalIfWrongChoiceSelected = (id: number) => {
     if (id !== correctChoiceObj.fileID) {
@@ -233,7 +307,7 @@ const GameScreen = (props: GameScreenProps) => {
           if (status.isLoaded && status.isPlaying) {
             setIsAudioPlaying(true);
           } else if (status.isLoaded && status.didJustFinish) {
-            console.log('audio finished ,' )
+            console.log("audio finished ,");
 
             setIsAudioPlaying(false);
           }
@@ -256,7 +330,7 @@ const GameScreen = (props: GameScreenProps) => {
   }, [correctChoiceObj]);
 
   const handlePlaySound = async () => {
-    handleStopSound()
+    handleStopSound();
     if (typeof sound !== "boolean") {
       try {
         await sound.playAsync();
@@ -279,8 +353,6 @@ const GameScreen = (props: GameScreenProps) => {
     }
   };
 
-
-  
   /*
   console.log('window width: ', windowWidth)
   const choicesCoordinatesArray = buttonChoiceArray.map((accent: any) =>
@@ -295,197 +367,208 @@ const GameScreen = (props: GameScreenProps) => {
 */
 
   return (
-
-    <View style={playScreenStyles("black")}>
-      <Modal transparent={true} visible={showModal}>
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+    <View style={playScreenWrapperStyles(deviceType)}>
+      <View style={playScreenStyles(deviceType)}>
+        <Modal transparent={true} visible={showModal}>
           <View
-            style={{
-              width: "60%",
-              height: "20%",
-              backgroundColor: "black",
-              justifyContent: "center",
-            }}
+            style={modalStyles(deviceType)}
           >
-            <Text
+            <View
               style={{
-                color: "white",
-                alignSelf: "center",
-                marginBottom: "10%",
-                fontSize: 20,
-              }}
-            >
-              {" "}
-              Incorrect!{" "}
-            </Text>
-
-            <Pressable
-              style={{
-                width: "50%",
-                height: "30%",
-                backgroundColor: "#e8791e",
-                alignSelf: "center",
+                width: "60%",
+                height: "20%",
+                backgroundColor: "black",
                 justifyContent: "center",
               }}
-              onPress={() => setShowModal(false)}
             >
-              <Text style={{ color: "white", alignSelf: "center" }}>
-                Try Again
+              <Text
+                style={{
+                  color: "white",
+                  alignSelf: "center",
+                  marginBottom: "10%",
+                  fontSize: 20,
+                }}
+              >
+                {" "}
+                Incorrect!{" "}
               </Text>
-            </Pressable>
+
+              <Pressable
+                style={{
+                  width: "50%",
+                  height: "30%",
+                  backgroundColor: "#e8791e",
+                  alignSelf: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => setShowModal(false)}
+              >
+                <Text style={{ color: "white", alignSelf: "center" }}>
+                  Try Again
+                </Text>
+              </Pressable>
+            </View>
           </View>
+        </Modal>
+        <Pressable
+          onPress={
+            isAudioPlaying ? () => handleStopSound() : () => handlePlaySound()
+          }
+        >
+          <FontAwesomeIcon
+            size={75}
+            icon={isAudioPlaying ? faStop : faPlay}
+            style={{ color: "#ffffff" }}
+          />
+        </Pressable>
+
+        <View style={buttonContainerStyle()}>
+          <Pressable
+            style={
+              disabledButtonsArray[0]
+                ? buttonStyle("grey")
+                : buttonStyle("#36BAF3")
+            }
+            onPress={() => {
+              handleAnswerSelection(buttonChoiceArray[0].fileID);
+              handleStopSound();
+              displayModalIfWrongChoiceSelected(buttonChoiceArray[0].fileID);
+              disableButton(0);
+            }}
+            disabled={disabledButtonsArray[0]}
+          >
+            <Text style={textContainerStyle()}>
+              {generateAccentString(buttonChoiceArray[0])}
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={
+              disabledButtonsArray[1]
+                ? buttonStyle("grey")
+                : buttonStyle("#e8bd12")
+            }
+            onPress={() => {
+              handleAnswerSelection(buttonChoiceArray[1].fileID);
+              handleStopSound();
+              displayModalIfWrongChoiceSelected(buttonChoiceArray[1].fileID);
+              disableButton(1);
+            }}
+          >
+            <Text style={textContainerStyle()}>
+              {generateAccentString(buttonChoiceArray[1])}
+            </Text>
+          </Pressable>
         </View>
-      </Modal>
-      <Pressable
-        onPress={
-          isAudioPlaying ? () => handleStopSound() : () => handlePlaySound()
-        }
-      >
-        <FontAwesomeIcon
-          size={75}
-          icon={isAudioPlaying ? faStop : faPlay}
-          style={{ color: "#ffffff" }}
-        />
-      </Pressable>
 
-  
-      <View style={buttonContainerStyle()}>
-        <Pressable
-          style={
-            disabledButtonsArray[0]
-              ? buttonStyle("grey")
-              : buttonStyle("#36BAF3")
-          }
-          onPress={() => {
-            handleAnswerSelection(buttonChoiceArray[0].fileID);
-            handleStopSound();
-            displayModalIfWrongChoiceSelected(buttonChoiceArray[0].fileID);
-            disableButton(0);
-          }}
-          disabled={disabledButtonsArray[0]}
-        >
-          <Text style={textContainerStyle()}>
-            {generateAccentString(buttonChoiceArray[0])}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={
-            disabledButtonsArray[1]
-              ? buttonStyle("grey")
-              : buttonStyle("#e8bd12")
-          }
-          onPress={() => {
-            handleAnswerSelection(buttonChoiceArray[1].fileID);
-            handleStopSound();
-            displayModalIfWrongChoiceSelected(buttonChoiceArray[1].fileID);
-            disableButton(1);
+        <View
+          style={{
+            borderWidth: 0,
+            width: "97%",
+            aspectRatio: 1.81,
+            justifyContent: "center",
+            borderColor: "white",
           }}
         >
-          <Text style={textContainerStyle()}>
-            {generateAccentString(buttonChoiceArray[1])}
-          </Text>
-        </Pressable>
+          <Image
+            style={{ zIndex: -1, resizeMode: "contain", width: "100%", height: "100%"}}
+            source={require("../../../assets/map.png")}
+          />
+          
+          <Image
+            style={{
+              position: 'absolute',
+              left: projectionCoordinates[0][0],
+              bottom: projectionCoordinates[0][1],
+              zIndex: 10
+            }}
+            source={require("../../../assets/blue_sliderDown.png")}
+          />
+          <Image
+            style={{
+              position: "absolute",
+              left: projectionCoordinates[1][0],
+              bottom: projectionCoordinates[1][1],
+              zIndex: 10
+            }}
+            source={require("../../../assets/yellow_sliderDown.png")}
+          />
+          <Image
+            style={{
+              position: "absolute",
+              left: projectionCoordinates[2][0],
+              bottom: projectionCoordinates[2][1],
+              zIndex: 10
+            }}
+            source={require("../../../assets/green_sliderDown.png")}
+          />
+          <Image
+            style={{
+              position: "absolute",
+              left: projectionCoordinates[3][0],
+              bottom: projectionCoordinates[3][1],
+              zIndex: 10
+            }}
+            source={require("../../../assets/red_sliderDown.png")}
+          />
+        </View>
+
+        <View style={buttonContainerStyle()}>
+          <Pressable
+            style={
+              disabledButtonsArray[2]
+                ? buttonStyle("grey")
+                : buttonStyle("#82DB5B")
+            }
+            onPress={() => {
+              handleAnswerSelection(buttonChoiceArray[2].fileID);
+              handleStopSound();
+              displayModalIfWrongChoiceSelected(buttonChoiceArray[2].fileID);
+              disableButton(2);
+            }}
+          >
+            <Text style={textContainerStyle()}>
+              {generateAccentString(buttonChoiceArray[2])}
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={
+              disabledButtonsArray[3]
+                ? buttonStyle("grey")
+                : buttonStyle("#e8791e")
+            }
+            onPress={() => {
+              handleAnswerSelection(buttonChoiceArray[3].fileID);
+              handleStopSound();
+              displayModalIfWrongChoiceSelected(buttonChoiceArray[3].fileID);
+              disableButton(3);
+            }}
+          >
+            <Text style={textContainerStyle()}>
+              {generateAccentString(buttonChoiceArray[3])}
+            </Text>
+          </Pressable>
+        </View>
+
+        <Text style={{ color: "white" }}>
+          {" "}
+          Correctly Answered Questions on First Try:{" "}
+          {currentQuestionIndex == 0
+            ? "-"
+            : currentRoundScore + "/" + currentQuestionIndex}
+        </Text>
+        <Text style={{ color: "white" }}>
+          Total correct: {numberOfQuestionsPlayed}{" "}
+        </Text>
+        <Text style={{ color: "white" }}>
+          Correct first attempts: {numberCorrectFirstChoice}{" "}
+        </Text>
+
+        <Text style={{ color: "white" }}>
+          total correct rate: {correctPercentage ? correctPercentage : "-"}%{" "}
+        </Text>
       </View>
-
-      <View
-        style={{
-          borderWidth: 0,
-          width: "97%",
-          aspectRatio: 1.81,
-          justifyContent: "center",
-          borderColor: 'white',
-
-        }}
-      >
-        <Image
-          style={{ resizeMode: "contain", width: "100%", height: "100%" }}
-          source={require("../../../assets/map.png")}
-        />
-
-        <Image
-          style={{
-            position: "absolute",
-            left: projectionCoordinates[0][0],
-            bottom: projectionCoordinates[0][1],
-          }}
-          source={require("../../../assets/blue_sliderDown.png")}
-        />
-        <Image
-          style={{
-            position: "absolute",
-            left: projectionCoordinates[1][0],
-            bottom: projectionCoordinates[1][1],
-          }}
-          source={require("../../../assets/yellow_sliderDown.png")}
-        />
-        <Image
-          style={{
-            position: "absolute",
-            left: projectionCoordinates[2][0],
-            bottom: projectionCoordinates[2][1],
-          }}
-          source={require("../../../assets/green_sliderDown.png")}
-        />
-        <Image
-          style={{
-            position: "absolute",
-            left: projectionCoordinates[3][0],
-            bottom: projectionCoordinates[3][1],
-          }}
-          source={require("../../../assets/red_sliderDown.png")}
-        />
-      </View>
-
-      <View style={buttonContainerStyle()}>
-        <Pressable
-          style={
-            disabledButtonsArray[2]
-              ? buttonStyle("grey")
-              : buttonStyle("#82DB5B")
-          }
-          onPress={() => {
-            handleAnswerSelection(buttonChoiceArray[2].fileID);
-            handleStopSound();
-            displayModalIfWrongChoiceSelected(buttonChoiceArray[2].fileID);
-            disableButton(2);
-          }}
-        >
-          <Text style={textContainerStyle()}>
-            {generateAccentString(buttonChoiceArray[2])}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={
-            disabledButtonsArray[3]
-              ? buttonStyle("grey")
-              : buttonStyle("#e8791e")
-          }
-          onPress={() => {
-            handleAnswerSelection(buttonChoiceArray[3].fileID);
-            handleStopSound();
-            displayModalIfWrongChoiceSelected(buttonChoiceArray[3].fileID);
-            disableButton(3);
-          }}
-        >
-          <Text style={textContainerStyle()}>
-            {generateAccentString(buttonChoiceArray[3])}
-          </Text>
-        </Pressable>
-      </View>
-
-    
-      <Text style  = {{color: 'white'}}> Correctly Answered Questions on First Try: {currentQuestionIndex == 0 ? '-': currentRoundScore + '/' + currentQuestionIndex }</Text>
-      <Text style  = {{color: 'white'}}>Total correct: {numberOfQuestionsPlayed} </Text>
-      <Text style  = {{color: 'white'}}>Correct first attempts: {numberCorrectFirstChoice} </Text>
-
-      <Text style  = {{color: 'white'}}>total correct rate: {correctPercentage? correctPercentage: '-'}% </Text>
-       
-      
-
     </View>
   );
 };
