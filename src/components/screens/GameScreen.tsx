@@ -204,7 +204,7 @@ const GameScreen = (props: GameScreenProps) => {
   );
 
   //map variables
-  const windowWidth = Dimensions.get("window").width * 0.97;
+  const windowWidth = Dimensions.get("window").width * 0.97 * .35;
   const ratio = windowWidth / 2917.0; //og map png is 2917 pixels wide. Ratio finds scale
   let [projectionCoordinates, setProjectionCoordinates] = useState<number[][]>(
     Array(4).fill([0, 0])
@@ -367,7 +367,7 @@ const GameScreen = (props: GameScreenProps) => {
 */
 
   return (
-    <View style={playScreenWrapperStyles(deviceType)}>
+    <View nativeID = '5' style={playScreenWrapperStyles(deviceType)}>
       <View style={playScreenStyles(deviceType)}>
         <Modal transparent={true} visible={showModal}>
           <View
@@ -462,6 +462,7 @@ const GameScreen = (props: GameScreenProps) => {
         </View>
 
         <View
+        nativeID = 'map-wrapper'
           style={{
             borderWidth: 0,
             width: "97%",
@@ -471,11 +472,12 @@ const GameScreen = (props: GameScreenProps) => {
           }}
         >
           <Image
-            style={{ zIndex: -1, resizeMode: "contain", width: "100%", height: "100%"}}
+            style={{ resizeMode: "contain", width: "100%", height: "100%"}}
             source={require("../../../assets/map.png")}
           />
           
           <Image
+            nativeID="blue-pin"
             style={{
               position: 'absolute',
               left: projectionCoordinates[0][0],
@@ -485,6 +487,7 @@ const GameScreen = (props: GameScreenProps) => {
             source={require("../../../assets/blue_sliderDown.png")}
           />
           <Image
+          nativeID="yellow-pin"
             style={{
               position: "absolute",
               left: projectionCoordinates[1][0],
@@ -494,6 +497,7 @@ const GameScreen = (props: GameScreenProps) => {
             source={require("../../../assets/yellow_sliderDown.png")}
           />
           <Image
+          nativeID="green-pin"
             style={{
               position: "absolute",
               left: projectionCoordinates[2][0],
@@ -503,6 +507,7 @@ const GameScreen = (props: GameScreenProps) => {
             source={require("../../../assets/green_sliderDown.png")}
           />
           <Image
+          nativeID="red-pin"
             style={{
               position: "absolute",
               left: projectionCoordinates[3][0],
