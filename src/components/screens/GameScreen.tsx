@@ -13,7 +13,7 @@ import stringConstants, {
   GameScreens,
   storageKeyStrings,
 } from "../../constants/constants";
-import { SvgUri } from "react-native-svg";
+import { NumberProp, SvgUri } from "react-native-svg";
 import * as React from "react";
 import GameResponseArea from "../GameResponseArea";
 import { useEffect, useState, useLayoutEffect } from "react";
@@ -138,6 +138,35 @@ const textContainerStyle = () => {
   return style.default;
 };
 
+
+const markerStyle = (projectedCoordinates: number[], windowWidth: number, deviceType: Device.DeviceType) =>{
+  console.log('testing windo width: ', windowWidth)
+  const style = StyleSheet.create({
+    default: {
+      resizeMode: 'contain',
+      width: '17%',
+      height: '17%',
+      position: 'absolute',
+      left: `${projectedCoordinates[0] / windowWidth * 100.0}%`,
+      bottom: `${projectedCoordinates[1] / (windowWidth / 1.81) * 100.0}%`,
+      zIndex: 10
+    },
+    web: {
+      resizeMode: 'contain',
+      width: '17%',
+      height: '17%',
+      position: 'absolute',
+      left: `${projectedCoordinates[0] /( windowWidth * .35 )* 100.0}%`,
+      bottom: `${projectedCoordinates[1] / (windowWidth *.35 / 1.81) * 100.0}%`,
+      zIndex: 10
+    }
+  })
+  return deviceType == Device.DeviceType.DESKTOP ? style.web : style.default;
+
+};
+
+//`${left / windowWidth * 100.0}%`
+//`${bottom / windowHeight * 100.0}%`
 type QuestionStruct = {
   id: number;
   value: string;
@@ -153,6 +182,9 @@ type GameScreenProps = {
   correctButtonIndex: number;
   currentRoundScore: number;
 };
+
+
+
 
 const GameScreen = (props: GameScreenProps) => {
   const {
@@ -213,6 +245,8 @@ const GameScreen = (props: GameScreenProps) => {
   //current:
   //   handles fetching and displaying game stats
   //   calculating map coordinates (fetching devicetype for calculations is async)
+  let windowWidth = Dimensions.get("window").width * 0.97;
+  let windowHeight = windowWidth / 1.81;
 
   useEffect(() => {
     const getTotalQuestions = async (key: string) => {
@@ -246,7 +280,7 @@ const GameScreen = (props: GameScreenProps) => {
       );
       //scales coordinates according to window size
 
-      let windowWidth = Dimensions.get("window").width * 0.97;
+      
 
       const deviceType = await Device.getDeviceTypeAsync()
       if (deviceType == Device.DeviceType.DESKTOP){
@@ -490,54 +524,22 @@ const GameScreen = (props: GameScreenProps) => {
           
           <Image
             nativeID="blue-pin"
-            style={{
-              resizeMode: 'contain',
-              width: '17%',
-              height: '17%',
-              position: 'absolute',
-              left: projectionCoordinates[0][0],
-              bottom: projectionCoordinates[0][1],
-              zIndex: 10
-            }}
+            style={markerStyle(projectionCoordinates[0], windowWidth, deviceType)}
             source={require("../../../assets/blue_sliderDown.png")}
           />
           <Image
           nativeID="yellow-pin"
-            style={{
-              resizeMode: 'contain',
-              width: '17%',
-              height: '17%',
-              position: "absolute",
-              left: projectionCoordinates[1][0],
-              bottom: projectionCoordinates[1][1],
-              zIndex: 10
-            }}
+            style={markerStyle(projectionCoordinates[1], windowWidth, deviceType)}
             source={require("../../../assets/yellow_sliderDown.png")}
           />
           <Image
           nativeID="green-pin"
-            style={{
-              resizeMode: 'contain',
-              width: '17%',
-              height: '17%',
-              position: "absolute",
-              left: projectionCoordinates[2][0],
-              bottom: projectionCoordinates[2][1],
-              zIndex: 10
-            }}
+            style={markerStyle(projectionCoordinates[2], windowWidth, deviceType)}
             source={require("../../../assets/green_sliderDown.png")}
           />
           <Image
           nativeID="red-pin"
-            style={{
-              resizeMode: 'contain',
-              width: '17%',
-              height: '17%',
-              position: "absolute",
-              left: projectionCoordinates[3][0],
-              bottom: projectionCoordinates[3][1],
-              zIndex: 10
-            }}
+            style={markerStyle(projectionCoordinates[3], windowWidth, deviceType)}
             source={require("../../../assets/red_sliderDown.png")}
           />
         </View>
