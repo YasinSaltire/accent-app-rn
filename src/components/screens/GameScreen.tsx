@@ -204,8 +204,7 @@ const GameScreen = (props: GameScreenProps) => {
   );
 
   //map variables
-  const windowWidth = Dimensions.get("window").width * 0.97 * .35;
-  const ratio = windowWidth / 2917.0; //og map png is 2917 pixels wide. Ratio finds scale
+ 
   let [projectionCoordinates, setProjectionCoordinates] = useState<number[][]>(
     Array(4).fill([0, 0])
   );
@@ -246,6 +245,15 @@ const GameScreen = (props: GameScreenProps) => {
         )
       );
       //scales coordinates according to window size
+
+      let windowWidth = Dimensions.get("window").width * 0.97;
+
+      const deviceType = await Device.getDeviceTypeAsync()
+      if (deviceType == Device.DeviceType.DESKTOP){
+        windowWidth = windowWidth * .35
+      }
+      const ratio = windowWidth / 2917.0; //og map png is 2917 pixels wide. Ratio finds scale
+
       const scaledChoicesCoordinatesArray = choicesCoordinatesArray.map(
         (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
       );
@@ -464,6 +472,7 @@ const GameScreen = (props: GameScreenProps) => {
         <View
         nativeID = 'map-wrapper'
           style={{
+            position: 'relative',
             borderWidth: 0,
             width: "97%",
             aspectRatio: 1.81,
@@ -479,6 +488,9 @@ const GameScreen = (props: GameScreenProps) => {
           <Image
             nativeID="blue-pin"
             style={{
+              resizeMode: 'contain',
+              width: '17%',
+              height: '17%',
               position: 'absolute',
               left: projectionCoordinates[0][0],
               bottom: projectionCoordinates[0][1],
@@ -489,6 +501,9 @@ const GameScreen = (props: GameScreenProps) => {
           <Image
           nativeID="yellow-pin"
             style={{
+              resizeMode: 'contain',
+              width: '17%',
+              height: '17%',
               position: "absolute",
               left: projectionCoordinates[1][0],
               bottom: projectionCoordinates[1][1],
@@ -499,6 +514,9 @@ const GameScreen = (props: GameScreenProps) => {
           <Image
           nativeID="green-pin"
             style={{
+              resizeMode: 'contain',
+              width: '17%',
+              height: '17%',
               position: "absolute",
               left: projectionCoordinates[2][0],
               bottom: projectionCoordinates[2][1],
@@ -509,6 +527,9 @@ const GameScreen = (props: GameScreenProps) => {
           <Image
           nativeID="red-pin"
             style={{
+              resizeMode: 'contain',
+              width: '17%',
+              height: '17%',
               position: "absolute",
               left: projectionCoordinates[3][0],
               bottom: projectionCoordinates[3][1],

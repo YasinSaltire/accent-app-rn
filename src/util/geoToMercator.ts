@@ -13,17 +13,17 @@ const geoToMercator =  async <T>(lat: number, long: number) => {
   
   //if device is phone
   if (deviceType == 1) {
-    EQUATOR_FROM_BOTTOM = 545
-    LONG_OFFSET = 157
+    EQUATOR_FROM_BOTTOM = 547
+    LONG_OFFSET = 139
   //if device is tablet
   }else if (deviceType == 2){
-    EQUATOR_FROM_BOTTOM = 556
-    LONG_OFFSET = 163
+    EQUATOR_FROM_BOTTOM = 545
+    LONG_OFFSET = 140
   //if on web
   }else{
     //placeholder values. need to update
     EQUATOR_FROM_BOTTOM = 545
-    LONG_OFFSET = 157
+    LONG_OFFSET = 139
   }
   
 
