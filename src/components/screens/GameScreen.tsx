@@ -418,6 +418,9 @@ const GameScreen = (props: GameScreenProps) => {
             </View>
           </View>
         </Modal>
+
+        <Text style = {{ color: 'white', marginBottom: '2%'}}> Question {currentQuestionIndex + 1} / 10 </Text>
+
         <Pressable
           onPress={
             isAudioPlaying ? () => handleStopSound() : () => handlePlaySound()
