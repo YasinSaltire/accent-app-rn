@@ -13,30 +13,18 @@ import stringConstants, {
   GameScreens,
   storageKeyStrings,
 } from "../../constants/constants";
-import { NumberProp, SvgUri } from "react-native-svg";
 import * as React from "react";
-import GameResponseArea from "../GameResponseArea";
-import { useEffect, useState, useLayoutEffect } from "react";
-import AudioPlayer, { IAudioPlayer } from "../../services/AudioPlayer";
-import { Accent, AccentList, GameScreenStateSetter } from "../../../App";
-import uris from "../../temp/audioUris";
-import getSubArrayWithRandomizedIndices from "../../util/getSubArrayWithRandomizedIndices";
+import { useEffect, useState, } from "react";
 import { Audio } from "expo-av";
-import getCherryPickedSubArrayFromParent from "../../util/getCherryPickedSubArrayFromParent";
-import PlayButton from "../PlayButton";
-import { Sound } from "expo-av/build/Audio";
-import Question from "../../model/Question";
 import generateAccentString from "../../util/generateAccentString";
 import generateAudioLink from "../../util/generateAudioLink";
 import geoToMercator from "../../util/geoToMercator";
-import { enableExpoCliLogging } from "expo/build/logs/Logs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
 import { readData } from "../../util/AsyncStorage/storeChoice";
-import { parse } from "@fortawesome/fontawesome-svg-core";
 import * as Device from "expo-device";
 
-const playScreenWrapperStyles = (deviceType: Device.DeviceType) => {
+const playScreenWrapperStyles = () => {
   const style = StyleSheet.create({
     default: {
       backgroundColor: "black",
@@ -46,15 +34,8 @@ const playScreenWrapperStyles = (deviceType: Device.DeviceType) => {
       alignItems: "center",
       alignSelf: "center",
     },
-    web: {
-      backgroundColor: "black",
-      height: "100%",
-      width: "100%",
-      justifyContent: "center",
-      alignItems: "center",
-    },
   });
-  return deviceType == Device.DeviceType.DESKTOP ? style.web : style.default;
+  return style.default;
 };
 
 const modalStyles = (deviceType: Device.DeviceType) => {
@@ -74,7 +55,7 @@ const modalStyles = (deviceType: Device.DeviceType) => {
       width: "35%",
     },
   });
-  return deviceType != Device.DeviceType.DESKTOP? style.default: style.web;
+  return deviceType != Device.DeviceType.DESKTOP ? style.default : style.web;
 };
 
 const playScreenStyles = (deviceType: Device.DeviceType) => {
@@ -138,33 +119,6 @@ const textContainerStyle = () => {
   return style.default;
 };
 
-
-const markerStyle = (projectedCoordinates: number[], windowWidth: number, deviceType: Device.DeviceType) =>{
-  console.log('testing windo width: ', windowWidth)
-  const style = StyleSheet.create({
-    default: {
-      resizeMode: 'contain',
-      width: '17%',
-      height: '17%',
-      position: 'absolute',
-      left: `${projectedCoordinates[0] / windowWidth * 100.0}%`,
-      bottom: `${projectedCoordinates[1] / (windowWidth / 1.81) * 100.0}%`,
-      zIndex: 10
-    },
-    web: {
-      resizeMode: 'contain',
-      width: '17%',
-      height: '17%',
-      position: 'absolute',
-      left: `${projectedCoordinates[0] /( windowWidth * .35 )* 100.0}%`,
-      bottom: `${projectedCoordinates[1] / (windowWidth *.35 / 1.81) * 100.0}%`,
-      zIndex: 10
-    }
-  })
-  return deviceType == Device.DeviceType.DESKTOP ? style.web : style.default;
-
-};
-
 //`${left / windowWidth * 100.0}%`
 //`${bottom / windowHeight * 100.0}%`
 type QuestionStruct = {
@@ -182,9 +136,6 @@ type GameScreenProps = {
   correctButtonIndex: number;
   currentRoundScore: number;
 };
-
-
-
 
 const GameScreen = (props: GameScreenProps) => {
   const {
@@ -236,7 +187,7 @@ const GameScreen = (props: GameScreenProps) => {
   );
 
   //map variables
- 
+
   let [projectionCoordinates, setProjectionCoordinates] = useState<number[][]>(
     Array(4).fill([0, 0])
   );
@@ -245,10 +196,14 @@ const GameScreen = (props: GameScreenProps) => {
   //current:
   //   handles fetching and displaying game stats
   //   calculating map coordinates (fetching devicetype for calculations is async)
-  let windowWidth = Dimensions.get("window").width * 0.97;
-  let windowHeight = windowWidth / 1.81;
+  let [windowWidth, setWindowWidth] = useState<number>(
+    Dimensions.get("window").width * 0.97
+  );
+
+  console.log(windowWidth);
 
   useEffect(() => {
+    // wrap follownig 3 async storage calls in async to await
     const getTotalQuestions = async (key: string) => {
       const data = await readData(key);
       setNumberOfQuestionsPlayed(data);
@@ -271,23 +226,32 @@ const GameScreen = (props: GameScreenProps) => {
       );
       setCorrectPercentage(correctRate);
     };
+
     const projectCoordinates = async () => {
       //calculates geotomercator coordinates
-      const choicesCoordinatesArray = await Promise.all(
+
+      //synchronous non-state variable to hold mapwidth and update changes synchronously
+      let mapWidth: number = windowWidth;
+
+      // create new 2d array, where each lat long gets mapped to mercator using geoToMercator
+      const choicesCoordinatesArray: number[][] = await Promise.all(
         buttonChoiceArray.map(async (accent: any) =>
           geoToMercator(accent.latitude, accent.longitude)
         )
       );
-      //scales coordinates according to window size
 
-      
-
-      const deviceType = await Device.getDeviceTypeAsync()
-      if (deviceType == Device.DeviceType.DESKTOP){
-        windowWidth = windowWidth * .35
+      //scales mapWidth according to window size. If device is desktop, mapWidth steps into if statement as the entire windw width and not map width
+      const deviceType = await Device.getDeviceTypeAsync();
+      if (deviceType == Device.DeviceType.DESKTOP) {
+        mapWidth = mapWidth * 0.35;
+        //update state so styles can update accordingly
+        setWindowWidth(mapWidth);
       }
-      const ratio = windowWidth / 2917.0; //og map png is 2917 pixels wide. Ratio finds scale
 
+      //geoToMercator generates raw pixel values on the original 2917 pixel wide map. Calculate ratio to scale to current map size
+      const ratio = mapWidth / 2917.0;
+
+      //apply ratio to all coordinates. Ratio applies to height value because width and height scale accordngly (aspect ratio maintained)
       const scaledChoicesCoordinatesArray = choicesCoordinatesArray.map(
         (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
       );
@@ -309,6 +273,7 @@ const GameScreen = (props: GameScreenProps) => {
 
     //get device type and set state
     getDeviceType();
+    console.log();
   }, [correctChoiceObj]);
 
   const displayModalIfWrongChoiceSelected = (id: number) => {
@@ -322,14 +287,6 @@ const GameScreen = (props: GameScreenProps) => {
       let newDisabledButtonsArray: boolean[] = [...disabledButtonsArray];
       newDisabledButtonsArray[buttonIndex] = true;
       setDisabledButtonsArray(newDisabledButtonsArray);
-    }
-  };
-
-  const handleAudioButtonPress = () => {
-    if (isAudioPlaying) {
-      handleStopSound();
-    } else {
-      handlePlaySound();
     }
   };
 
@@ -395,26 +352,26 @@ const GameScreen = (props: GameScreenProps) => {
     }
   };
 
-  /*
-  console.log('window width: ', windowWidth)
-  const choicesCoordinatesArray = buttonChoiceArray.map((accent: any) =>
-    geoToMercator(accent.latitude, accent.longitude)
-  );
-  //console.log("width ", windowWidth);
-  
-  const projectedCoordinates = choicesCoordinatesArray.map(
-    (coordinate: any) => [coordinate[0] * ratio, coordinate[1] * ratio]
-  );
-  console.log(projectedCoordinates);
-*/
+  const markerStyle = (projectedCoordinates: number[], windowWidth: number) => {
+    const style = StyleSheet.create({
+      default: {
+        resizeMode: "contain",
+        width: "17%",
+        height: "17%",
+        position: "absolute",
+        left: `${(projectedCoordinates[0] / windowWidth) * 100.0}%`,
+        bottom: `${(projectedCoordinates[1] / (windowWidth / 1.81)) * 100.0}%`,
+        zIndex: 10,
+      },
+    });
+    return style.default;
+  };
 
   return (
-    <View nativeID = '5' style={playScreenWrapperStyles(deviceType)}>
+    <View nativeID="5" style={playScreenWrapperStyles()}>
       <View style={playScreenStyles(deviceType)}>
         <Modal transparent={true} visible={showModal}>
-          <View
-            style={modalStyles(deviceType)}
-          >
+          <View style={modalStyles(deviceType)}>
             <View
               style={{
                 width: "60%",
@@ -453,7 +410,10 @@ const GameScreen = (props: GameScreenProps) => {
           </View>
         </Modal>
 
-        <Text style = {{ color: 'white', marginBottom: '2%'}}> Question {currentQuestionIndex + 1} / 10 </Text>
+        <Text style={{ color: "white", marginBottom: "2%" }}>
+          {" "}
+          Question {currentQuestionIndex + 1} / 10{" "}
+        </Text>
 
         <Pressable
           onPress={
@@ -507,9 +467,9 @@ const GameScreen = (props: GameScreenProps) => {
         </View>
 
         <View
-        nativeID = 'map-wrapper'
+          nativeID="map-wrapper"
           style={{
-            position: 'relative',
+            position: "relative",
             borderWidth: 0,
             width: "97%",
             aspectRatio: 1.81,
@@ -518,28 +478,28 @@ const GameScreen = (props: GameScreenProps) => {
           }}
         >
           <Image
-            style={{ resizeMode: "contain", width: "100%", height: "100%"}}
+            style={{ resizeMode: "contain", width: "100%", height: "100%" }}
             source={require("../../../assets/map.png")}
           />
-          
+
           <Image
             nativeID="blue-pin"
-            style={markerStyle(projectionCoordinates[0], windowWidth, deviceType)}
+            style={markerStyle(projectionCoordinates[0], windowWidth)}
             source={require("../../../assets/blue_sliderDown.png")}
           />
           <Image
-          nativeID="yellow-pin"
-            style={markerStyle(projectionCoordinates[1], windowWidth, deviceType)}
+            nativeID="yellow-pin"
+            style={markerStyle(projectionCoordinates[1], windowWidth)}
             source={require("../../../assets/yellow_sliderDown.png")}
           />
           <Image
-          nativeID="green-pin"
-            style={markerStyle(projectionCoordinates[2], windowWidth, deviceType)}
+            nativeID="green-pin"
+            style={markerStyle(projectionCoordinates[2], windowWidth)}
             source={require("../../../assets/green_sliderDown.png")}
           />
           <Image
-          nativeID="red-pin"
-            style={markerStyle(projectionCoordinates[3], windowWidth, deviceType)}
+            nativeID="red-pin"
+            style={markerStyle(projectionCoordinates[3], windowWidth)}
             source={require("../../../assets/red_sliderDown.png")}
           />
         </View>

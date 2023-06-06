@@ -120,7 +120,7 @@ const HomeScreen = (props: HomeScreenProps) => {
             numberOfLines={3}
             style={{ textAlign: "center", fontSize: 50, color: "white" }}
           >
-            THE ACCENT GAME!!
+            THE ACCENT GAME
           </Text>
         </View>
 
