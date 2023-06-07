@@ -75,16 +75,10 @@ const addDataToCurrentValue = async (key: string, value: number) => {
 };
 
 
-const addKeyValueMapping = async(storageKey: string, key: string, value: string) => {
+const addKeyValueMapping = async (storageKey: string, key: string, value: string) => {
   try{
-    let map = await readData(storageKey)
-    //if no map, create new map and add mapping
-    if (map === ""){
-      map = new Map()
-    }
-    map.set(key, value)
-    await storeData(storageKey, map)
-
+    deleteData(storageKey)
+    
   } catch (e) {
 
   }

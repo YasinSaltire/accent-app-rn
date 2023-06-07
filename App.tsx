@@ -146,7 +146,9 @@ export default function App() {
     //if choice is first guess of quetion
 
     if (record[currentGameIndex].length == 1){
-      addKeyValueMapping(storageKeyStrings.correctIdAndChoiceIdKey, correctChoicesArray[currentGameIndex].fileID, String(id))
+      console.log('key being added', correctChoicesArray[currentGameIndex].fileID)
+      console.log('value being added', id)
+      addValueToArrayInStorage(storageKeyStrings.correctIdAndChoiceIdKey, [correctChoicesArray[currentGameIndex].fileID, String(id)])
     }
 
     if (id === correctChoicesArray[currentGameIndex].fileID) {
