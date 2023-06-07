@@ -25,8 +25,7 @@ const addValueToArrayInStorage = async (key: string, value: any) => {
 
 const storeData = async (key: string, value: any) => {
   // creates key-value storage if key has no value, and updates if
-  //value exists. Converts to json string regardless of whether value is object or string
-  //
+  // value exists. Converts to json string regardless of whether value is object or string
   try {
     await AsyncStorage.setItem(key, JSON.stringify(value));
   } catch (e) {
@@ -75,6 +74,23 @@ const addDataToCurrentValue = async (key: string, value: number) => {
   } catch (e) {}
 };
 
+
+const addKeyValueMapping = async(storageKey: string, key: string, value: string) => {
+  try{
+    let map = await readData(storageKey)
+    //if no map, create new map and add mapping
+    if (map === ""){
+      map = new Map()
+    }
+    map.set(key, value)
+    await storeData(storageKey, map)
+
+  } catch (e) {
+
+  }
+}
+
+
 export {
   addDataToCurrentValue,
   storeData,
@@ -82,4 +98,6 @@ export {
   readData,
   addValueToArrayInStorage,
   addIdsOfChoiceArrayToStorage,
+  addKeyValueMapping,
+  
 };

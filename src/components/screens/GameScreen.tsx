@@ -185,22 +185,19 @@ const GameScreen = (props: GameScreenProps) => {
   const [deviceType, setDeviceType] = useState<Device.DeviceType>(
     Device.DeviceType.UNKNOWN
   );
-
+    
   //map variables
 
   let [projectionCoordinates, setProjectionCoordinates] = useState<number[][]>(
     Array(4).fill([0, 0])
   );
 
-  //use effect handles all async func calls that may be needed to render screen but can't be called before render
-  //current:
-  //   handles fetching and displaying game stats
-  //   calculating map coordinates (fetching devicetype for calculations is async)
+  
+
   let [windowWidth, setWindowWidth] = useState<number>(
     Dimensions.get("window").width * 0.97
   );
 
-  console.log(windowWidth);
 
   useEffect(() => {
     // wrap follownig 3 async storage calls in async to await

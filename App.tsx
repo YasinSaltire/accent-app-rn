@@ -24,6 +24,7 @@ import {
   addValueToArrayInStorage,
   addIdsOfChoiceArrayToStorage,
   addDataToCurrentValue,
+  addKeyValueMapping,
 } from "./src/util/AsyncStorage/storeChoice";
 import { storageKeyStrings } from "./src/constants/constants";
 import * as Updates from 'expo-updates'
@@ -141,6 +142,12 @@ export default function App() {
     // update score
     //curScore = scoreRound(userRecord, correctChoicesArray);
     //setScore(curScore);
+
+    //if choice is first guess of quetion
+
+    if (record[currentGameIndex].length == 1){
+      addKeyValueMapping(storageKeyStrings.correctIdAndChoiceIdKey, correctChoicesArray[currentGameIndex].fileID, String(id))
+    }
 
     if (id === correctChoicesArray[currentGameIndex].fileID) {
       //if correct choice is chosen is chosen on first try
