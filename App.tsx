@@ -1,30 +1,19 @@
 import { useEffect, useState } from "react";
 import { GameScreens } from "./src/constants/constants";
 import generatePseudorandomNumberBetweenMinAndMax from "./src/util/generatePseudorandomNumberBetweenMinAndMax";
-import GameScreen, {
-  QuestionStruct,
-} from "./src/components/screens/GameScreen";
+import GameScreen from "./src/components/screens/GameScreen";
 import HomeScreen from "./src/components/screens/HomeScreen";
 
 import data from "./assets/audio/clip_db.json";
 import generateRandomQuestionChoices from "./src/util/generateRandomQuestionChoices";
 import generateTotalIncorrectChoices from "./src/util/generateTotalIncorrectChoices";
-import scoreRound from "./src/util/scoreRound";
 import LearnMoreScreen from "./src/components/screens/LearnMoreScreen";
 import CorrectScreen from "./src/components/screens/CorrectScreen";
 import EndScreen from "./src/components/screens/EndScreen";
-import { View, Text } from "react-native";
 import AccentCaptureScreen from "./src/components/screens/AccentCaptureScreen";
-import * as WebBrowser from "expo-web-browser";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  storeData,
-  readData,
-  deleteData,
   addValueToArrayInStorage,
-  addIdsOfChoiceArrayToStorage,
   addDataToCurrentValue,
-  addKeyValueMapping,
 } from "./src/util/AsyncStorage/storeChoice";
 import { storageKeyStrings } from "./src/constants/constants";
 import * as Updates from 'expo-updates'
@@ -33,22 +22,6 @@ type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
 
 export default function App() {
-  async function onFetchUpdateAsync() {
-    try {
-      const update = await Updates.checkForUpdateAsync();
-
-      if (update.isAvailable) {
-        await Updates.fetchUpdateAsync();
-        await Updates.reloadAsync();
-      }
-    } catch (error) {
-      // You can also add an alert() to see the error message in case of an error when fetching updates.
-      alert(`Error fetching latest Expo update: ${error}`);
-    }
-  }
-
-
-
   let [correctChoicesArray, setCorrectChoicesArray] = useState<any>([]);
   let [incorrectChoicesArray, setIncorrectChoicesArray] = useState<any>([]);
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
@@ -76,7 +49,6 @@ export default function App() {
       newIndex = -1;
       setScreen(screen);
       setCurrentGameIndex(newIndex);
-      //increment rounds played
     } else {
       let record = [...userSelectedChoicesRecord];
       record.push([]);
@@ -98,16 +70,6 @@ export default function App() {
     const correctChoices = generateRandomQuestionChoices(data, 10);
 
     //append all correct choice id's to end of storage array
-    //addIdsOfChoiceArrayToStorage('test', correctChoices)
-    //console.log('test data', readData('test'))
-    //deleteData('test')
-
-    //addValueToArrayInStorage('test', '5')
-    //console.log('test ', readData('test'))
-
-    //addIdsOfChoiceArrayToStorage(storageKeyStrings.correctChoicesKey, correctChoices)
-
-    //console.log('test', readData(storageKeyStrings.correctChoicesKey))
     const incorrectChoicesForEntireRound = generateTotalIncorrectChoices(
       correctChoices,
       data,
@@ -117,44 +79,22 @@ export default function App() {
     setIncorrectChoicesArray(incorrectChoicesForEntireRound);
 
     setUserSelectedChoicesRecord([[]]);
-    console.log("log", userSelectedChoicesRecord);
-    //console.log("length test ", correctChoicesArray.length);
     setCurrentGameIndex(0);
     setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
-    console.log("screen", gameScreen);
-
     setScreen(GameScreens.GAMESCREEN);
   };
 
-  useEffect(() => {
-    //console.log("print correct choices: ", correctChoicesArray);
-  }, [correctChoicesArray]);
-
   const handleAnswerSelection = (id: number) => {
     let screen: GameScreens;
-    //deleteData(storageKeyStrings.firstChoiceCorrectScoreKey);
-    //deleteData(storageKeyStrings.questionsPlayedKey);
-
-    console.log("cur game index ", currentGameIndex);
     let record = [...userSelectedChoicesRecord];
     record[currentGameIndex].push(id);
-    console.log("after click log ", userSelectedChoicesRecord);
     setUserSelectedChoicesRecord(record);
-    // update score
-    //curScore = scoreRound(userRecord, correctChoicesArray);
-    //setScore(curScore);
-
-    //if choice is first guess of quetion
 
     if (record[currentGameIndex].length == 1){
-      console.log('key being added', correctChoicesArray[currentGameIndex].fileID)
-      console.log('value being added', id)
       addValueToArrayInStorage(storageKeyStrings.correctIdAndChoiceIdKey, [correctChoicesArray[currentGameIndex].fileID, String(id)])
     }
 
     if (id === correctChoicesArray[currentGameIndex].fileID) {
-      //if correct choice is chosen is chosen on first try
-
       if (record[currentGameIndex].length == 1) {
         const newCurrentScore: number = currentRoundScore + 1;
         setCurrentRoundScore(newCurrentScore);
@@ -164,9 +104,7 @@ export default function App() {
       addDataToCurrentValue(storageKeyStrings.questionsPlayedKey, 1)
       screen = GameScreens.CORRECT;
       setScreen(screen);
-    } else {
-      //if wrong choice selected
-    }
+    } 
   };
 
   return (
@@ -178,7 +116,7 @@ export default function App() {
       {gameScreen === GameScreens.GAMESCREEN &&
         correctChoicesArray.length > 0 && (
           <GameScreen
-            correctlyAnswered={score} // state variable that you'll define above in this component
+            correctlyAnswered={score} 
             allIncorrect={incorrectChoicesArray}
             currentQuestionIndex={currentGameIndex}
             handleAnswerSelection={handleAnswerSelection}
@@ -219,7 +157,7 @@ class Accent {
   displayString: string;
   url: string;
   constructor(linkToAudio: string) {
-    this.id = generatePseudorandomNumberBetweenMinAndMax(); // use function to generate proper id
+    this.id = generatePseudorandomNumberBetweenMinAndMax(); 
     this.displayString = "Display string";
     this.url = linkToAudio;
   }
@@ -228,8 +166,6 @@ class Accent {
 function takeUrisAndOutputDictionary(uriList: string[]) {
   const list: AccentList = [];
   uriList.forEach((uri) => {
-    // package uri, id, displaystring into Accent object
-    // push accent object into declared list
     const accent: Accent = new Accent(uri);
     list.push(accent);
   });
@@ -238,7 +174,6 @@ function takeUrisAndOutputDictionary(uriList: string[]) {
 
 function pickNRandomElementsFromArray<T>(n: number, pickFromArray: T[]) {
   if (pickFromArray.length > 0 && n < +pickFromArray.length) {
-    // return array with randomly picked elements
     const min = 0;
     const max = pickFromArray.length;
     const setOfPickedIndices = new Set<number>();
