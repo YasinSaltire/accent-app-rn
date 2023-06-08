@@ -48,6 +48,7 @@ export default function App() {
   }
 
 
+
   let [correctChoicesArray, setCorrectChoicesArray] = useState<any>([]);
   let [incorrectChoicesArray, setIncorrectChoicesArray] = useState<any>([]);
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
@@ -172,8 +173,7 @@ export default function App() {
     <>
       {gameScreen === GameScreens.HOMESCREEN && (
         <HomeScreen 
-          doOnStartGameRound={handleStartGameRound}
-          checkUpdates = {onFetchUpdateAsync} />
+          doOnStartGameRound={handleStartGameRound} />
       )}
       {gameScreen === GameScreens.GAMESCREEN &&
         correctChoicesArray.length > 0 && (

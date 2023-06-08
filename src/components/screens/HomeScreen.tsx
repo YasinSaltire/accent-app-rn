@@ -10,6 +10,8 @@ import * as WebBrowser from "expo-web-browser";
 import { deleteData } from "../../util/AsyncStorage/storeChoice";
 import * as Device from "expo-device";
 import { useEffect, useState } from "react";
+import * as Updates from 'expo-updates'
+import CustomModal from "../CustomModal";
 
 const homeScreenStyles = (deviceType: Device.DeviceType) => {
   const style = StyleSheet.create({
@@ -85,7 +87,6 @@ const buttonContainer = (color: string = "white") => {
 
 type HomeScreenProps = {
   doOnStartGameRound: any;
-  checkUpdates: any;
 };
 
 
@@ -93,28 +94,57 @@ type HomeScreenProps = {
 const HomeScreen = (props: HomeScreenProps) => {
   //console.log("data 1st entry " + data[1])
   //console.log("question choices " + generateRandomQuestionChoices(data, 10))
-  const { doOnStartGameRound, checkUpdates } = props;
+  const { doOnStartGameRound } = props;
   //deleteData('First Score')
 
+  const [updateAvailable, setUpdateAvailable] = useState<boolean>(false)
+  
   const [deviceType, setDeviceType] = useState<Device.DeviceType>(
     Device.DeviceType.UNKNOWN
   );
 
+  //get's update and reloads app
+  const getUpdate = async() =>{
+    try{
+      setUpdateAvailable(false)
+      await Updates.fetchUpdateAsync();
+      await Updates.reloadAsync();
+    } catch (error) {
+      alert(`Error checking latest Expo update: ${error}`);
+    }
+  }
+
   useEffect(() => {
     const getDeviceType = async () => {
       const type = await Device.getDeviceTypeAsync();
-      setDeviceType(type);
+      await setDeviceType(type);
     };
-    getDeviceType();
-  }, []);
 
-  const handleButtonPress = async () => {
-    const url: string = "https://saltire.com/speech/";
-  };
+    const checkUpdate = async () =>{
+      const type = await Device.getDeviceTypeAsync();
+      try{
+        if (type === Device.DeviceType.PHONE || type === Device.DeviceType.TABLET){
+          const update = await Updates.checkForUpdateAsync();
+  
+          if (update.isAvailable) {
+            await setUpdateAvailable(true)
+          }
+        }
+      } catch (error) {
+        alert(`Error fetching latest Expo update: ${error}`);
+      }
+    }
+    
+
+    getDeviceType();
+    checkUpdate();
+  }, []);
+  
 
   return (
     <View style={homeScreenWrapperStyles(deviceType)}>
       <View style={homeScreenStyles(deviceType)}>
+        <CustomModal deviceType = {deviceType} showModal = {updateAvailable} modalBodyText = {'New Update Available'} modalButtonText = {'Update'} onModalButtonPress = {getUpdate}/>
         <View style={{ width: "60%" }}>
           <Text
             numberOfLines={3}
@@ -140,11 +170,7 @@ const HomeScreen = (props: HomeScreenProps) => {
             <Text style={textStyles()}>ADD ACCENT</Text>
           </Pressable>
 
-          {deviceType != Device.DeviceType.DESKTOP && (
-            <View>
-              <Button title="Fetch update" onPress={checkUpdates} />
-            </View>
-          )}
+          
         </View>
       </View>
     </View>

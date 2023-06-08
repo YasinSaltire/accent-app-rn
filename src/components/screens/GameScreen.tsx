@@ -23,6 +23,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
 import { readData } from "../../util/AsyncStorage/storeChoice";
 import * as Device from "expo-device";
+import CustomModal from "../CustomModal";
 
 const playScreenWrapperStyles = () => {
   const style = StyleSheet.create({
@@ -55,7 +56,7 @@ const modalStyles = (deviceType: Device.DeviceType) => {
       width: "35%",
     },
   });
-  return deviceType != Device.DeviceType.DESKTOP ? style.default : style.web;
+  return deviceType == Device.DeviceType.DESKTOP ? style.web : style.default;
 };
 
 const playScreenStyles = (deviceType: Device.DeviceType) => {
@@ -369,10 +370,11 @@ const GameScreen = (props: GameScreenProps) => {
     });
     return style.default;
   };
-
+  console.log(showModal)
   return (
     <View nativeID="5" style={playScreenWrapperStyles()}>
       <View style={playScreenStyles(deviceType)}>
+        <CustomModal deviceType = {deviceType} showModal = {showModal} modalBodyText={'Incorrect!'} modalButtonText = {'Try Again'} onModalButtonPress={() => (function () {setShowModal(false)})()}/>
         <Modal transparent={true} visible={showModal}>
           <View style={modalStyles(deviceType)}>
             <View
