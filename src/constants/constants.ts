@@ -47,6 +47,8 @@ enum GameScreens {
   CORRECT = "correct",
   ENDSCREEN = "end-screen",
   ACCENT_ACQ = "accent-capture",
+  STAT_SCREEN = 'player-stat-screen',
+  
 }
 
 enum Errors {

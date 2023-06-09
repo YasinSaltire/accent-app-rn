@@ -87,6 +87,7 @@ const buttonContainer = (color: string = "white") => {
 
 type HomeScreenProps = {
   doOnStartGameRound: any;
+  handleGoToStats: any
 };
 
 
@@ -94,7 +95,7 @@ type HomeScreenProps = {
 const HomeScreen = (props: HomeScreenProps) => {
   //console.log("data 1st entry " + data[1])
   //console.log("question choices " + generateRandomQuestionChoices(data, 10))
-  const { doOnStartGameRound } = props;
+  const { doOnStartGameRound, handleGoToStats} = props;
   //deleteData('First Score')
 
   const [updateAvailable, setUpdateAvailable] = useState<boolean>(false)
@@ -169,6 +170,13 @@ const HomeScreen = (props: HomeScreenProps) => {
           >
             <Text style={textStyles()}>ADD ACCENT</Text>
           </Pressable>
+          <Pressable
+            onPress ={() => handleGoToStats()}
+            style={buttonColor("#e8791e")}
+          >
+            <Text style={textStyles()}>STATS</Text>
+          </Pressable>
+          
 
           
         </View>

@@ -1,22 +1,15 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import generateAccentString from "../../util/generateAccentString";
-import scoreRound from "../../util/scoreRound";
-import {
-  addDataToCurrentValue,
-  readData,
-  deleteData,
-} from "../../util/AsyncStorage/storeChoice";
-import { storageKeyStrings } from "../../constants/constants";
 import { useEffect, useState } from "react";
+import { readData } from "../../util/AsyncStorage/storeChoice";
+import { storageKeyStrings } from "../../constants/constants";
 
-type EndScreenProps = {
-  selections: number[][];
-  correctChoices: any;
-  handleButtonPress: any;
-};
+type StatScreenProps = {
+  handleGoToHome: any
+}
 
-const EndScreen = (props: EndScreenProps) => {
-  const score = scoreRound(props.selections, props.correctChoices);
+const StatsScreen = (props: StatScreenProps) => {
+  const {handleGoToHome} = props;
   //addDataToCurrentValue(storageKeyStrings.firstChoiceCorrectScoreKey, score)
   //console.log(readData(storageKeyStrings.firstChoiceCorrectScoreKey))
   //deleteData("First")
@@ -54,29 +47,7 @@ const EndScreen = (props: EndScreenProps) => {
 
   return (
     <View style={playScreenStyles("black")}>
-      {score === 10 && 
-      <View>
-        <Text style={{ textAlign: 'center', marginBottom: 50, fontSize: 20, color: "white" }}>
-            Great Job! You completed a perfect round and answered all questions correct on the first try.
-          </Text>
-      </View>}
-      {score < 10 && (
-        <View style = {{justifyContent: 'center'}}>
-          <Text style={{ textAlign: 'center', marginBottom: 50, fontSize: 20, color: "white" }}>
-            Great Job! You Completed a Round.
-          </Text>
-          <View style={{ width: "80%" }}>
-            <Text style={{ textAlign: 'center', alignSelf: "center", fontSize: 20, color: "white" }}>
-              You answered {score} questions correct on the first try
-            </Text>
-          </View>
-        </View>
-      )}
-      <Text style={{ color: "white" }}>
-          {" "}
-          Correctly Answered Questions on First Try:{" "}
-          {score + "/" + 10}
-        </Text>
+      
         <Text style={{ color: "white" }}>
           Total correct: {numberOfQuestionsPlayed}{" "}
         </Text>
@@ -97,7 +68,7 @@ const EndScreen = (props: EndScreenProps) => {
           width: "80%",
           height: "10%",
         }}
-        onPress={() => props.handleButtonPress()}
+        onPress={() => handleGoToHome()}
       >
         <Text
           numberOfLines={1}
@@ -125,4 +96,4 @@ const playScreenStyles = (color: string) => {
   return style.default;
 };
 
-export default EndScreen;
+export default StatsScreen;

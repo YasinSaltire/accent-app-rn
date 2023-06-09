@@ -13,6 +13,7 @@ import scoreRound from "./src/util/scoreRound";
 import LearnMoreScreen from "./src/components/screens/LearnMoreScreen";
 import CorrectScreen from "./src/components/screens/CorrectScreen";
 import EndScreen from "./src/components/screens/EndScreen";
+import StatsScreen from "./src/components/screens/StatsScreen";
 import { View, Text } from "react-native";
 import AccentCaptureScreen from "./src/components/screens/AccentCaptureScreen";
 import * as WebBrowser from "expo-web-browser";
@@ -169,11 +170,16 @@ export default function App() {
     }
   };
 
+  const handleGoToStats = () =>{
+    setScreen(GameScreens.STAT_SCREEN)
+  }
+
   return (
     <>
       {gameScreen === GameScreens.HOMESCREEN && (
         <HomeScreen 
-          doOnStartGameRound={handleStartGameRound} />
+          doOnStartGameRound={handleStartGameRound}
+          handleGoToStats={handleGoToStats} />
       )}
       {gameScreen === GameScreens.GAMESCREEN &&
         correctChoicesArray.length > 0 && (
@@ -208,6 +214,10 @@ export default function App() {
         />
       )}
       {gameScreen === GameScreens.ACCENT_ACQ && <AccentCaptureScreen />}
+      {gameScreen === GameScreens.STAT_SCREEN && (
+      <StatsScreen 
+        handleGoToHome ={handleGoToHome}
+      />)}
     </>
   );
 }

@@ -149,20 +149,8 @@ const GameScreen = (props: GameScreenProps) => {
     currentRoundScore,
   } = props;
   console.log("button index", correctButtonIndex);
-  /*
-  console.log(currentQuestionIndex);
+
   
-  console.log('correct id ', correctChoiceObj.fileID)
-
-  /*
-  console.log(`There are ${allIncorrect.length} incorrect choices`);
-  console.log("correct id", correctChoiceObj.fileID);
-  console.log("incorrect 1st id ", allIncorrect[0]);
-  console.log("correctly answered ", correctlyAnswered);
-
-  console.log("button index", correctButtonIndex);
-  console.log("correct country", correctChoiceObj.country);
-  */
   const indexOfFirstIncorrectChoice = currentQuestionIndex * 3;
   let buttonChoiceArray: any = [];
   buttonChoiceArray.push(allIncorrect[indexOfFirstIncorrectChoice]);
@@ -180,9 +168,6 @@ const GameScreen = (props: GameScreenProps) => {
   ]);
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
 
-  let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] = useState("");
-  let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] = useState("");
-  let [correctPercentage, setCorrectPercentage] = useState(0);
   const [deviceType, setDeviceType] = useState<Device.DeviceType>(
     Device.DeviceType.UNKNOWN
   );
@@ -202,28 +187,7 @@ const GameScreen = (props: GameScreenProps) => {
 
   useEffect(() => {
     // wrap follownig 3 async storage calls in async to await
-    const getTotalQuestions = async (key: string) => {
-      const data = await readData(key);
-      setNumberOfQuestionsPlayed(data);
-      return await readData(key);
-    };
-    const getTotalCorrectFirstAttempt = async (key: string) => {
-      const data = await readData(key);
-      setNumberCorrectFirstChoice(data);
-      return await readData(key);
-    };
-    const calculateCorrectPercentage = async () => {
-      const total = await getTotalQuestions(
-        storageKeyStrings.questionsPlayedKey
-      );
-      const correct = await getTotalCorrectFirstAttempt(
-        storageKeyStrings.firstChoiceCorrectScoreKey
-      );
-      const correctRate = Math.floor(
-        (parseFloat(correct) / parseFloat(total)) * 100
-      );
-      setCorrectPercentage(correctRate);
-    };
+
 
     const projectCoordinates = async () => {
       //calculates geotomercator coordinates
@@ -272,8 +236,7 @@ const GameScreen = (props: GameScreenProps) => {
     //set map coordiantes
     projectCoordinates();
 
-    //calc and set gamestats
-    calculateCorrectPercentage();
+   
 
     //get device type and set state
     getDeviceType();
@@ -547,23 +510,6 @@ const GameScreen = (props: GameScreenProps) => {
           </Pressable>
         </View>
 
-        <Text style={{ color: "white" }}>
-          {" "}
-          Correctly Answered Questions on First Try:{" "}
-          {currentQuestionIndex == 0
-            ? "-"
-            : currentRoundScore + "/" + currentQuestionIndex}
-        </Text>
-        <Text style={{ color: "white" }}>
-          Total correct: {numberOfQuestionsPlayed}{" "}
-        </Text>
-        <Text style={{ color: "white" }}>
-          Correct first attempts: {numberCorrectFirstChoice}{" "}
-        </Text>
-
-        <Text style={{ color: "white" }}>
-          total correct rate: {correctPercentage ? correctPercentage : "-"}%{" "}
-        </Text>
       </View>
     </View>
   );
