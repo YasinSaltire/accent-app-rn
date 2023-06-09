@@ -48,19 +48,19 @@ const StatsScreen = (props: StatScreenProps) => {
   return (
     <View style={playScreenStyles("black")}>
       
-        <Text style={{ color: "white" }}>
-          Total correct: {numberOfQuestionsPlayed}{" "}
+        <Text style={{marginTop: '5%', marginBottom: '5%', color: "white" }}>
+          Lifetime questions answered: {numberOfQuestionsPlayed}{" "}
         </Text>
-        <Text style={{ color: "white" }}>
-          Correct first attempts: {numberCorrectFirstChoice}{" "}
+        <Text style={{ marginBottom: '5%',color: "white" }}>
+          Total correct first attempts: {numberCorrectFirstChoice}{" "}
         </Text>
 
-        <Text style={{ color: "white" }}>
-          total correct rate: {correctPercentage ? correctPercentage : "-"}%{" "}
+        <Text style={{ marginBottom: '10%',color: "white" }}>
+          First attempt correct rate: {correctPercentage ? correctPercentage : "-"}%{" "}
         </Text>
       <Pressable
         style={{
-          marginTop: "30%",
+          marginTop: "10%",
           alignItems: "center",
           alignSelf: "center",
           justifyContent: "center",
@@ -90,7 +90,7 @@ const playScreenStyles = (color: string) => {
       alignItems: "center",
       flexDirection: "column",
       flex: 1,
-      justifyContent: "center",
+      justifyContent: 'center'
     },
   });
   return style.default;
