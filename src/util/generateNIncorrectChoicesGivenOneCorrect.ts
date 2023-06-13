@@ -10,10 +10,15 @@ const generateNIncorrectChoicesGivenOneCorrect = <T>(
 
   let arrayOfNIncorrect: any[] = [];
 
+  //if correct has city, don't add any incorrect's that match country but city is empty
+  //if correct has no city but has region (i.e midwestern USA), don't add incorrects that match country but city empty, and don't add incorrects that have same region same country
+  //if correct only has country, don't add any incorrects that contain same country
   while (arrayOfNIncorrect.length != numberOfIncorrectToGenerate) {
     let idx: number = pickRandomIndexFromArray(data);
     let currentPick = data[idx];
+
     while (
+      (currentPick.country === correctChoice.country) || ((arrayOfNIncorrect.filter((accent: any) => accent.country == currentPick.country)).length) > 0 ||
       (currentPick.latitude == correctLat &&
       currentPick.longitude == correctLong) ||
       ((arrayOfNIncorrect.filter(
@@ -22,7 +27,6 @@ const generateNIncorrectChoicesGivenOneCorrect = <T>(
           accent.longitude == currentPick.longitude
       )).length > 0)
     ) {
-        console.log(idx);
         idx = pickRandomIndexFromArray(data);
         currentPick = data[idx];
     
