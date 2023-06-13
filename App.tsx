@@ -16,6 +16,7 @@ import AccentCaptureScreen from "./src/components/screens/AccentCaptureScreen";
 import {
   addValueToArrayInStorage,
   addDataToCurrentValue,
+  deleteData,
 } from "./src/util/AsyncStorage/storeChoice";
 import { storageKeyStrings } from "./src/constants/constants";
 import * as Updates from 'expo-updates'
@@ -68,8 +69,12 @@ export default function App() {
     setScreen(GameScreens.LEARN_MORE);
   };
 
-  const handleStartGameRound = () => {
-    const correctChoices = generateRandomQuestionChoices(data, 10);
+  const handleStartGameRound = async() => {
+    //generate 10 choices avoiding previous 3 rounds
+    //add choices to async storage
+    //if 2d array in async greater than 3, remove 1st array of choices 
+
+    const correctChoices = await generateRandomQuestionChoices(data, 10);
 
     //append all correct choice id's to end of storage array
     const incorrectChoicesForEntireRound = generateTotalIncorrectChoices(
@@ -93,7 +98,8 @@ export default function App() {
     setUserSelectedChoicesRecord(record);
 
     if (record[currentGameIndex].length == 1){
-      addValueToArrayInStorage(storageKeyStrings.correctIdAndChoiceIdKey, [correctChoicesArray[currentGameIndex].fileID, String(id)])
+      //commented out because game currently not using these stats.
+      //addValueToArrayInStorage(storageKeyStrings.correctIdAndChoiceIdKey, [correctChoicesArray[currentGameIndex].fileID, String(id)])
     }
 
     if (id === correctChoicesArray[currentGameIndex].fileID) {

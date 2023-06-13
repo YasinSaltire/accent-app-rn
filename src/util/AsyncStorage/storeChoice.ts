@@ -6,7 +6,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const addIdsOfChoiceArrayToStorage = async (key: string, value: any) => {
   for (let i = 0; i < value.length; i++) {
     const choiceId: string = value[i].fileID;
-    console.log("id being added to storage ", choiceId);
     await addValueToArrayInStorage(key, choiceId);
   }
 };
@@ -18,8 +17,7 @@ const addValueToArrayInStorage = async (key: string, value: any) => {
 
   //if value Ids are already stored, append id. Otherwise, create new list
   const updatedIds = storedIds ? [...JSON.parse(storedIds), value] : [value];
-  console.log("stored ids", storedIds);
-  console.log("updated ids ", updatedIds);
+
   storeData(key, updatedIds);
 };
 
@@ -38,7 +36,6 @@ const readData = async (key: string) => {
     let data = await AsyncStorage.getItem(key);
     data = data? data: ""
 
-    console.log('inside readData: ', data)
     
     return data !== "" ? JSON.parse(data) : "";
   } catch (e) {
@@ -56,12 +53,9 @@ const deleteData = async (key: string) => {
 
 const addDataToCurrentValue = async (key: string, value: number) => {
   try {
-    console.log('value being added', value)
     const data = await AsyncStorage.getItem(key);
     const asyncData = await readData(key)
-    console.log('async data', asyncData)
-    console.log('read data: ', await readData(key))
-    console.log(typeof(data))
+   
     // stores sum of current and new value if current exists
     //else creates new mapping
     if (data) {

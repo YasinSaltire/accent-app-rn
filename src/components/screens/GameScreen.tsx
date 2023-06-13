@@ -226,11 +226,7 @@ const GameScreen = (props: GameScreenProps) => {
       setDeviceType(type);
     };
 
-    const getStorageChoices = async() =>{
-      const map = await readData(storageKeyStrings.correctIdAndChoiceIdKey)
-      console.log(map)
-    }
-    getStorageChoices()
+  
     getDeviceType();
 
     //set map coordiantes
