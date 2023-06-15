@@ -8,6 +8,7 @@ import {
   Image,
   LayoutChangeEvent,
   Dimensions,
+  TextInput,
 } from "react-native";
 import stringConstants, {
   GameScreens,
@@ -39,7 +40,7 @@ const playScreenWrapperStyles = () => {
   return style.default;
 };
 
-const modalStyles = (deviceType: Device.DeviceType) => {
+const feedbackModalStyles = (deviceType: Device.DeviceType) => {
   const style = StyleSheet.create({
     default: {
       alignSelf: "center",
@@ -159,7 +160,50 @@ const GameScreen = (props: GameScreenProps) => {
   buttonChoiceArray.splice(correctButtonIndex, 0, correctChoiceObj);
 
   const [sound, setSound] = useState<Audio.Sound | boolean>(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showIncorrectModal, setShowIncorrectModal] = useState(false);
+  
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackText, setFeedbackText] = useState<string>("")
+
+  const onSubmitFeedback = async() =>{
+    const description:string = feedbackText;
+    const url:string  = "http://192.168.50.129:3000/api/postFeedback"
+
+    const feedbackData = {
+      description: description,
+      correctChoiceId: correctChoiceObj.fileID,
+      incorrectIdsArray: buttonChoiceArray.map((accent: any) => accent.fileID)
+    }
+    console.log(feedbackData)
+
+    try{
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify(feedbackData)
+      })
+
+      if (response.ok) {
+        setShowFeedbackModal(false)
+        setFeedbackText("") 
+      }else{
+        throw new Error('error sending feedback')
+      }
+
+
+    } catch (error){
+      console.error(error)
+    }
+    
+
+    /*
+    try http post request, with id of correct, array of incorect ids, and description string
+    reset feedbackText and turn off modal
+    */
+  }
+
   const [disabledButtonsArray, setDisabledButtonsArray] = useState<boolean[]>([
     false,
     false,
@@ -241,7 +285,7 @@ const GameScreen = (props: GameScreenProps) => {
 
   const displayModalIfWrongChoiceSelected = (id: number) => {
     if (id !== correctChoiceObj.fileID) {
-      setShowModal(true);
+      setShowIncorrectModal(true);
     }
   };
 
@@ -329,17 +373,16 @@ const GameScreen = (props: GameScreenProps) => {
     });
     return style.default;
   };
-  console.log(showModal)
   return (
     <View nativeID="5" style={playScreenWrapperStyles()}>
       <View style={playScreenStyles(deviceType)}>
-        <CustomModal deviceType = {deviceType} showModal = {showModal} modalBodyText={'Incorrect!'} modalButtonText = {'Try Again'} onModalButtonPress={() => (function () {setShowModal(false)})()}/>
-        <Modal transparent={true} visible={showModal}>
-          <View style={modalStyles(deviceType)}>
+        <CustomModal deviceType = {deviceType} showModal = {showIncorrectModal} modalBodyText={'Incorrect!'} modalButtonText = {'Try Again'} onModalButtonPress={() => (function () {setShowIncorrectModal(false)})()}/>
+        <Modal transparent={true} visible={showFeedbackModal}>
+          <View style={feedbackModalStyles(deviceType)}>
             <View
               style={{
                 width: "60%",
-                height: "20%",
+                height: "40%",
                 backgroundColor: "black",
                 justifyContent: "center",
               }}
@@ -349,11 +392,12 @@ const GameScreen = (props: GameScreenProps) => {
                   color: "white",
                   alignSelf: "center",
                   marginBottom: "10%",
-                  fontSize: 20,
+                  marginTop: '5%',
+                  fontSize: 12,
                 }}
               >
                 {" "}
-                Incorrect!{" "}
+                Feedback Form{" "}
               </Text>
 
               <Pressable
@@ -364,11 +408,18 @@ const GameScreen = (props: GameScreenProps) => {
                   alignSelf: "center",
                   justifyContent: "center",
                 }}
-                onPress={() => setShowModal(false)}
+                onPress={() => onSubmitFeedback()}
               >
                 <Text style={{ color: "white", alignSelf: "center" }}>
-                  Try Again
+                  Submit
                 </Text>
+                <TextInput
+                multiline
+                numberOfLines = {4}
+                placeholder = '(Optional) Describe problem'
+                value = {feedbackText}
+                onChangeText = {text => setFeedbackText(text)}
+                />
               </Pressable>
             </View>
           </View>
@@ -505,6 +556,16 @@ const GameScreen = (props: GameScreenProps) => {
             </Text>
           </Pressable>
         </View>
+
+        <Pressable
+          style = {{}}
+          onPress = {() => {setShowFeedbackModal(true); handleStopSound()}}
+        >
+          <Text style = {{color: 'white'}}>
+            Submit feedback
+          </Text>
+          
+        </Pressable>
 
       </View>
     </View>
