@@ -21,7 +21,7 @@ import generateAccentString from "../../util/generateAccentString";
 import generateAudioLink from "../../util/generateAudioLink";
 import geoToMercator from "../../util/geoToMercator";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faStop, faSquareXmark} from "@fortawesome/free-solid-svg-icons";
 import { readData } from "../../util/AsyncStorage/storeChoice";
 import * as Device from "expo-device";
 import CustomModal from "../CustomModal";
@@ -197,11 +197,6 @@ const GameScreen = (props: GameScreenProps) => {
       console.error(error)
     }
     
-
-    /*
-    try http post request, with id of correct, array of incorect ids, and description string
-    reset feedbackText and turn off modal
-    */
   }
 
   const [disabledButtonsArray, setDisabledButtonsArray] = useState<boolean[]>([
@@ -382,44 +377,88 @@ const GameScreen = (props: GameScreenProps) => {
             <View
               style={{
                 width: "60%",
-                height: "40%",
-                backgroundColor: "black",
-                justifyContent: "center",
+                height: "30%",
+                backgroundColor: "grey",
+                justifyContent: 'space-between'
               }}
             >
-              <Text
-                style={{
-                  color: "white",
-                  alignSelf: "center",
-                  marginBottom: "10%",
-                  marginTop: '5%',
-                  fontSize: 12,
-                }}
-              >
-                {" "}
-                Feedback Form{" "}
-              </Text>
+              <View
+                style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
+
+                  <FontAwesomeIcon
+                    size = {25}
+                    icon = {faSquareXmark}
+                    style = {{color: 'grey'}}
+                    
+                    />
+                <Text
+                  style={{
+                    color: "white",
+                    textAlign: "center",
+                    marginBottom: "10%",
+                    marginTop: '5%',
+                    fontSize: 12,
+                    alignSelf: 'center'
+                  }}
+                >
+                  {" "}
+                  Feedback Form{" "}
+                </Text>
+                <Pressable
+                  onPress = {() => {
+                    setFeedbackText("");
+
+                    setShowFeedbackModal(false);}}>
+                  <FontAwesomeIcon
+                    size = {25}
+                    icon = {faSquareXmark}
+                    style = {{color: 'white', alignSelf: 'flex-end'}}
+                    
+                    />
+                    
+
+                </Pressable>
+              </View>
+              
+              <View>
+                <View
+                  style = {{backgroundColor: 'white', marginLeft: '5%', marginRight: '5%'}}
+                  >
+                  <TextInput
+                    multiline
+                    numberOfLines = {4}
+                    placeholder = '(Optional) Describe problem'
+                    value = {feedbackText}
+                    onChangeText = {text => setFeedbackText(text)}
+                    maxLength = {150}
+                    />
+
+                </View>
+
+                <View style= {{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                  <Text style = {{color: 'white', marginRight: "5%", marginTop: '2%'}}>
+                    Character Count: {feedbackText.length} / 150
+                  </Text>
+                </View>
+              </View>
+              
+              
 
               <Pressable
                 style={{
                   width: "50%",
-                  height: "30%",
+                  height: "15%",
                   backgroundColor: "#e8791e",
                   alignSelf: "center",
-                  justifyContent: "center",
+                  justifyContent: 'center',
+                  marginBottom: '5%'
                 }}
                 onPress={() => onSubmitFeedback()}
               >
-                <Text style={{ color: "white", alignSelf: "center" }}>
+                <Text style={{ color: "white", alignSelf: "center", textAlignVertical: 'center'}}>
                   Submit
                 </Text>
-                <TextInput
-                multiline
-                numberOfLines = {4}
-                placeholder = '(Optional) Describe problem'
-                value = {feedbackText}
-                onChangeText = {text => setFeedbackText(text)}
-                />
+                
               </Pressable>
             </View>
           </View>
@@ -561,9 +600,13 @@ const GameScreen = (props: GameScreenProps) => {
           style = {{}}
           onPress = {() => {setShowFeedbackModal(true); handleStopSound()}}
         >
-          <Text style = {{color: 'white'}}>
-            Submit feedback
-          </Text>
+          <View
+            style = {{backgroundColor: 'grey', justifyContent: 'center', borderRadius: 5}}>
+            <Text style = {{color: 'white', margin: '1%', alignSelf: 'center'}}>
+              Submit feedback
+            </Text>
+          </View>
+          
           
         </Pressable>
 
