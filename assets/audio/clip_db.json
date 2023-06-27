@@ -16,7 +16,11 @@
 		"prompt": "",
 		"attribute": "Spoken Wikipedia, Article on the Hong Kong Observatory",
 		"funFact": "",
-		"link": "https://en.wikipedia.org/wiki/File:HongKongObservatory.ogg"
+		"link": "https://en.wikipedia.org/wiki/File:HongKongObservatory.ogg",
+		"tier1": "Foreign - Nonromance",
+		"tier2": "East Asian",
+		"tier3": "Hong Kong",
+		"tier4": ""
 	},
 	{
 		"fileID": "60",
@@ -35,7 +39,11 @@
 		"prompt": "",
 		"attribute": "Spoken Wikipedia, Article on the Effects of Hurricane Ivan in the Lesser Antilles and South America",
 		"funFact": "",
-		"link": "https://en.wikipedia.org/wiki/File:Effects_of_Hurricane_Ivan_in_the_Lesser_Antilles_and_South_America.ogg#"
+		"link": "https://en.wikipedia.org/wiki/File:Effects_of_Hurricane_Ivan_in_the_Lesser_Antilles_and_South_America.ogg#",
+		"tier1": "North America",
+		"tier2": "USA",
+		"tier3": "West",
+		"tier4": ""		
 	},
 	{
 		"fileID": "62",
@@ -54,7 +62,11 @@
 		"prompt": "",
 		"attribute": "Spoken Wikipedia, Article on Tropical Depression Ten",
 		"funFact": "",
-		"link": "https://en.wikipedia.org/wiki/File:Tropical_Depression_Ten_(2005).ogg#"
+		"link": "https://en.wikipedia.org/wiki/File:Tropical_Depression_Ten_(2005).ogg#",
+		"tier1": "North America",
+		"tier2": "USA",
+		"tier3": "",
+		"tier4": ""
 	},
 	{
 		"fileID": "63",
