@@ -104,6 +104,13 @@ const HomeScreen = (props: HomeScreenProps) => {
     Device.DeviceType.UNKNOWN
   );
 
+  const [playButtonText, setPlayButtonText] = useState<string>('PLAY')
+  const [allButtonsDisabled, setAllButtonsDisabled] = useState<boolean>(false)
+  const onPressPlayButton = () => {
+    setAllButtonsDisabled(true)
+    setPlayButtonText("LOADING")
+  }
+
   //get's update and reloads app
   const getUpdate = async() =>{
     try{
@@ -157,21 +164,25 @@ const HomeScreen = (props: HomeScreenProps) => {
 
         <View style={buttonContainer()}>
           <Pressable
-            onPress={doOnStartGameRound}
+            onPress={() => {onPressPlayButton(), doOnStartGameRound()}
+            }
+            disabled = {allButtonsDisabled}
             style={buttonColor("#82DB5B")}
           >
-            <Text style={textStyles()}>PLAY</Text>
+            <Text style={textStyles()}>{playButtonText}</Text>
           </Pressable>
           <Pressable
             onPress={() =>
               WebBrowser.openBrowserAsync("https://saltire.com/speech/")
             }
+            disabled = {allButtonsDisabled}
             style={buttonColor("#36BAF3")}
           >
             <Text style={textStyles()}>ADD ACCENT</Text>
           </Pressable>
           <Pressable
             onPress ={() => handleGoToStats()}
+            disabled = {allButtonsDisabled}
             style={buttonColor("#e8791e")}
           >
             <Text style={textStyles()}>STATS</Text>

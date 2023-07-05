@@ -17,14 +17,18 @@ import {
   addValueToArrayInStorage,
   addDataToCurrentValue,
   deleteData,
+  readData,
+  storeData
 } from "./src/util/AsyncStorage/storeChoice";
 import { storageKeyStrings } from "./src/constants/constants";
 import * as Updates from 'expo-updates'
+import scoreRound from "./src/util/scoreRound";
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
 
 export default function App() {
+  let [difficultyLevel, setDifficultyLevel] = useState<number>(1)
   let [correctChoicesArray, setCorrectChoicesArray] = useState<any>([]);
   let [incorrectChoicesArray, setIncorrectChoicesArray] = useState<any>([]);
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
@@ -50,6 +54,11 @@ export default function App() {
     if (currentGameIndex === correctChoicesArray.length - 1) {
       screen = GameScreens.ENDSCREEN;
       newIndex = -1;
+
+      if (difficultyLevel != 3 && (scoreRound(userSelectedChoicesRecord, correctChoicesArray) >= 8)){
+        setDifficultyLevel(difficultyLevel + 1)
+      }
+
       setScreen(screen);
       setCurrentGameIndex(newIndex);
     } else {
@@ -75,17 +84,32 @@ export default function App() {
     //if 2d array in async greater than 3, remove 1st array of choices 
 
     //const correctChoices = await generateRandomQuestionChoices(data, 10);
+    console.log(difficultyLevel)
     try{
-        console.log('test')
-        const response = await fetch("INSERT IP HERE:3000/api/roundOfAccents?level=1", {
+        let prevCorrectIds = await readData(storageKeyStrings.correctChoicesKey)
+
+        //if no previously encountered choices, set array to empty
+        if (prevCorrectIds == ""){
+          prevCorrectIds = []
+        }
+        const arrayOfPrevCorrectIds = prevCorrectIds.flat()
+        const body = {correctIds: arrayOfPrevCorrectIds}
+        const response = await fetch(`http://192.168.254.18:3000/api/roundOfAccents?level=${difficultyLevel}`, {
         method: "POST",
         headers: {
           'Content-type': 'application/json'
         },
-        body: JSON.stringify({}),
+        body: JSON.stringify(body),
         })
-        console.log('hi')
         const data = await response.json()
+        
+        //add new set of correct choicse to local storage. Pop element if greater than 2
+        prevCorrectIds.push((data.correctChoices).map((accent: any) => accent.fileID))
+        if (prevCorrectIds.length > 2){
+          prevCorrectIds = prevCorrectIds.slice(1)
+        }
+        await storeData(storageKeyStrings.correctChoicesKey, prevCorrectIds)
+
         setCurrentRoundScore(0);
         setCorrectChoicesArray(data.correctChoices);
         setIncorrectChoicesArray(data.incorrectChoices);
@@ -95,7 +119,8 @@ export default function App() {
         setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
         setScreen(GameScreens.GAMESCREEN)
 
-      
+
+        
     }catch (err){
       console.error(err)
     }
