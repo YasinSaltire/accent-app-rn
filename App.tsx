@@ -74,10 +74,37 @@ export default function App() {
     //add choices to async storage
     //if 2d array in async greater than 3, remove 1st array of choices 
 
-    const correctChoices = await generateRandomQuestionChoices(data, 10);
+    //const correctChoices = await generateRandomQuestionChoices(data, 10);
+    try{
+        console.log('test')
+        const response = await fetch("INSERT IP HERE:3000/api/roundOfAccents?level=1", {
+        method: "POST",
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({}),
+        })
+        console.log('hi')
+        const data = await response.json()
+        setCurrentRoundScore(0);
+        setCorrectChoicesArray(data.correctChoices);
+        setIncorrectChoicesArray(data.incorrectChoices);
+
+        setUserSelectedChoicesRecord([[]]);
+        setCurrentGameIndex(0);
+        setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
+        setScreen(GameScreens.GAMESCREEN)
+
+      
+    }catch (err){
+      console.error(err)
+    }
+    
+
 
     //append all correct choice id's to end of storage array
-    const incorrectChoicesForEntireRound = generateTotalIncorrectChoices(
+    /*
+      const incorrectChoicesForEntireRound = generateTotalIncorrectChoices(
       correctChoices,
       data,
       3    );
@@ -89,6 +116,7 @@ export default function App() {
     setCurrentGameIndex(0);
     setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
     setScreen(GameScreens.GAMESCREEN);
+    */
   };
 
   const handleAnswerSelection = (id: number) => {
