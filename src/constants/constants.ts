@@ -1,3 +1,7 @@
+enum NUMBER_CONSTANTS {
+  INDEX_OUT_OF_RANGE = -1,
+  FIRST_INDEX = 0,
+}
 
 enum stringConstants {
   startGame = "Play",
@@ -7,11 +11,10 @@ enum stringConstants {
 }
 
 enum storageKeyStrings {
-  correctChoicesKey = 'Correct Choices',
-  firstChoiceCorrectScoreKey = 'First Score',
-  questionsPlayedKey = 'Rounds Played',
-  correctIdAndChoiceIdKey = 'Choice Mapping',
-
+  correctChoicesKey = "Correct Choices",
+  firstChoiceCorrectScoreKey = "First Score",
+  questionsPlayedKey = "Rounds Played",
+  correctIdAndChoiceIdKey = "Choice Mapping",
 }
 
 const screenNames = {
@@ -46,8 +49,7 @@ enum GameScreens {
   CORRECT = "correct",
   ENDSCREEN = "end-screen",
   ACCENT_ACQ = "accent-capture",
-  STAT_SCREEN = 'player-stat-screen',
-  
+  STAT_SCREEN = "player-stat-screen",
 }
 
 enum Errors {
@@ -62,5 +64,6 @@ export {
   GameScreens,
   AudioPlaybackStates,
   Errors,
-  storageKeyStrings
+  storageKeyStrings,
+  NUMBER_CONSTANTS,
 };
