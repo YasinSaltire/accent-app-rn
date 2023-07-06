@@ -248,14 +248,13 @@ const GameScreen = (props: GameScreenProps) => {
   };
 
   useEffect(() => {
-    // const audioUri = ...
     setDisabledButtonsArray([false, false, false, false]);
     const audioUri = generateAudioLink(correctChoiceObj.fileName);
     const loadSound = async () => {
       try {
         const sound = new Audio.Sound();
         await sound.loadAsync({
-          uri: audioUri, // audioUri
+          uri: audioUri, 
         });
         setSound(sound);
         await sound.playAsync();
@@ -268,8 +267,6 @@ const GameScreen = (props: GameScreenProps) => {
             setIsAudioPlaying(false);
           }
         });
-        // let status = getIsAudioPlaying(sound);
-        // console.log('audio status ', status)
       } catch (error) {
         console.error(error);
       }
@@ -277,7 +274,6 @@ const GameScreen = (props: GameScreenProps) => {
     console.log("about to load audio");
     loadSound();
 
-    // clean up the audio when the component unmounts
     return () => {
       if (typeof sound !== "boolean") {
         sound.unloadAsync();
