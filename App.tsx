@@ -55,7 +55,7 @@ export default function App() {
       screen = GameScreens.ENDSCREEN;
       newIndex = -1;
 
-      if (difficultyLevel != 3 && (scoreRound(userSelectedChoicesRecord, correctChoicesArray) >= 8)){
+      if (difficultyLevel != 4 && (scoreRound(userSelectedChoicesRecord, correctChoicesArray) >= 8)){
         setDifficultyLevel(difficultyLevel + 1)
       }
 

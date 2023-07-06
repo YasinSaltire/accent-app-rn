@@ -104,7 +104,7 @@ const buttonContainerStyle = () => {
       marginBottom: 15,
       marginTop: 15,
       width: "90%",
-      height: "12%",
+      height: "17%",
       justifyContent: "space-between",
     },
   });
@@ -158,6 +158,7 @@ const GameScreen = (props: GameScreenProps) => {
   buttonChoiceArray.push(allIncorrect[indexOfFirstIncorrectChoice + 1]);
   buttonChoiceArray.push(allIncorrect[indexOfFirstIncorrectChoice + 2]);
   buttonChoiceArray.splice(correctButtonIndex, 0, correctChoiceObj);
+  
 
   const [sound, setSound] = useState<Audio.Sound | boolean>(false);
   const [showIncorrectModal, setShowIncorrectModal] = useState(false);
@@ -226,7 +227,7 @@ const GameScreen = (props: GameScreenProps) => {
 
   useEffect(() => {
     // wrap follownig 3 async storage calls in async to await
-
+    buttonChoiceArray[correctButtonIndex].country += "*"
 
     const projectCoordinates = async () => {
       //calculates geotomercator coordinates
@@ -498,6 +499,7 @@ const GameScreen = (props: GameScreenProps) => {
           >
             <Text style={textContainerStyle()}>
               {generateAccentString(buttonChoiceArray[0])}
+              {"\n" + "Tier1:" + buttonChoiceArray[0].tier1 + "\n" + "Tier2:" + buttonChoiceArray[0].tier2 + "\n" + "Tier3:" + buttonChoiceArray[0].tier3 + "\n" + "Tier4:" + buttonChoiceArray[0].tier4}
             </Text>
           </Pressable>
 
@@ -516,6 +518,8 @@ const GameScreen = (props: GameScreenProps) => {
           >
             <Text style={textContainerStyle()}>
               {generateAccentString(buttonChoiceArray[1])}
+              {"\n" + "Tier1:" + buttonChoiceArray[1].tier1 + "\n" + "Tier2:" + buttonChoiceArray[1].tier2 + "\n" + "Tier3:" + buttonChoiceArray[1].tier3 + "\n" + "Tier4:" + buttonChoiceArray[1].tier4}
+
             </Text>
           </Pressable>
         </View>
@@ -574,6 +578,8 @@ const GameScreen = (props: GameScreenProps) => {
           >
             <Text style={textContainerStyle()}>
               {generateAccentString(buttonChoiceArray[2])}
+              {"\n" + "Tier1:" + buttonChoiceArray[2].tier1 + "\n" + "Tier2:" + buttonChoiceArray[2].tier2 + "\n" + "Tier3:" + buttonChoiceArray[2].tier3 + "\n" + "Tier4:" + buttonChoiceArray[2].tier4}
+
             </Text>
           </Pressable>
 
@@ -592,12 +598,14 @@ const GameScreen = (props: GameScreenProps) => {
           >
             <Text style={textContainerStyle()}>
               {generateAccentString(buttonChoiceArray[3])}
+              {"\n" + "Tier1:" + buttonChoiceArray[3].tier1 + "\n" + "Tier2:" + buttonChoiceArray[3].tier2 + "\n" + "Tier3:" + buttonChoiceArray[3].tier3 + "\n" + "Tier4:" + buttonChoiceArray[3].tier4}
+
             </Text>
           </Pressable>
         </View>
 
         <Pressable
-          style = {{}}
+          style = {{width: '29%'}}
           onPress = {() => {setShowFeedbackModal(true); handleStopSound()}}
         >
           <View
