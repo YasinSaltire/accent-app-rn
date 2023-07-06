@@ -12,9 +12,7 @@ import CorrectScreen from "./src/components/screens/CorrectScreen";
 import EndScreen from "./src/components/screens/EndScreen";
 import StatsScreen from "./src/components/screens/StatsScreen";
 import AccentCaptureScreen from "./src/components/screens/AccentCaptureScreen";
-import {
-  addDataToCurrentValue,
-} from "./src/util/AsyncStorage/storeChoice";
+import { addDataToCurrentValue } from "./src/util/AsyncStorage/storeChoice";
 import { storageKeyStrings } from "./src/constants/constants";
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
@@ -27,12 +25,11 @@ export default function App() {
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
   let [gameScreen, setScreen] = useState<GameScreens>(GameScreens.HOMESCREEN);
   let [userSelectedChoicesRecord, setUserSelectedChoicesRecord] = useState<
-  number[][]
+    number[][]
   >([[]]);
-  
+
   let [correctChoiceButtonIndex, setCorrectChoiceButtonIndex] =
-  useState<number>(0);
-  let [score, setScore] = useState<number>(0);
+    useState<number>(0);
   let [currentRoundScore, setCurrentRoundScore] = useState<number>(0);
   /* STATE VARIABLES END */
 
@@ -68,10 +65,10 @@ export default function App() {
     setScreen(GameScreens.LEARN_MORE);
   };
 
-  const handleStartGameRound = async() => {
+  const handleStartGameRound = async () => {
     //generate 10 choices avoiding previous 3 rounds
     //add choices to async storage
-    //if 2d array in async greater than 3, remove 1st array of choices 
+    //if 2d array in async greater than 3, remove 1st array of choices
 
     const correctChoices = await generateRandomQuestionChoices(data, 10);
 
@@ -79,7 +76,8 @@ export default function App() {
     const incorrectChoicesForEntireRound = generateTotalIncorrectChoices(
       correctChoices,
       data,
-      3    );
+      3
+    );
     setCurrentRoundScore(0);
     setCorrectChoicesArray(correctChoices);
     setIncorrectChoicesArray(incorrectChoicesForEntireRound);
@@ -96,7 +94,7 @@ export default function App() {
     record[currentGameIndex].push(id);
     setUserSelectedChoicesRecord(record);
 
-    if (record[currentGameIndex].length == 1){
+    if (record[currentGameIndex].length == 1) {
       //commented out because game currently not using these stats.
       //addValueToArrayInStorage(storageKeyStrings.correctIdAndChoiceIdKey, [correctChoicesArray[currentGameIndex].fileID, String(id)])
     }
@@ -105,25 +103,26 @@ export default function App() {
       if (record[currentGameIndex].length == 1) {
         const newCurrentScore: number = currentRoundScore + 1;
         setCurrentRoundScore(newCurrentScore);
-        addDataToCurrentValue(storageKeyStrings.firstChoiceCorrectScoreKey, 1)
+        addDataToCurrentValue(storageKeyStrings.firstChoiceCorrectScoreKey, 1);
       }
-      addDataToCurrentValue(storageKeyStrings.questionsPlayedKey, 1)
+      addDataToCurrentValue(storageKeyStrings.questionsPlayedKey, 1);
       screen = GameScreens.CORRECT;
       setScreen(screen);
-    } 
+    }
   };
 
-  const handleGoToStats = () =>{
-    setScreen(GameScreens.STAT_SCREEN)
-  }
+  const handleGoToStats = () => {
+    setScreen(GameScreens.STAT_SCREEN);
+  };
   /* EVENT HANDLERS END */
 
   return (
     <>
       {gameScreen === GameScreens.HOMESCREEN && (
-        <HomeScreen 
+        <HomeScreen
           doOnStartGameRound={handleStartGameRound}
-          handleGoToStats={handleGoToStats} />
+          handleGoToStats={handleGoToStats}
+        />
       )}
       {gameScreen === GameScreens.GAMESCREEN &&
         correctChoicesArray.length > 0 && (
@@ -158,9 +157,8 @@ export default function App() {
       )}
       {gameScreen === GameScreens.ACCENT_ACQ && <AccentCaptureScreen />}
       {gameScreen === GameScreens.STAT_SCREEN && (
-      <StatsScreen 
-        handleGoToHome ={handleGoToHome}
-      />)}
+        <StatsScreen handleGoToHome={handleGoToHome} />
+      )}
     </>
   );
 }
@@ -172,7 +170,7 @@ class Accent {
   displayString: string;
   url: string;
   constructor(linkToAudio: string) {
-    this.id = generatePseudorandomNumberBetweenMinAndMax(); 
+    this.id = generatePseudorandomNumberBetweenMinAndMax();
     this.displayString = "Display string";
     this.url = linkToAudio;
   }
