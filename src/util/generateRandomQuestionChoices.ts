@@ -1,6 +1,4 @@
-import Question from "../model/Question";
 import pickNRandomIndicesFromArray from "./pickNRandomIndicesFromArray";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { addValueToArrayInStorage, readData, storeData } from "./AsyncStorage/storeChoice";
 import { storageKeyStrings } from "../constants/constants";
 import pickRandomIndexFromArray from "./pickRandomIndexFromArray";
