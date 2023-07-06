@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GameScreens } from "./src/constants/constants";
+import { GameScreens, NUMBER_CONSTANTS } from "./src/constants/constants";
 import generatePseudorandomNumberBetweenMinAndMax from "./src/util/generatePseudorandomNumberBetweenMinAndMax";
 import GameScreen from "./src/components/screens/GameScreen";
 import HomeScreen from "./src/components/screens/HomeScreen";
@@ -22,15 +22,19 @@ export default function App() {
   /* STATE VARIABLES START */
   let [correctChoicesArray, setCorrectChoicesArray] = useState<any>([]);
   let [incorrectChoicesArray, setIncorrectChoicesArray] = useState<any>([]);
-  let [currentGameIndex, setCurrentGameIndex] = useState(-1);
+  let [currentGameIndex, setCurrentGameIndex] = useState(
+    NUMBER_CONSTANTS.INDEX_OUT_OF_RANGE
+  );
   let [gameScreen, setScreen] = useState<GameScreens>(GameScreens.HOMESCREEN);
   let [userSelectedChoicesRecord, setUserSelectedChoicesRecord] = useState<
     number[][]
   >([[]]);
 
   let [correctChoiceButtonIndex, setCorrectChoiceButtonIndex] =
-    useState<number>(0);
-  let [currentRoundScore, setCurrentRoundScore] = useState<number>(0);
+    useState<number>(NUMBER_CONSTANTS.ZEROTH_INDEX);
+  let [currentRoundScore, setCurrentRoundScore] = useState<number>(
+    NUMBER_CONSTANTS.INIT_SCORE
+  );
   /* STATE VARIABLES END */
 
   /* EVENT HANDLERS START */
@@ -42,10 +46,11 @@ export default function App() {
   const handleNextQuestion = () => {
     let newIndex: number;
     let screen: GameScreens;
+    const lastIndexValue = correctChoicesArray.length - 1;
 
-    if (currentGameIndex === correctChoicesArray.length - 1) {
+    if (currentGameIndex === lastIndexValue) {
       screen = GameScreens.ENDSCREEN;
-      newIndex = -1;
+      newIndex = NUMBER_CONSTANTS.INDEX_OUT_OF_RANGE;
       setScreen(screen);
       setCurrentGameIndex(newIndex);
     } else {

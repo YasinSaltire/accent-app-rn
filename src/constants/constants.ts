@@ -1,6 +1,8 @@
 enum NUMBER_CONSTANTS {
   INDEX_OUT_OF_RANGE = -1,
-  FIRST_INDEX = 0,
+  ZEROTH_INDEX = 0,
+  ZERO = 0,
+  INIT_SCORE = 0,
 }
 
 enum stringConstants {
