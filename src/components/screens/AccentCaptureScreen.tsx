@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Text, TextInput } from "react-native";
+import { View, StyleSheet, Text, TextInput } from "react-native";
 import CheckBox from 'expo-checkbox';
 
 const accentCaptureScreenStyles = (color: string = "white") => {
