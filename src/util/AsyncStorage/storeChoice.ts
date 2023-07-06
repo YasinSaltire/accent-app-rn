@@ -1,6 +1,3 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { storageKeyStrings } from "../../constants/constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const addIdsOfChoiceArrayToStorage = async (key: string, value: any) => {
