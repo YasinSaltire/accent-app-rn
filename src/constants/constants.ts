@@ -26,10 +26,6 @@ enum LOCAL_STORAGE_KEYS {
   correctIdAndChoiceIdKey = "Choice Mapping",
 }
 
-const screenNames = {
-  HOMESCREEN: "homescreen",
-};
-
 const screenIds = {
   HOMESCREENID: "homescreenid",
 };
@@ -68,7 +64,6 @@ enum Errors {
 export default STRING_CONSTANTS;
 export {
   css,
-  screenNames,
   screenIds,
   GAME_SCREENS,
   AudioPlaybackStates,
