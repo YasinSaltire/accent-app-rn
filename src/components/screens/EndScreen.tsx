@@ -28,7 +28,7 @@ const EndScreen = (props: EndScreenProps) => {
     const getTotalQuestions = async (key: string) => {
       const data = await readData(key);
       setNumberOfQuestionsPlayed(data);
-      return await readData(key);
+      return data;
     };
     const getTotalCorrectFirstAttempt = async (key: string) => {
       const data = await readData(key);
