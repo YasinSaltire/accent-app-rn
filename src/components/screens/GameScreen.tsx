@@ -114,8 +114,6 @@ const textContainerStyle = () => {
   return style.default;
 };
 
-//`${left / windowWidth * 100.0}%`
-//`${bottom / windowHeight * 100.0}%`
 type QuestionStruct = {
   id: number;
   value: string;
@@ -176,9 +174,6 @@ const GameScreen = (props: GameScreenProps) => {
 
 
   useEffect(() => {
-    // wrap follownig 3 async storage calls in async to await
-
-
     const projectCoordinates = async () => {
       //calculates geotomercator coordinates
 
@@ -215,14 +210,11 @@ const GameScreen = (props: GameScreenProps) => {
       const type = await Device.getDeviceTypeAsync();
       setDeviceType(type);
     };
-
   
     getDeviceType();
 
     //set map coordiantes
     projectCoordinates();
-
-   
 
     //get device type and set state
     getDeviceType();
