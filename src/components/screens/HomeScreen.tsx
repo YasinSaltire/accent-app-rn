@@ -107,7 +107,7 @@ const HomeScreen = (props: HomeScreenProps) => {
       setDeviceType(type);
     };
 
-    const checkUpdate = async () => {
+    const checkForUpdate = async () => {
       const type = await Device.getDeviceTypeAsync();
       try {
         if (
@@ -126,7 +126,7 @@ const HomeScreen = (props: HomeScreenProps) => {
     };
 
     getDeviceType();
-    checkUpdate();
+    checkForUpdate();
   }, []);
 
   return (
