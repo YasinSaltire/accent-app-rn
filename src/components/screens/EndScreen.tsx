@@ -1,9 +1,7 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import scoreRound from "../../util/scoreRound";
-import {
-  readData,
-} from "../../util/AsyncStorage/storeChoice";
-import { storageKeyStrings } from "../../constants/constants";
+import { readData } from "../../util/AsyncStorage/storeChoice";
+import { NUMBER_CONSTANTS, storageKeyStrings } from "../../constants/constants";
 import { useEffect, useState } from "react";
 
 type EndScreenProps = {
@@ -14,73 +12,98 @@ type EndScreenProps = {
 
 const EndScreen = (props: EndScreenProps) => {
   const score = scoreRound(props.selections, props.correctChoices);
-  let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] = useState<string>("");
-  let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] = useState<string>("");
-  let [correctPercentage, setCorrectPercentage] = useState<number>(0);
-  
-    useEffect(() =>{
-      const getTotalQuestions = async (key: string) => {
-        const data = await readData(key);
-        setNumberOfQuestionsPlayed(data);
-        return await readData(key);
-      };
-      const getTotalCorrectFirstAttempt = async (key: string) => {
-        const data = await readData(key);
-        setNumberCorrectFirstChoice(data);
-        return await readData(key);
-      };
-      const calculateCorrectPercentage = async () => {
-        const total = await getTotalQuestions(
-          storageKeyStrings.questionsPlayedKey
-        );
-        const correct = await getTotalCorrectFirstAttempt(
-          storageKeyStrings.firstChoiceCorrectScoreKey
-        );
-        const correctRate = Math.floor(
-          (parseFloat(correct) / parseFloat(total)) * 100
-        );
-        setCorrectPercentage(correctRate);
-      };
+  let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] =
+    useState<string>("");
+  let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] =
+    useState<string>("");
+  let [correctPercentage, setCorrectPercentage] = useState<number>(
+    NUMBER_CONSTANTS.INIT_SCORE_PERCENTAGE
+  );
 
-      calculateCorrectPercentage();
-    }, [])
+  useEffect(() => {
+    const getTotalQuestions = async (key: string) => {
+      const data = await readData(key);
+      setNumberOfQuestionsPlayed(data);
+      return await readData(key);
+    };
+    const getTotalCorrectFirstAttempt = async (key: string) => {
+      const data = await readData(key);
+      setNumberCorrectFirstChoice(data);
+      return await readData(key);
+    };
+    const calculateCorrectPercentage = async () => {
+      const total = await getTotalQuestions(
+        storageKeyStrings.questionsPlayedKey
+      );
+      const correct = await getTotalCorrectFirstAttempt(
+        storageKeyStrings.firstChoiceCorrectScoreKey
+      );
+      const correctRate = Math.floor(
+        (parseFloat(correct) / parseFloat(total)) * 100
+      );
+      setCorrectPercentage(correctRate);
+    };
 
+    calculateCorrectPercentage();
+  }, []);
 
   return (
     <View style={playScreenStyles("black")}>
-      {score === 10 && 
-      <View>
-        <Text style={{ textAlign: 'center', marginBottom: 50, fontSize: 20, color: "white" }}>
-            Great Job! You completed a perfect round and answered all questions correct on the first try.
+      {score === 10 && (
+        <View>
+          <Text
+            style={{
+              textAlign: "center",
+              marginBottom: 50,
+              fontSize: 20,
+              color: "white",
+            }}
+          >
+            Great Job! You completed a perfect round and answered all questions
+            correct on the first try.
           </Text>
-      </View>}
+        </View>
+      )}
       {score < 10 && (
-        <View style = {{justifyContent: 'center'}}>
-          <Text style={{ textAlign: 'center', marginBottom: 50, fontSize: 20, color: "white" }}>
+        <View style={{ justifyContent: "center" }}>
+          <Text
+            style={{
+              textAlign: "center",
+              marginBottom: 50,
+              fontSize: 20,
+              color: "white",
+            }}
+          >
             Great Job! You Completed a Round.
           </Text>
           <View style={{ width: "80%" }}>
-            <Text style={{ textAlign: 'center', alignSelf: "center", fontSize: 20, color: "white" }}>
+            <Text
+              style={{
+                textAlign: "center",
+                alignSelf: "center",
+                fontSize: 20,
+                color: "white",
+              }}
+            >
               You answered {score} questions correct on the first try
             </Text>
           </View>
         </View>
       )}
       <Text style={{ color: "white" }}>
-          {" "}
-          Correctly Answered Questions on First Try:{" "}
-          {score + "/" + 10}
-        </Text>
-        <Text style={{ color: "white" }}>
-          Total correct: {numberOfQuestionsPlayed}{" "}
-        </Text>
-        <Text style={{ color: "white" }}>
-          Correct first attempts: {numberCorrectFirstChoice}{" "}
-        </Text>
+        {" "}
+        Correctly Answered Questions on First Try: {score + "/" + 10}
+      </Text>
+      <Text style={{ color: "white" }}>
+        Total correct: {numberOfQuestionsPlayed}{" "}
+      </Text>
+      <Text style={{ color: "white" }}>
+        Correct first attempts: {numberCorrectFirstChoice}{" "}
+      </Text>
 
-        <Text style={{ color: "white" }}>
-          total correct rate: {correctPercentage ? correctPercentage : "-"}%{" "}
-        </Text>
+      <Text style={{ color: "white" }}>
+        total correct rate: {correctPercentage ? correctPercentage : "-"}%{" "}
+      </Text>
       <Pressable
         style={{
           marginTop: "30%",
