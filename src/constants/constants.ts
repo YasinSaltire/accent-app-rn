@@ -13,6 +13,12 @@ enum STRING_CONSTANTS {
   EMPTY_STRING = "",
 }
 
+enum DISPLAY_STRINGS {
+  LEARN_MORE = "LEARN MORE",
+  NEXT = "NEXT",
+  CORRECT_ANSWER = "CORRECT ANSWER!",
+}
+
 enum LOCAL_STORAGE_KEYS {
   CORRECT_CHOICES = "Correct Choices",
   firstChoiceCorrectScoreKey = "First Score",
@@ -69,4 +75,5 @@ export {
   Errors,
   LOCAL_STORAGE_KEYS,
   NUMBER_CONSTANTS,
+  DISPLAY_STRINGS,
 };
