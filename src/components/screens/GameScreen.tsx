@@ -127,7 +127,6 @@ type GameScreenProps = {
   correctChoiceObj: any;
   allIncorrect?: any;
   currentQuestionIndex?: any;
-  correctlyAnswered?: number;
   correctButtonIndex: number;
   currentRoundScore: number;
 };
@@ -139,7 +138,6 @@ const GameScreen = (props: GameScreenProps) => {
     correctChoiceObj,
     currentQuestionIndex,
     correctButtonIndex,
-    correctlyAnswered,
     currentRoundScore,
   } = props;
 

@@ -128,7 +128,6 @@ export default function App() {
       {gameScreen === GameScreens.GAMESCREEN &&
         correctChoicesArray.length > 0 && (
           <GameScreen
-            correctlyAnswered={score} 
             allIncorrect={incorrectChoicesArray}
             currentQuestionIndex={currentGameIndex}
             handleAnswerSelection={handleAnswerSelection}
