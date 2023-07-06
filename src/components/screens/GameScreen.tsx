@@ -168,7 +168,7 @@ const GameScreen = (props: GameScreenProps) => {
 
   const onSubmitFeedback = async() =>{
     const description:string = feedbackText;
-    const url:string  = "http://192.168.254.18:3000/api/postFeedback"
+    const url:string  = "http://INSERT:3000/api/postFeedback"
 
     const feedbackData = {
       description: description,
