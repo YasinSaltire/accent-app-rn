@@ -142,9 +142,7 @@ const GameScreen = (props: GameScreenProps) => {
     correctlyAnswered,
     currentRoundScore,
   } = props;
-  console.log("button index", correctButtonIndex);
 
-  
   const indexOfFirstIncorrectChoice = currentQuestionIndex * 3;
   let buttonChoiceArray: any = [];
   buttonChoiceArray.push(allIncorrect[indexOfFirstIncorrectChoice]);
@@ -230,7 +228,7 @@ const GameScreen = (props: GameScreenProps) => {
 
     //get device type and set state
     getDeviceType();
-    console.log();
+
   }, [correctChoiceObj]);
 
   const displayModalIfWrongChoiceSelected = (id: number) => {
@@ -262,8 +260,6 @@ const GameScreen = (props: GameScreenProps) => {
           if (status.isLoaded && status.isPlaying) {
             setIsAudioPlaying(true);
           } else if (status.isLoaded && status.didJustFinish) {
-            console.log("audio finished ,");
-
             setIsAudioPlaying(false);
           }
         });
@@ -271,7 +267,7 @@ const GameScreen = (props: GameScreenProps) => {
         console.error(error);
       }
     };
-    console.log("about to load audio");
+    
     loadSound();
 
     return () => {
@@ -286,7 +282,6 @@ const GameScreen = (props: GameScreenProps) => {
     if (typeof sound !== "boolean") {
       try {
         await sound.playAsync();
-        console.log("play sound using ", sound);
         setIsAudioPlaying(true);
       } catch (error) {
         console.error(error);
@@ -319,7 +314,7 @@ const GameScreen = (props: GameScreenProps) => {
     });
     return style.default;
   };
-  console.log(showModal)
+
   return (
     <View nativeID="5" style={playScreenWrapperStyles()}>
       <View style={playScreenStyles(deviceType)}>
