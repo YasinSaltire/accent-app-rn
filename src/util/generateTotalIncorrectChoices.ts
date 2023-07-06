@@ -1,5 +1,3 @@
-import pickRandomIndexFromArray from "./pickRandomIndexFromArray";
-import checkIfRegionExistsInArray from "./checkIfRegionExistsInArray";
 import generateNIncorrectChoicesGivenOneCorrect from "./generateNIncorrectChoicesGivenOneCorrect";
 
 const generateTotalIncorrectChoices = <T>(
