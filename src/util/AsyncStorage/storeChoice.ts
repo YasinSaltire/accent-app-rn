@@ -24,7 +24,7 @@ const storeData = async (key: string, value: any) => {
   try {
     await AsyncStorage.setItem(key, JSON.stringify(value));
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -32,11 +32,10 @@ const readData = async (key: string) => {
   try {
     let data = await AsyncStorage.getItem(key);
     data = data? data: ""
-
     
     return data !== "" ? JSON.parse(data) : "";
   } catch (e) {
-    console.log('wtf')
+    console.error('No data found in local storage for this key')
   }
 };
 
