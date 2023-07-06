@@ -14,9 +14,6 @@ type EndScreenProps = {
 
 const EndScreen = (props: EndScreenProps) => {
   const score = scoreRound(props.selections, props.correctChoices);
-  //addDataToCurrentValue(storageKeyStrings.firstChoiceCorrectScoreKey, score)
-  //console.log(readData(storageKeyStrings.firstChoiceCorrectScoreKey))
-  //deleteData("First")
   let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] = useState<string>("");
   let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] = useState<string>("");
   let [correctPercentage, setCorrectPercentage] = useState<number>(0);
