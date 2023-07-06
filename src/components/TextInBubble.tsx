@@ -1,4 +1,4 @@
-import { Pressable, Text, View } from "react-native";
+import { View } from "react-native";
 import { SvgUri } from "react-native-svg";
 
 const CustomSvg = () => {
