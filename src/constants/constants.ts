@@ -40,7 +40,7 @@ enum AudioPlaybackStates {
   STOP = "stop",
 }
 
-enum GameScreens {
+enum GAME_SCREENS {
   HOMESCREEN = "homescreen",
   GAME_START = "game-start",
   GAME_CONTINUE = "game-continue",
@@ -64,7 +64,7 @@ export {
   css,
   screenNames,
   screenIds,
-  GameScreens,
+  GAME_SCREENS,
   AudioPlaybackStates,
   Errors,
   LOCAL_STORAGE_KEYS,

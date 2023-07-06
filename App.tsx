@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GameScreens, NUMBER_CONSTANTS } from "./src/constants/constants";
+import { GAME_SCREENS, NUMBER_CONSTANTS } from "./src/constants/constants";
 import generatePseudorandomNumberBetweenMinAndMax from "./src/util/generatePseudorandomNumberBetweenMinAndMax";
 import GameScreen from "./src/components/screens/GameScreen";
 import HomeScreen from "./src/components/screens/HomeScreen";
@@ -15,7 +15,7 @@ import AccentCaptureScreen from "./src/components/screens/AccentCaptureScreen";
 import { addDataToCurrentValue } from "./src/util/AsyncStorage/storeChoice";
 import { LOCAL_STORAGE_KEYS } from "./src/constants/constants";
 
-type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
+type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GAME_SCREENS>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
 
 export default function App() {
@@ -25,7 +25,7 @@ export default function App() {
   let [currentGameIndex, setCurrentGameIndex] = useState(
     NUMBER_CONSTANTS.INDEX_OUT_OF_RANGE
   );
-  let [gameScreen, setScreen] = useState<GameScreens>(GameScreens.HOMESCREEN);
+  let [gameScreen, setScreen] = useState<GAME_SCREENS>(GAME_SCREENS.HOMESCREEN);
   let [userSelectedChoicesRecord, setUserSelectedChoicesRecord] = useState<
     number[][]
   >([[]]);
@@ -39,23 +39,23 @@ export default function App() {
 
   /* EVENT HANDLERS START */
   const handleGoToHome = () => {
-    const screen = GameScreens.HOMESCREEN;
+    const screen = GAME_SCREENS.HOMESCREEN;
     setScreen(screen);
   };
 
   const handleNextQuestion = () => {
     let newIndex: number;
-    let screen: GameScreens;
+    let screen: GAME_SCREENS;
     const lastIndexValue = correctChoicesArray.length - 1;
 
     if (currentGameIndex === lastIndexValue) {
-      screen = GameScreens.ENDSCREEN;
+      screen = GAME_SCREENS.ENDSCREEN;
       newIndex = NUMBER_CONSTANTS.INDEX_OUT_OF_RANGE;
     } else {
       let record = [...userSelectedChoicesRecord];
       record.push([]);
       newIndex = currentGameIndex + 1;
-      screen = GameScreens.GAMESCREEN;
+      screen = GAME_SCREENS.GAMESCREEN;
       setUserSelectedChoicesRecord(record);
       setCorrectChoiceButtonIndex(
         Math.floor(Math.random() * NUMBER_CONSTANTS.NUM_CHOICES_PER_QUESTION)
@@ -67,7 +67,7 @@ export default function App() {
   };
 
   const handleLearnMore = () => {
-    setScreen(GameScreens.LEARN_MORE);
+    setScreen(GAME_SCREENS.LEARN_MORE);
   };
 
   const handleStartGameRound = async () => {
@@ -95,11 +95,11 @@ export default function App() {
     setCorrectChoiceButtonIndex(
       Math.floor(Math.random() * NUMBER_CONSTANTS.NUM_CHOICES_PER_QUESTION)
     );
-    setScreen(GameScreens.GAMESCREEN);
+    setScreen(GAME_SCREENS.GAMESCREEN);
   };
 
   const handleAnswerSelection = (id: number) => {
-    let screen: GameScreens;
+    let screen: GAME_SCREENS;
     let record = [...userSelectedChoicesRecord];
     record[currentGameIndex].push(id);
     setUserSelectedChoicesRecord(record);
@@ -116,25 +116,25 @@ export default function App() {
         addDataToCurrentValue(LOCAL_STORAGE_KEYS.firstChoiceCorrectScoreKey, 1);
       }
       addDataToCurrentValue(LOCAL_STORAGE_KEYS.questionsPlayedKey, 1);
-      screen = GameScreens.CORRECT;
+      screen = GAME_SCREENS.CORRECT;
       setScreen(screen);
     }
   };
 
   const handleGoToStats = () => {
-    setScreen(GameScreens.STAT_SCREEN);
+    setScreen(GAME_SCREENS.STAT_SCREEN);
   };
   /* EVENT HANDLERS END */
 
   return (
     <>
-      {gameScreen === GameScreens.HOMESCREEN && (
+      {gameScreen === GAME_SCREENS.HOMESCREEN && (
         <HomeScreen
           doOnStartGameRound={handleStartGameRound}
           handleGoToStats={handleGoToStats}
         />
       )}
-      {gameScreen === GameScreens.GAMESCREEN &&
+      {gameScreen === GAME_SCREENS.GAMESCREEN &&
         correctChoicesArray.length > 0 && (
           <GameScreen
             allIncorrect={incorrectChoicesArray}
@@ -145,28 +145,28 @@ export default function App() {
             currentRoundScore={currentRoundScore}
           />
         )}
-      {gameScreen === GameScreens.LEARN_MORE && (
+      {gameScreen === GAME_SCREENS.LEARN_MORE && (
         <LearnMoreScreen
           correctChoiceObj={correctChoicesArray[currentGameIndex]}
           handleButtonPress={handleNextQuestion}
         />
       )}
-      {gameScreen === GameScreens.CORRECT && (
+      {gameScreen === GAME_SCREENS.CORRECT && (
         <CorrectScreen
           correctChoiceObj={correctChoicesArray[currentGameIndex]}
           handleNextButtonPress={handleNextQuestion}
           handleLearnMoreButtonPress={handleLearnMore}
         />
       )}
-      {gameScreen === GameScreens.ENDSCREEN && (
+      {gameScreen === GAME_SCREENS.ENDSCREEN && (
         <EndScreen
           handleButtonPress={handleGoToHome}
           selections={userSelectedChoicesRecord}
           correctChoices={correctChoicesArray}
         />
       )}
-      {gameScreen === GameScreens.ACCENT_ACQ && <AccentCaptureScreen />}
-      {gameScreen === GameScreens.STAT_SCREEN && (
+      {gameScreen === GAME_SCREENS.ACCENT_ACQ && <AccentCaptureScreen />}
+      {gameScreen === GAME_SCREENS.STAT_SCREEN && (
         <StatsScreen handleGoToHome={handleGoToHome} />
       )}
     </>

@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import STRING_CONSTANTS, { GameScreens, css } from "../constants/constants";
+import STRING_CONSTANTS, { GAME_SCREENS, css } from "../constants/constants";
 
 const playButtonStyles = () => {
   const style = StyleSheet.create({
@@ -24,7 +24,7 @@ const textStyles = () => {
 type PlayButtonProps = {
   buttonLabel: STRING_CONSTANTS;
   doOnPress: any;
-  gameScreen: GameScreens;
+  gameScreen: GAME_SCREENS;
 };
 
 const PlayButton: FC<PlayButtonProps> = (props) => {
