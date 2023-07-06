@@ -14,6 +14,7 @@ enum stringConstants {
   gameTitle = "Game Title",
   settings = "Settings",
   GO_HOME = "Go Home",
+  EMPTY_STRING = "",
 }
 
 enum storageKeyStrings {

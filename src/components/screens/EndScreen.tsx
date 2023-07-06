@@ -1,7 +1,10 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import scoreRound from "../../util/scoreRound";
 import { readData } from "../../util/AsyncStorage/storeChoice";
-import { NUMBER_CONSTANTS, storageKeyStrings } from "../../constants/constants";
+import stringConstants, {
+  NUMBER_CONSTANTS,
+  storageKeyStrings,
+} from "../../constants/constants";
 import { useEffect, useState } from "react";
 
 type EndScreenProps = {
@@ -12,10 +15,11 @@ type EndScreenProps = {
 
 const EndScreen = (props: EndScreenProps) => {
   const score = scoreRound(props.selections, props.correctChoices);
-  let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] =
-    useState<string>("");
+  let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] = useState<string>(
+    stringConstants.EMPTY_STRING
+  );
   let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] =
-    useState<string>("");
+    useState<string>(stringConstants.EMPTY_STRING);
   let [correctPercentage, setCorrectPercentage] = useState<number>(
     NUMBER_CONSTANTS.INIT_SCORE_PERCENTAGE
   );
