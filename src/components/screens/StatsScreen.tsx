@@ -1,7 +1,7 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import { readData } from "../../util/AsyncStorage/storeChoice";
-import { storageKeyStrings } from "../../constants/constants";
+import { LOCAL_STORAGE_KEYS } from "../../constants/constants";
 
 type StatScreenProps = {
   handleGoToHome: any;
@@ -28,10 +28,10 @@ const StatsScreen = (props: StatScreenProps) => {
     };
     const calculateCorrectPercentage = async () => {
       const total = await getTotalQuestions(
-        storageKeyStrings.questionsPlayedKey
+        LOCAL_STORAGE_KEYS.questionsPlayedKey
       );
       const correct = await getTotalCorrectFirstAttempt(
-        storageKeyStrings.firstChoiceCorrectScoreKey
+        LOCAL_STORAGE_KEYS.firstChoiceCorrectScoreKey
       );
       const correctRate = Math.floor(
         (parseFloat(correct) / parseFloat(total)) * 100

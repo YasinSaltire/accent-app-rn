@@ -9,16 +9,12 @@ enum NUMBER_CONSTANTS {
   NUM_INCORRECT_CHOICES_PER_QUESTION = 3,
 }
 
-enum stringConstants {
-  startGame = "Play",
-  gameTitle = "Game Title",
-  settings = "Settings",
-  GO_HOME = "Go Home",
+enum STRING_CONSTANTS {
   EMPTY_STRING = "",
 }
 
-enum storageKeyStrings {
-  correctChoicesKey = "Correct Choices",
+enum LOCAL_STORAGE_KEYS {
+  CORRECT_CHOICES = "Correct Choices",
   firstChoiceCorrectScoreKey = "First Score",
   questionsPlayedKey = "Rounds Played",
   correctIdAndChoiceIdKey = "Choice Mapping",
@@ -63,7 +59,7 @@ enum Errors {
   ARRAY_LENGTH_EXCEEDS_LIMIT = "Input list length exceeds output list length",
 }
 
-export default stringConstants;
+export default STRING_CONSTANTS;
 export {
   css,
   screenNames,
@@ -71,6 +67,6 @@ export {
   GameScreens,
   AudioPlaybackStates,
   Errors,
-  storageKeyStrings,
+  LOCAL_STORAGE_KEYS,
   NUMBER_CONSTANTS,
 };

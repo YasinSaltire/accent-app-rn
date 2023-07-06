@@ -13,7 +13,7 @@ import EndScreen from "./src/components/screens/EndScreen";
 import StatsScreen from "./src/components/screens/StatsScreen";
 import AccentCaptureScreen from "./src/components/screens/AccentCaptureScreen";
 import { addDataToCurrentValue } from "./src/util/AsyncStorage/storeChoice";
-import { storageKeyStrings } from "./src/constants/constants";
+import { LOCAL_STORAGE_KEYS } from "./src/constants/constants";
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
@@ -106,16 +106,16 @@ export default function App() {
 
     if (record[currentGameIndex].length == 1) {
       //commented out because game currently not using these stats.
-      //addValueToArrayInStorage(storageKeyStrings.correctIdAndChoiceIdKey, [correctChoicesArray[currentGameIndex].fileID, String(id)])
+      //addValueToArrayInStorage(LOCAL_STORAGE_KEYS.correctIdAndChoiceIdKey, [correctChoicesArray[currentGameIndex].fileID, String(id)])
     }
 
     if (id === correctChoicesArray[currentGameIndex].fileID) {
       if (record[currentGameIndex].length == 1) {
         const newCurrentScore: number = currentRoundScore + 1;
         setCurrentRoundScore(newCurrentScore);
-        addDataToCurrentValue(storageKeyStrings.firstChoiceCorrectScoreKey, 1);
+        addDataToCurrentValue(LOCAL_STORAGE_KEYS.firstChoiceCorrectScoreKey, 1);
       }
-      addDataToCurrentValue(storageKeyStrings.questionsPlayedKey, 1);
+      addDataToCurrentValue(LOCAL_STORAGE_KEYS.questionsPlayedKey, 1);
       screen = GameScreens.CORRECT;
       setScreen(screen);
     }

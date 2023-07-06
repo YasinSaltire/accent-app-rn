@@ -1,9 +1,9 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import scoreRound from "../../util/scoreRound";
 import { readData } from "../../util/AsyncStorage/storeChoice";
-import stringConstants, {
+import STRING_CONSTANTS, {
   NUMBER_CONSTANTS,
-  storageKeyStrings,
+  LOCAL_STORAGE_KEYS,
 } from "../../constants/constants";
 import { useEffect, useState } from "react";
 
@@ -21,10 +21,10 @@ const EndScreen = (props: EndScreenProps) => {
    * STATE VARIABLES START
    */
   let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] = useState<string>(
-    stringConstants.EMPTY_STRING
+    STRING_CONSTANTS.EMPTY_STRING
   );
   let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] =
-    useState<string>(stringConstants.EMPTY_STRING);
+    useState<string>(STRING_CONSTANTS.EMPTY_STRING);
   let [correctPercentage, setCorrectPercentage] = useState<number>(
     NUMBER_CONSTANTS.INIT_SCORE_PERCENTAGE
   );
@@ -45,10 +45,10 @@ const EndScreen = (props: EndScreenProps) => {
     };
     const calculateCorrectPercentage = async () => {
       const total = await getTotalQuestions(
-        storageKeyStrings.questionsPlayedKey
+        LOCAL_STORAGE_KEYS.questionsPlayedKey
       );
       const correct = await getTotalCorrectFirstAttempt(
-        storageKeyStrings.firstChoiceCorrectScoreKey
+        LOCAL_STORAGE_KEYS.firstChoiceCorrectScoreKey
       );
       const correctRate = Math.floor(
         (parseFloat(correct) / parseFloat(total)) * 100

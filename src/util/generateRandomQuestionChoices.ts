@@ -1,6 +1,10 @@
 import pickNRandomIndicesFromArray from "./pickNRandomIndicesFromArray";
-import { addValueToArrayInStorage, readData, storeData } from "./AsyncStorage/storeChoice";
-import { storageKeyStrings } from "../constants/constants";
+import {
+  addValueToArrayInStorage,
+  readData,
+  storeData,
+} from "./AsyncStorage/storeChoice";
+import { LOCAL_STORAGE_KEYS } from "../constants/constants";
 import pickRandomIndexFromArray from "./pickRandomIndexFromArray";
 type question = {
   id: number;
@@ -23,9 +27,7 @@ const generateRandomQuestionChoices = async <T>(
   // return an array, B with n elements picked out at random from A
   if (desiredLengthOfArray > data.length) throw "too many questions";
 
-  let prevCorrectIdsArray = await readData(
-    storageKeyStrings.correctChoicesKey
-  );
+  let prevCorrectIdsArray = await readData(LOCAL_STORAGE_KEYS.CORRECT_CHOICES);
 
   let arrayOfChoices: any = [];
 
@@ -44,21 +46,23 @@ const generateRandomQuestionChoices = async <T>(
         prevCorrectIdsArray.filter((nested: any) =>
           nested.includes(choiceToAdd.fileID)
         ).length > 0 ||
-        arrayOfChoices.filter((choice: any) => choice.fileID == choiceToAdd.fileID) > 0
+        arrayOfChoices.filter(
+          (choice: any) => choice.fileID == choiceToAdd.fileID
+        ) > 0
       ) {
         indexToAdd = pickRandomIndexFromArray(data);
         choiceToAdd = data[indexToAdd];
       }
       arrayOfChoices.push(choiceToAdd);
     }
-    if (prevCorrectIdsArray.length > 2){
-      prevCorrectIdsArray = prevCorrectIdsArray.slice(1)
-      await storeData(storageKeyStrings.correctChoicesKey, prevCorrectIdsArray)
+    if (prevCorrectIdsArray.length > 2) {
+      prevCorrectIdsArray = prevCorrectIdsArray.slice(1);
+      await storeData(LOCAL_STORAGE_KEYS.CORRECT_CHOICES, prevCorrectIdsArray);
     }
   }
 
   await addValueToArrayInStorage(
-    storageKeyStrings.correctChoicesKey,
+    LOCAL_STORAGE_KEYS.CORRECT_CHOICES,
     arrayOfChoices.map((accent: any) => String(accent.fileID))
   );
   return arrayOfChoices;
