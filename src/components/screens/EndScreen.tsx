@@ -33,7 +33,7 @@ const EndScreen = (props: EndScreenProps) => {
     const getTotalCorrectFirstAttempt = async (key: string) => {
       const data = await readData(key);
       setNumberCorrectFirstChoice(data);
-      return await readData(key);
+      return data;
     };
     const calculateCorrectPercentage = async () => {
       const total = await getTotalQuestions(
