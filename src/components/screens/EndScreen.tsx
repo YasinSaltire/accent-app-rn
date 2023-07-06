@@ -14,7 +14,12 @@ type EndScreenProps = {
 };
 
 const EndScreen = (props: EndScreenProps) => {
-  const score = scoreRound(props.selections, props.correctChoices);
+  const { selections, correctChoices, handleButtonPress } = props;
+  const score = scoreRound(selections, correctChoices);
+
+  /**
+   * STATE VARIABLES START
+   */
   let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] = useState<string>(
     stringConstants.EMPTY_STRING
   );
@@ -23,6 +28,9 @@ const EndScreen = (props: EndScreenProps) => {
   let [correctPercentage, setCorrectPercentage] = useState<number>(
     NUMBER_CONSTANTS.INIT_SCORE_PERCENTAGE
   );
+  /**
+   * STATE VARIABLES END
+   */
 
   useEffect(() => {
     const getTotalQuestions = async (key: string) => {
@@ -118,7 +126,7 @@ const EndScreen = (props: EndScreenProps) => {
           width: "80%",
           height: "10%",
         }}
-        onPress={() => props.handleButtonPress()}
+        onPress={() => handleButtonPress()}
       >
         <Text
           numberOfLines={1}
