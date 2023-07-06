@@ -82,13 +82,8 @@ type HomeScreenProps = {
   handleGoToStats: any
 };
 
-
-
 const HomeScreen = (props: HomeScreenProps) => {
-  //console.log("data 1st entry " + data[1])
-  //console.log("question choices " + generateRandomQuestionChoices(data, 10))
   const { doOnStartGameRound, handleGoToStats} = props;
-  //deleteData('First Score')
 
   const [updateAvailable, setUpdateAvailable] = useState<boolean>(false)
   
@@ -96,7 +91,6 @@ const HomeScreen = (props: HomeScreenProps) => {
     Device.DeviceType.UNKNOWN
   );
 
-  //get's update and reloads app
   const getUpdate = async() =>{
     try{
       setUpdateAvailable(false)
