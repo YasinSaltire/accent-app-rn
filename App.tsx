@@ -21,19 +21,22 @@ type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
 
 export default function App() {
+  /* STATE VARIABLES START */
   let [correctChoicesArray, setCorrectChoicesArray] = useState<any>([]);
   let [incorrectChoicesArray, setIncorrectChoicesArray] = useState<any>([]);
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
   let [gameScreen, setScreen] = useState<GameScreens>(GameScreens.HOMESCREEN);
   let [userSelectedChoicesRecord, setUserSelectedChoicesRecord] = useState<
-    number[][]
+  number[][]
   >([[]]);
-
+  
   let [correctChoiceButtonIndex, setCorrectChoiceButtonIndex] =
-    useState<number>(0);
+  useState<number>(0);
   let [score, setScore] = useState<number>(0);
   let [currentRoundScore, setCurrentRoundScore] = useState<number>(0);
+  /* STATE VARIABLES END */
 
+  /* EVENT HANDLERS START */
   const handleGoToHome = () => {
     const screen = GameScreens.HOMESCREEN;
     setScreen(screen);
@@ -113,6 +116,7 @@ export default function App() {
   const handleGoToStats = () =>{
     setScreen(GameScreens.STAT_SCREEN)
   }
+  /* EVENT HANDLERS END */
 
   return (
     <>
