@@ -15,12 +15,10 @@ class AudioPlayer implements IAudioPlayer {
 
   play = async () => {
     await this.soundHandle.playAsync();
-    console.log("play");
   };
 
   stop = async () => {
     await this.soundHandle.stopAsync();
-    console.log("stop");
   };
 }
 
