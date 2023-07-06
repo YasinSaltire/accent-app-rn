@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import * as React from "react";
-import { useEffect, useState, } from "react";
+import { useEffect, useState } from "react";
 import { Audio } from "expo-av";
 import generateAccentString from "../../util/generateAccentString";
 import generateAudioLink from "../../util/generateAudioLink";
@@ -159,19 +159,16 @@ const GameScreen = (props: GameScreenProps) => {
   const [deviceType, setDeviceType] = useState<Device.DeviceType>(
     Device.DeviceType.UNKNOWN
   );
-    
+
   //map variables
 
   let [projectionCoordinates, setProjectionCoordinates] = useState<number[][]>(
     Array(4).fill([0, 0])
   );
 
-  
-
   let [windowWidth, setWindowWidth] = useState<number>(
     Dimensions.get("window").width * 0.97
   );
-
 
   useEffect(() => {
     const projectCoordinates = async () => {
@@ -210,7 +207,7 @@ const GameScreen = (props: GameScreenProps) => {
       const type = await Device.getDeviceTypeAsync();
       setDeviceType(type);
     };
-  
+
     getDeviceType();
 
     //set map coordiantes
@@ -218,7 +215,6 @@ const GameScreen = (props: GameScreenProps) => {
 
     //get device type and set state
     getDeviceType();
-
   }, [correctChoiceObj]);
 
   const displayModalIfWrongChoiceSelected = (id: number) => {
@@ -242,7 +238,7 @@ const GameScreen = (props: GameScreenProps) => {
       try {
         const sound = new Audio.Sound();
         await sound.loadAsync({
-          uri: audioUri, 
+          uri: audioUri,
         });
         setSound(sound);
         await sound.playAsync();
@@ -257,7 +253,7 @@ const GameScreen = (props: GameScreenProps) => {
         console.error(error);
       }
     };
-    
+
     loadSound();
 
     return () => {
@@ -308,7 +304,17 @@ const GameScreen = (props: GameScreenProps) => {
   return (
     <View nativeID="5" style={playScreenWrapperStyles()}>
       <View style={playScreenStyles(deviceType)}>
-        <CustomModal deviceType = {deviceType} showModal = {showModal} modalBodyText={'Incorrect!'} modalButtonText = {'Try Again'} onModalButtonPress={() => (function () {setShowModal(false)})()}/>
+        <CustomModal
+          deviceType={deviceType}
+          showModal={showModal}
+          modalBodyText={"Incorrect!"}
+          modalButtonText={"Try Again"}
+          onModalButtonPress={() =>
+            (function () {
+              setShowModal(false);
+            })()
+          }
+        />
         <Modal transparent={true} visible={showModal}>
           <View style={modalStyles(deviceType)}>
             <View
@@ -480,7 +486,6 @@ const GameScreen = (props: GameScreenProps) => {
             </Text>
           </Pressable>
         </View>
-
       </View>
     </View>
   );
