@@ -4,15 +4,10 @@ import {
   Text,
   Pressable,
   Modal,
-  ImageBackground,
   Image,
-  LayoutChangeEvent,
   Dimensions,
 } from "react-native";
-import stringConstants, {
-  GameScreens,
-  storageKeyStrings,
-} from "../../constants/constants";
+
 import * as React from "react";
 import { useEffect, useState, } from "react";
 import { Audio } from "expo-av";
@@ -21,7 +16,6 @@ import generateAudioLink from "../../util/generateAudioLink";
 import geoToMercator from "../../util/geoToMercator";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
-import { readData } from "../../util/AsyncStorage/storeChoice";
 import * as Device from "expo-device";
 import CustomModal from "../CustomModal";
 
