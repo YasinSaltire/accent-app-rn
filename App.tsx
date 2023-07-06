@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { GameScreens } from "./src/constants/constants";
 import generatePseudorandomNumberBetweenMinAndMax from "./src/util/generatePseudorandomNumberBetweenMinAndMax";
 import GameScreen from "./src/components/screens/GameScreen";
@@ -11,15 +11,11 @@ import LearnMoreScreen from "./src/components/screens/LearnMoreScreen";
 import CorrectScreen from "./src/components/screens/CorrectScreen";
 import EndScreen from "./src/components/screens/EndScreen";
 import StatsScreen from "./src/components/screens/StatsScreen";
-import { View, Text } from "react-native";
 import AccentCaptureScreen from "./src/components/screens/AccentCaptureScreen";
 import {
-  addValueToArrayInStorage,
   addDataToCurrentValue,
-  deleteData,
 } from "./src/util/AsyncStorage/storeChoice";
 import { storageKeyStrings } from "./src/constants/constants";
-import * as Updates from 'expo-updates'
 
 type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
