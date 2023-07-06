@@ -23,25 +23,11 @@ const generateTotalIncorrectChoices = <T>(
       numberOfIncorrectChoicesPerCorrect,
       data
     );
-    //console.log('test', incorrectChoicesForCorrect)
     //append 3 created incorrect choices to incorrect choce array
     arrayOfIncorrectChoices = arrayOfIncorrectChoices.concat(incorrectChoicesForCorrect);
   }
   
   return arrayOfIncorrectChoices;
-  /*
-  while (arrayOfIncorrectChoices.length !== numberOfIncorrectChoices) {
-    let idx = pickRandomIndexFromArray(data);
-
-    while (
-      checkIfRegionExistsInArray(arrayOfChoicesToAvoid, data, idx) ||
-      checkIfRegionExistsInArray(arrayOfIncorrectChoices, data, idx)
-    ) {
-      idx = pickRandomIndexFromArray(data);
-    }
-    arrayOfIncorrectChoices.push(data[idx]);
-  }
-  */
 };
 
 export default generateTotalIncorrectChoices;
