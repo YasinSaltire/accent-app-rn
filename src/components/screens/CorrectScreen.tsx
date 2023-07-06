@@ -1,5 +1,5 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
-import generateAccentString from "../../util/generateAccentString";
+
 type CorrectScreenProps = {
   handleNextButtonPress: any;
   handleLearnMoreButtonPress: any;
