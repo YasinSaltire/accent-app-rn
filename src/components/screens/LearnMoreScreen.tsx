@@ -1,31 +1,4 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
-import generateAccentString from "../../util/generateAccentString";
-/*
-type LearnMoreScreenProps = {
-  handleButtonPress: any;
-  //correctChoiceObj: any,
-};
-const buttonStyle = () => {
-  const style = StyleSheet.create({
-    default: {
-      alignContent,
-    },
-  });
-  return style.default;
-};
-
-const LearnMoreScreen = (props: LearnMoreScreenProps) => {
-  return (
-    <View>
-      <Pressable style={buttonStyle} onPress={() => props.handleButtonPress}>
-        <Text> yo</Text>
-      </Pressable>
-    </View>
-  );
-};
-
-export default LearnMoreScreen;
-*/
 
 type LearnMoreScreenProps = {
   handleButtonPress: any;
