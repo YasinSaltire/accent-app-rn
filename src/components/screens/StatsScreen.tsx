@@ -4,6 +4,7 @@ import { readData } from "../../util/AsyncStorage/storeChoice";
 import {
   LOCAL_STORAGE_KEYS,
   STRING_CONSTANTS,
+  NUMBER_CONSTANTS,
 } from "../../constants/constants";
 
 type StatScreenProps = {
@@ -13,12 +14,15 @@ type StatScreenProps = {
 const StatsScreen = (props: StatScreenProps) => {
   const { handleGoToHome } = props;
   const { EMPTY_STRING } = STRING_CONSTANTS;
+  const { INIT_SCORE_PERCENTAGE } = NUMBER_CONSTANTS;
 
   let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] =
     useState<string>(EMPTY_STRING);
   let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] =
     useState<string>(EMPTY_STRING);
-  let [correctPercentage, setCorrectPercentage] = useState<number>(0);
+  let [correctPercentage, setCorrectPercentage] = useState<number>(
+    INIT_SCORE_PERCENTAGE
+  );
 
   useEffect(() => {
     const getTotalQuestions = async (key: string) => {
