@@ -1,13 +1,5 @@
-import { View, StyleSheet, Pressable, Text, Button } from "react-native";
-
-import stringConstants, { GameScreens } from "../../constants/constants";
-import PlayButton from "../PlayButton";
-import GameTitle from "../GameTitle";
-import { GameScreenStateSetter } from "../../../App";
-import generateRandomQuestionChoices from "../../util/generateRandomQuestionChoices";
-import data from "../../../assets/audio/clip_db.json";
+import { View, StyleSheet, Pressable, Text } from "react-native";
 import * as WebBrowser from "expo-web-browser";
-import { deleteData } from "../../util/AsyncStorage/storeChoice";
 import * as Device from "expo-device";
 import { useEffect, useState } from "react";
 import * as Updates from 'expo-updates'
