@@ -57,7 +57,9 @@ export default function App() {
       newIndex = currentGameIndex + 1;
       screen = GameScreens.GAMESCREEN;
       setUserSelectedChoicesRecord(record);
-      setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
+      setCorrectChoiceButtonIndex(
+        Math.floor(Math.random() * NUMBER_CONSTANTS.NUM_CHOICES_PER_QUESTION)
+      );
     }
 
     setCurrentGameIndex(newIndex);
@@ -82,15 +84,17 @@ export default function App() {
     const incorrectChoicesForEntireRound = generateTotalIncorrectChoices(
       correctChoices,
       data,
-      3
+      NUMBER_CONSTANTS.NUM_INCORRECT_CHOICES_PER_QUESTION
     );
-    setCurrentRoundScore(0);
+    setCurrentRoundScore(NUMBER_CONSTANTS.INIT_SCORE);
     setCorrectChoicesArray(correctChoices);
     setIncorrectChoicesArray(incorrectChoicesForEntireRound);
 
     setUserSelectedChoicesRecord([[]]);
-    setCurrentGameIndex(0);
-    setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
+    setCurrentGameIndex(NUMBER_CONSTANTS.ZEROTH_INDEX);
+    setCorrectChoiceButtonIndex(
+      Math.floor(Math.random() * NUMBER_CONSTANTS.NUM_CHOICES_PER_QUESTION)
+    );
     setScreen(GameScreens.GAMESCREEN);
   };
 
