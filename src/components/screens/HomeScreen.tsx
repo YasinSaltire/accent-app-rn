@@ -2,7 +2,7 @@ import { View, StyleSheet, Pressable, Text } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import * as Device from "expo-device";
 import { useEffect, useState } from "react";
-import * as Updates from 'expo-updates'
+import * as Updates from "expo-updates";
 import CustomModal from "../CustomModal";
 
 const homeScreenStyles = (deviceType: Device.DeviceType) => {
@@ -79,27 +79,27 @@ const buttonContainer = (color: string = "white") => {
 
 type HomeScreenProps = {
   doOnStartGameRound: any;
-  handleGoToStats: any
+  handleGoToStats: any;
 };
 
 const HomeScreen = (props: HomeScreenProps) => {
-  const { doOnStartGameRound, handleGoToStats} = props;
+  const { doOnStartGameRound, handleGoToStats } = props;
 
-  const [updateAvailable, setUpdateAvailable] = useState<boolean>(false)
-  
+  const [updateAvailable, setUpdateAvailable] = useState<boolean>(false);
+
   const [deviceType, setDeviceType] = useState<Device.DeviceType>(
     Device.DeviceType.UNKNOWN
   );
 
-  const getUpdate = async() =>{
-    try{
-      setUpdateAvailable(false)
+  const getUpdate = async () => {
+    try {
+      setUpdateAvailable(false);
       await Updates.fetchUpdateAsync();
       await Updates.reloadAsync();
     } catch (error) {
-      alert(`Error checking latest Expo update: ${error}`);
+      console.warn(`Error checking latest Expo update: ${error}`);
     }
-  }
+  };
 
   useEffect(() => {
     const getDeviceType = async () => {
@@ -107,31 +107,38 @@ const HomeScreen = (props: HomeScreenProps) => {
       setDeviceType(type);
     };
 
-    const checkUpdate = async () =>{
+    const checkUpdate = async () => {
       const type = await Device.getDeviceTypeAsync();
-      try{
-        if (type === Device.DeviceType.PHONE || type === Device.DeviceType.TABLET){
+      try {
+        if (
+          type === Device.DeviceType.PHONE ||
+          type === Device.DeviceType.TABLET
+        ) {
           const update = await Updates.checkForUpdateAsync();
-  
+
           if (update.isAvailable) {
-            setUpdateAvailable(true)
+            setUpdateAvailable(true);
           }
         }
       } catch (error) {
-        alert(`Error fetching latest Expo update: ${error}`);
+        console.warn(`Error fetching latest Expo update: ${error}`);
       }
-    }
-    
+    };
 
     getDeviceType();
     checkUpdate();
   }, []);
-  
 
   return (
     <View style={homeScreenWrapperStyles(deviceType)}>
       <View style={homeScreenStyles(deviceType)}>
-        <CustomModal deviceType = {deviceType} showModal = {updateAvailable} modalBodyText = {'New Update Available'} modalButtonText = {'Update'} onModalButtonPress = {getUpdate}/>
+        <CustomModal
+          deviceType={deviceType}
+          showModal={updateAvailable}
+          modalBodyText={"New Update Available"}
+          modalButtonText={"Update"}
+          onModalButtonPress={getUpdate}
+        />
         <View style={{ width: "60%" }}>
           <Text
             numberOfLines={3}
@@ -157,14 +164,11 @@ const HomeScreen = (props: HomeScreenProps) => {
             <Text style={textStyles()}>ADD ACCENT</Text>
           </Pressable>
           <Pressable
-            onPress ={() => handleGoToStats()}
+            onPress={() => handleGoToStats()}
             style={buttonColor("#e8791e")}
           >
             <Text style={textStyles()}>STATS</Text>
           </Pressable>
-          
-
-          
         </View>
       </View>
     </View>
