@@ -1,7 +1,10 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import { readData } from "../../util/AsyncStorage/storeChoice";
-import { LOCAL_STORAGE_KEYS } from "../../constants/constants";
+import {
+  LOCAL_STORAGE_KEYS,
+  STRING_CONSTANTS,
+} from "../../constants/constants";
 
 type StatScreenProps = {
   handleGoToHome: any;
@@ -9,10 +12,12 @@ type StatScreenProps = {
 
 const StatsScreen = (props: StatScreenProps) => {
   const { handleGoToHome } = props;
+  const { EMPTY_STRING } = STRING_CONSTANTS;
+
   let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] =
-    useState<string>("");
+    useState<string>(EMPTY_STRING);
   let [numberCorrectFirstChoice, setNumberCorrectFirstChoice] =
-    useState<string>("");
+    useState<string>(EMPTY_STRING);
   let [correctPercentage, setCorrectPercentage] = useState<number>(0);
 
   useEffect(() => {
