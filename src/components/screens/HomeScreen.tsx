@@ -104,7 +104,7 @@ const HomeScreen = (props: HomeScreenProps) => {
   useEffect(() => {
     const getDeviceType = async () => {
       const type = await Device.getDeviceTypeAsync();
-      await setDeviceType(type);
+      setDeviceType(type);
     };
 
     const checkUpdate = async () =>{
@@ -114,7 +114,7 @@ const HomeScreen = (props: HomeScreenProps) => {
           const update = await Updates.checkForUpdateAsync();
   
           if (update.isAvailable) {
-            await setUpdateAvailable(true)
+            setUpdateAvailable(true)
           }
         }
       } catch (error) {
