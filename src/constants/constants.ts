@@ -1,4 +1,3 @@
-// This file should be renamed to something more specific as the codebase grows.
 
 enum stringConstants {
   startGame = "Play",
