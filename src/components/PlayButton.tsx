@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import stringConstants, { GameScreens, css } from "../constants/constants";
-import { GameScreenStateSetter } from "../../App";
 
 const playButtonStyles = () => {
   const style = StyleSheet.create({
