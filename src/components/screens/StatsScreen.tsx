@@ -13,7 +13,7 @@ type StatScreenProps = {
 
 const StatsScreen = (props: StatScreenProps) => {
   const { handleGoToHome } = props;
-  const { EMPTY_STRING } = STRING_CONSTANTS;
+  const { EMPTY_STRING, DASH } = STRING_CONSTANTS;
   const { INIT_SCORE_PERCENTAGE } = NUMBER_CONSTANTS;
 
   let [numberOfQuestionsPlayed, setNumberOfQuestionsPlayed] =
@@ -28,12 +28,12 @@ const StatsScreen = (props: StatScreenProps) => {
     const getTotalQuestions = async (key: string) => {
       const data = await readData(key);
       setNumberOfQuestionsPlayed(data);
-      return await readData(key);
+      return data;
     };
     const getTotalCorrectFirstAttempt = async (key: string) => {
       const data = await readData(key);
       setNumberCorrectFirstChoice(data);
-      return await readData(key);
+      return data;
     };
     const calculateCorrectPercentage = async () => {
       const total = await getTotalQuestions(
@@ -62,7 +62,7 @@ const StatsScreen = (props: StatScreenProps) => {
 
       <Text style={{ marginBottom: "10%", color: "white" }}>
         First attempt correct rate:{" "}
-        {correctPercentage ? correctPercentage : "-"}%{" "}
+        {correctPercentage ? correctPercentage : DASH}%{" "}
       </Text>
       <Pressable
         style={{

@@ -11,6 +11,7 @@ enum NUMBER_CONSTANTS {
 
 enum STRING_CONSTANTS {
   EMPTY_STRING = "",
+  DASH = "-",
 }
 
 enum DISPLAY_STRINGS {
