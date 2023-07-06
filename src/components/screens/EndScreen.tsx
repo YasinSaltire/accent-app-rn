@@ -1,10 +1,7 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
-import generateAccentString from "../../util/generateAccentString";
 import scoreRound from "../../util/scoreRound";
 import {
-  addDataToCurrentValue,
   readData,
-  deleteData,
 } from "../../util/AsyncStorage/storeChoice";
 import { storageKeyStrings } from "../../constants/constants";
 import { useEffect, useState } from "react";
