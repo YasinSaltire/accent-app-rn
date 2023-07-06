@@ -1,5 +1,4 @@
-import { View, StyleSheet, Text, Pressable } from "react-native";
-import { GameScreens } from "../constants/constants";
+import { Text, Pressable } from "react-native";
 import { SvgUri } from "react-native-svg";
 import { Accent } from "../../App";
 
