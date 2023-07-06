@@ -20,6 +20,20 @@ enum DISPLAY_STRINGS {
   CORRECT_ANSWER = "CORRECT ANSWER!",
 }
 
+enum MAP_PINS_NATIVE_ID {
+  BLUE = "blue-pin",
+  YELLOW = "yellow-pin",
+  GREEN = "green-pin",
+  RED = "red-pin",
+}
+
+const MAP_PIN_FILE_LOCATIONS: Record<MAP_PINS_NATIVE_ID, string> = {
+  [MAP_PINS_NATIVE_ID.BLUE]: "../../../assets/blue_sliderDown.png",
+  [MAP_PINS_NATIVE_ID.YELLOW]: "../../../assets/yellow_sliderDown.png",
+  [MAP_PINS_NATIVE_ID.GREEN]: "../../../assets/green_sliderDown.png",
+  [MAP_PINS_NATIVE_ID.RED]: "../../../assets/red_sliderDown.png",
+};
+
 enum LOCAL_STORAGE_KEYS {
   CORRECT_CHOICES = "Correct Choices",
   firstChoiceCorrectScoreKey = "First Score",
@@ -73,4 +87,6 @@ export {
   NUMBER_CONSTANTS,
   DISPLAY_STRINGS,
   STRING_CONSTANTS,
+  MAP_PINS_NATIVE_ID,
+  MAP_PIN_FILE_LOCATIONS,
 };
