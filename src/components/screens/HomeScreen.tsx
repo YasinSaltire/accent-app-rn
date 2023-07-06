@@ -102,17 +102,18 @@ const HomeScreen = (props: HomeScreenProps) => {
   };
 
   useEffect(() => {
+    // myk - not sure why the following method is needed
     const getDeviceType = async () => {
       const type = await Device.getDeviceTypeAsync();
       setDeviceType(type);
     };
 
     const checkForUpdate = async () => {
-      const type = await Device.getDeviceTypeAsync();
+      const deviceType = await Device.getDeviceTypeAsync();
       try {
         if (
-          type === Device.DeviceType.PHONE ||
-          type === Device.DeviceType.TABLET
+          deviceType === Device.DeviceType.PHONE ||
+          deviceType === Device.DeviceType.TABLET
         ) {
           const update = await Updates.checkForUpdateAsync();
 
