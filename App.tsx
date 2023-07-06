@@ -102,7 +102,6 @@ export default function App() {
       if (record[currentGameIndex].length == 1) {
         const newCurrentScore: number = currentRoundScore + 1;
         setCurrentRoundScore(newCurrentScore);
-        console.log("correct choice first try ");
         addDataToCurrentValue(storageKeyStrings.firstChoiceCorrectScoreKey, 1)
       }
       addDataToCurrentValue(storageKeyStrings.questionsPlayedKey, 1)
