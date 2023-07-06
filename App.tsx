@@ -51,15 +51,13 @@ export default function App() {
     if (currentGameIndex === lastIndexValue) {
       screen = GameScreens.ENDSCREEN;
       newIndex = NUMBER_CONSTANTS.INDEX_OUT_OF_RANGE;
-      setScreen(screen);
-      setCurrentGameIndex(newIndex);
     } else {
       let record = [...userSelectedChoicesRecord];
       record.push([]);
-      setUserSelectedChoicesRecord(record);
       newIndex = currentGameIndex + 1;
-      setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
       screen = GameScreens.GAMESCREEN;
+      setUserSelectedChoicesRecord(record);
+      setCorrectChoiceButtonIndex(Math.floor(Math.random() * 4));
     }
 
     setCurrentGameIndex(newIndex);
@@ -75,7 +73,10 @@ export default function App() {
     //add choices to async storage
     //if 2d array in async greater than 3, remove 1st array of choices
 
-    const correctChoices = await generateRandomQuestionChoices(data, 10);
+    const correctChoices = await generateRandomQuestionChoices(
+      data,
+      NUMBER_CONSTANTS.NUM_CORRECT_CHOICES_PER_ROUND
+    );
 
     //append all correct choice id's to end of storage array
     const incorrectChoicesForEntireRound = generateTotalIncorrectChoices(
