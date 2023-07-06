@@ -28,7 +28,7 @@ type GameScreenStateSetter = React.Dispatch<React.SetStateAction<GameScreens>>;
 type CurrentQuestionSetter = React.Dispatch<React.SetStateAction<number>>;
 
 export default function App() {
-  let [difficultyLevel, setDifficultyLevel] = useState<number>(1)
+  let [difficultyLevel, setDifficultyLevel] = useState<number>(5)
   let [correctChoicesArray, setCorrectChoicesArray] = useState<any>([]);
   let [incorrectChoicesArray, setIncorrectChoicesArray] = useState<any>([]);
   let [currentGameIndex, setCurrentGameIndex] = useState(-1);
@@ -55,7 +55,7 @@ export default function App() {
       screen = GameScreens.ENDSCREEN;
       newIndex = -1;
 
-      if (difficultyLevel != 4 && (scoreRound(userSelectedChoicesRecord, correctChoicesArray) >= 8)){
+      if (difficultyLevel != 5 && (scoreRound(userSelectedChoicesRecord, correctChoicesArray) >= 8)){
         setDifficultyLevel(difficultyLevel + 1)
       }
 
@@ -94,7 +94,7 @@ export default function App() {
         }
         const arrayOfPrevCorrectIds = prevCorrectIds.flat()
         const body = {correctIds: arrayOfPrevCorrectIds}
-        const response = await fetch(`http://INSERT:3000/api/roundOfAccents?level=${difficultyLevel}`, {
+        const response = await fetch(`http://192.168.254.18:3000/api/roundOfAccents?level=${difficultyLevel}`, {
         method: "POST",
         headers: {
           'Content-type': 'application/json'
