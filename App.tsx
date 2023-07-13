@@ -94,7 +94,7 @@ export default function App() {
         }
         const arrayOfPrevCorrectIds = prevCorrectIds.flat()
         const body = {correctIds: arrayOfPrevCorrectIds}
-        const response = await fetch(`http://192.168.254.18:3000/api/roundOfAccents?level=${difficultyLevel}`, {
+        const response = await fetch(`http://192.168.254.18:80/api/roundOfAccents?level=${difficultyLevel}`, {
         method: "POST",
         headers: {
           'Content-type': 'application/json'
